@@ -1,0 +1,14 @@
+{
+  "id": "ADR-001",
+  "fecha": "2026-06-21",
+  "titulo": "Multitenancy: shared schema + Row-Level Security de Postgres",
+  "estado": "aceptada",
+  "contexto": "Necesitamos aislar datos entre veterinarias (tenants) dentro de una plataforma SaaS, con backups individuales por tenant requeridos por el subsistema Administrador.",
+  "decision": "Usamos una unica base de datos (core_db) con shared schema, todas las tablas tenant-scoped llevan company_id, y se aplica RLS de Postgres seteando app.current_company_id por transaccion via SET LOCAL, derivado del JWT.",
+  "consecuencias": [
+    "Positivas: aislamiento real a nivel de motor de base de datos, no solo a nivel de codigo de aplicacion; backups por tenant via pg_dump filtrado o export con pandas; mas barato de operar que schema-per-tenant o database-per-tenant",
+    "Negativas: requiere disciplina en setear el contexto de RLS en cada transaccion; un error de configuracion de RLS es un riesgo de seguridad serio"
+  ],
+  "alternativas": ["Schema-per-tenant", "Database-per-tenant"],
+  "actores": ["@desarrollador", "@opencode"]
+}

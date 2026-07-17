@@ -1,0 +1,14 @@
+{
+  "id": "ADR-007",
+  "fecha": "2026-06-21",
+  "titulo": "Eliminacion de n8n del stack",
+  "estado": "aceptada",
+  "contexto": "El plan original incluia n8n para alertas de stock, deuda, documento listo, bienvenida y suscripcion por vencer. Se determino que el consumo de recursos no se justifica para el caso de uso real.",
+  "decision": "Se elimina n8n del stack y de las variables de entorno. La logica de deteccion de condiciones se resuelve directamente en el backend, encolando notificaciones en q.emails y q.notificaciones (RabbitMQ), disparadas desde el punto exacto del codigo donde ocurre la condicion o desde los crons ya definidos (cron-subscription-expiry-check, etc).",
+  "consecuencias": [
+    "Positivas: una pieza de infraestructura menos para operar; misma funcionalidad resuelta con lo que ya existe (RabbitMQ + Mailjet)",
+    "Negativas: ninguna identificada; revisar si a futuro aparece un caso de uso que realmente requiera orquestacion visual de workflows"
+  ],
+  "alternativas": ["Mantener n8n solo para los 5 casos de uso originales"],
+  "actores": ["@desarrollador", "@opencode"]
+}

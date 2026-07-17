@@ -1,0 +1,14 @@
+{
+  "id": "ADR-006",
+  "fecha": "2026-06-21",
+  "titulo": "Reverse proxy: Caddy en lugar de Nginx",
+  "estado": "aceptada",
+  "contexto": "Se evaluo Nginx originalmente. Dado que Cloudflare Tunnel ya termina el TLS publico, el auto-HTTPS de Caddy es mayormente redundante en produccion, pero su configuracion es significativamente mas simple y soporta balanceo de carga nativo para escalado horizontal futuro.",
+  "decision": "Se reemplaza Nginx por Caddy como unico reverse proxy y servidor web. Caddy usa file_server para servir los assets estaticos del frontend (build de React/Vite) y reverse_proxy para /api/* hacia backend:8000. El frontend ya no corre un servidor propio (nginx/node); Dockerfile.frontend es solo build-stage. auto_https desactivado en produccion (Cloudflare termina TLS). El rate limiting se maneja en el borde de Cloudflare.",
+  "consecuencias": [
+    "Positivas: configuracion mas simple y con menos superficie de error para un proyecto co-desarrollado con agentes de IA; soporte nativo de balanceo de carga para escalado horizontal futuro; compatible sin friccion con Docker Compose en Contabo; elimina la dependencia de Nginx/frontend server reduciendo recursos y puntos de fallo",
+    "Negativas: rate limiting no es nativo en Caddy (se resuelve moviendo esa responsabilidad a Cloudflare); ecosistema/documentacion algo menor que Nginx"
+  ],
+  "alternativas": ["Nginx", "Traefik", "HAProxy"],
+  "actores": ["@desarrollador", "@opencode"]
+}

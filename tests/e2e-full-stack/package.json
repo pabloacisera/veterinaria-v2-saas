@@ -1,0 +1,8 @@
+{
+  "name": "e2e-full-stack",
+  "private": true,
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "ioredis": "^5.4.1"
+  }
+}

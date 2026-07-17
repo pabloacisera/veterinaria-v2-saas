@@ -1,0 +1,26 @@
+{
+    auto_https off
+    admin off
+}
+
+:80 {
+    header {
+        # CSP: mismo origen (frontend y API por Caddy), Cloudflare termina TLS
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' res.cloudinary.com data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'"
+        # Seguridad general
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    }
+
+    handle /api/* {
+        reverse_proxy backend:8000
+    }
+
+    handle {
+        root * /www
+        file_server
+        try_files {path} /index.html
+    }
+}

@@ -1,0 +1,60 @@
+name: CI — E2E
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env from env.example
+        run: cp env.example .env
+
+      - name: Docker Compose up
+        run: |
+          docker compose --profile production up -d --build
+
+      - name: Wait for services
+        run: |
+          for svc in core_db community_db redis rabbitmq backend frontend; do
+            echo "Waiting for $svc..."
+            timeout 120 bash -c "
+              while ! docker compose ps --format '{{.Status}}' | grep -qE '^Up' ; do
+                sleep 3
+              done
+            " 2>/dev/null || echo "Timeout waiting for $svc — continuing"
+          done
+
+      - name: Wait for HTTP readiness
+        run: |
+          timeout 90 bash -c '
+            until curl -sf http://localhost:8000/health > /dev/null 2>&1; do
+              sleep 3
+            done
+          ' || echo "Health check timeout"
+
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install playwright
+          npx playwright install chromium
+
+      - name: Install E2E dependencies
+        run: |
+          cd tests/e2e-full-stack
+          npm ci
+          npx playwright install chromium
+
+      - name: Run Playwright E2E tests
+        working-directory: tests/e2e-full-stack
+        run: npx playwright test --reporter=line
+        env:
+          BASE_URL: http://localhost:5173
+
+      - name: Docker Compose down
+        if: always()
+        run: docker compose --profile production down -v

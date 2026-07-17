@@ -1,0 +1,16 @@
+{
+  "id": "ADR-010",
+  "fecha": "2026-06-22",
+  "titulo": "Estrategia de Backups para Base de Datos (PostgreSQL)",
+  "estado": "reemplazada",
+  "contexto": "Se requiere una solución de backup automatizada, segura y de bajo costo para la base de datos central (core_db) de la plataforma, garantizando la recuperación ante desastres conforme a la estrategia de multitenancy definida en ADR-001.",
+  "decision": "Utilizar Backblaze B2 como almacenamiento de objetos. La automatización del proceso de volcado (dump), compresión y sincronización hacia el bucket se realizará mediante la herramienta 'rclone', configurada con credenciales restringidas (Application Key) y ejecutada vía cronjobs.",
+  "consecuencias": [
+    "Positivas: almacenamiento externo altamente disponible; bajo costo (dentro de los 10GB gratuitos); automatización centralizada mediante rclone; compatible con estándares de cifrado en reposo.",
+    "Negativas: requiere mantenimiento manual del script de rclone y monitoreo de los cronjobs; dependencia de una herramienta de terceros (rclone) instalada en el servidor."
+  ],
+  "alternativas": ["AWS S3 CLI", "Google Cloud Storage (GCS) SDK", "Almacenamiento local en disco (descartado por falta de redundancia ante fallo del servidor)"],
+  "actores": ["@desarrollador", "@opencode"],
+  "reemplazado_por": "ADR-004",
+  "motivo_reemplazo": "Este ADR duplicaba la decision de ADR-004 con detalles de implementacion de rclone. Se consolido en ADR-004 para mantener una unica fuente de verdad."
+}

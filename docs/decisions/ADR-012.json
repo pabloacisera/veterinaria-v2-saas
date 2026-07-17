@@ -1,0 +1,17 @@
+{
+  "id": "ADR-012",
+  "fecha": "2026-06-23",
+  "titulo": "Activacion de cuenta por codigo de 6 digitos via email",
+  "estado": "aceptada",
+  "contexto": "El registro manual (TASK-004) crea usuarios con is_active=False pero no hay forma de activarlos: EmailService.send_activation tiene TEMPLATE_ACTIVACION_CUENTA = None y jamas envia el email. No se puede modificar .env (restriccion absoluta del proyecto), por lo que no se puede configurar un template ID de Mailjet via variable de entorno.",
+  "decision": "Implementar activacion por codigo numerico de 6 digitos en lugar de link con token JWT. El codigo se genera aleatoriamente, se persiste en Redis con TTL de 15 minutos, y se envia al email del usuario usando un template HTML inline (archivo local, no Mailjet template). El endpoint POST /auth/activate acepta email + codigo. Los usuarios OAuth2 se crean con is_active=True (no requieren activacion).",
+  "consecuencias": [
+    "Positivas: no depende de Mailjet templates ni de .env; codigo de 6 digitos es mas facil de tipear en mobile que un token JWT; Redis con TTL maneja la expiracion automaticamente",
+    "Negativas: requiere que Redis este siempre disponible; el template HTML inline es menos flexible que un template de Mailjet"
+  ],
+  "alternativas": [
+    "Link de activacion con token JWT via Mailjet template (requiere .env → rechazado por restriccion del proyecto)",
+    "Columna activation_code + expiration en tabla users (mas durable pero requiere migracion y cleanup manual)"
+  ],
+  "actores": ["@opencode"]
+}

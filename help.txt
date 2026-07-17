@@ -1,0 +1,405 @@
+- En desarrollo las migraciones se ejecutan manualmente: scripts/migrate.sh
+- En prduccion, primero se migra con el comando anterior y luego:
+
+	# Build frontend (necesitas el dist para Caddy)
+	cd frontend && npm run build && cd ..
+
+	# Todo con perfil production (backend + frontend build + caddy)
+	docker compose --profile production up -d
+
+	Pero ojo: en el compose, el backend monta ./backend/src:/app/src (live reload), pero el entrypoint corre migraciones cada vez que arranca el contenedor. Eso puede ser problemático si ya corriste las migraciones antes.
+
+
+
+Pasos a seguir en desarrollo:
+
+# 1. Levantar infraestructura (PostgreSQL, Redis, RabbitMQ)
+docker compose up -d
+
+# 2. Activar entorno virtual e instalar dependencias (solo la primera vez o si cambian)
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cd ..
+
+# 3. Ejecutar migraciones de base de datos (ambas DBs)
+bash scripts/migrate.sh
+
+# 4. Cargar datos de prueba (opcional, solo si necesitas seed)
+bash scripts/seed-test-data.sh
+
+# 5. Iniciar backend (FastAPI con hot reload)
+cd backend
+source .venv/bin/activate
+uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+
+# 6. En otra terminal: iniciar frontend (Vite dev server)
+cd frontend && npm run dev
+Notas:
+- El paso 2 es solo la primera vez
+- Backend queda en http://localhost:8000, docs en http://localhost:8000/docs
+- Frontend queda en http://localhost:5173
+- Para detener todo: Ctrl+C en cada terminal + docker compose down en otra
+
+
+
+
+MAPA COMPLETO DEL SISTEMA
+Los 3 Subsistemas de Usuario
+Subsistema	Quién lo usa	Cómo accede
+Sistema de Usuario	El veterinario	/dashboard/* con JWT (login/register)
+Sistema de Cliente	El dueño de la mascota	/cliente/* con código de acceso único
+Sistema de Administrador	Vos (el desarrollador)	/access_role/admin/developer/* con credenciales fijas
+Los 21 Subsistemas de Negocio
+┌─────────────────────────────────────────────────────────────────┐
+│                    SISTEMA DE USUARIO                           │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Auth (registro, login, Google OAuth, activación)            │
+│  2. Clientes (dueños de mascotas + código de acceso)            │
+│  3. Mascotas (pacientes, fotos en Cloudinary)                   │
+│  4. Consultas (wizard multi-step, diagnóstico, tratamiento)     │
+│  5. Insumos (stock, precios, presentaciones)                    │
+│  6. Procedimientos (catálogo con precios)                       │
+│  7. Caja (ingresos/egresos, estados pagado/pendiente)           │
+│  8. Tienda (venta directa sin consulta, wizard multi-step)      │
+│  9. Pagos (efectivo, transferencia, QR Mercado Pago)            │
+│ 10. Documentos (factura/prescripción PDF en Cloudinary)         │
+│ 11. Chat IA (RAG + streaming SSE, OpenAI/Gemini/Groq)           │
+│ 12. Suscripciones (planes mensual/semestral/anual, MP App 1)    │
+│ 13. Conexión MP propia (OAuth por tenant, MP App 2)             │
+│ 14. Comunidad (feed social entre veterinarias)                  │
+│ 15. Configuración (perfil, MP, plan, IVA, RAG)                  │
+├─────────────────────────────────────────────────────────────────┤
+│                    SISTEMA DE CLIENTE                            │
+│ 16. Portal del cliente (mis mascotas, facturas, prescripciones) │
+├─────────────────────────────────────────────────────────────────┤
+│                    SISTEMA DE ADMIN                              │
+│ 17. Admin (listar/bloquear tenants, backup manual, export CSV)  │
+├─────────────────────────────────────────────────────────────────┤
+│                    INFRAESTRUCTURA                               │
+│ 18. Workers RabbitMQ (6: emails, PDF, notif, MP, RAG, backups)  │
+│ 19. Crons (4: billing, expiry, reconciliación, backup semanal)  │
+│ 20. Middleware (RLS + Auth + Cuota RAG + CORS)                  │
+│ 21. Backups (Backblaze B2 + rclone)                             │
+└─────────────────────────────────────────────────────────────────┘
+Integraciones Externas
+Servicio	Para qué
+Mercado Pago App 1	Cobro de suscripciones al veterinario (Preapproval)
+Mercado Pago App 2	Conexión propia del veterinario para cobrar QR
+Cloudinary	Almacenamiento de PDFs (facturas, prescripciones)
+Mailjet	Emails transaccionales (7 templates)
+Backblaze B2	Backups de bases de datos
+OpenAI / Gemini / Groq	LLM para el chat RAG
+Google OAuth	Login con Google
+Cloudflare Tunnel	Exposición pública del backend en dev
+Sentence-Transformers	Embeddings locales (modelo all-MiniLM-L6-v2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+segunda explicacion:
+
+================================================================================
+ARQUITECTURA E INFRAESTRUCTURA DEL PROYECTO
+================================================================================
+
+El proyecto Veterinaria V2 está diseñado bajo un principio clave: CERO PUERTOS
+EXPUESTOS AL EXTERIOR. Todo el tráfico ingresa por una única puerta — Cloudflare
+Tunnel.
+
+DIAGRAMA DE FLUJO:
+
+  Tu navegador
+    │
+    ▼
+  Cloudflare (DNS + TLS + WAF + Rate Limiting)
+    │
+    ▼  (conexión cifrada, túnel saliente desde el VPS)
+  cloudflared (daemon en el VPS Contabo)
+    │
+    ▼
+  Caddy (reverse proxy interno, SIN TLS propio)
+    │
+    ├──► Frontend (archivos estáticos React via file_server)
+    │
+    └──► Backend FastAPI :8000
+           │
+           ├──► core_db (PostgreSQL + pgvector, RLS por tenant)
+           ├──► community_db (PostgreSQL, sin RLS)
+           ├──► Redis (4 bases lógicas: sesiones, borradores, caché IA, caché social)
+           └──► RabbitMQ (7 colas async: emails, PDFs, backups, webhooks MP, RAG, etc.)
+
+EN DESARROLLO la arquitectura es más simple — cloudflared apunta directo a
+localhost:8000 (FastAPI), sin Caddy. Caddy se introduce solo para Docker/producción.
+
+Las bases de datos y Redis/RabbitMQ NUNCA tienen puertos expuestos al host en
+producción (docker-compose.prod.yml los elimina con ports: []). Solo son accesibles
+desde dentro de la red interna de Docker.
+
+
+================================================================================
+CONTABO VPS — ACCESO SSH Y DESPLIEGUE
+================================================================================
+
+Sí, Contabo da acceso SSH root completo. Al comprar un VPS recibís:
+- Dirección IP pública
+- Usuario root
+- Contraseña (o podés configurar SSH keys)
+- Acceso al panel web (Customer Panel) donde podés reinstalar el OS, ver métricas, etc.
+
+Sí podés copiar el proyecto y ejecutar docker compose. El flujo sería:
+
+  # 1. Conectarte por SSH
+  ssh root@<IP_DEL_VPS>
+
+  # 2. Instalar Docker + rclone + cloudflared
+  sudo apt update && sudo apt install -y docker.io docker-compose-plugin rclone
+
+  # 3. Clonar el repositorio
+  cd /opt
+  git clone <tu-repo> veter.v2
+  cd veter.v2
+
+  # 4. Configurar .env con credenciales de PRODUCCIÓN
+  cp env.example .env
+  nano .env
+
+  # 5. Ejecutar deploy
+  docker compose --profile production up -d --build
+  docker compose exec backend alembic upgrade head
+  docker compose exec backend alembic -c community_alembic.ini upgrade head
+
+Contabo no es un PaaS managed — es un VPS raw con root. Funciona igual que un
+servidor Ubuntu que tengas en tu casa. Todo se hace por SSH + línea de comandos.
+
+
+================================================================================
+CLOUDFLARE TUNNEL — NO ES EFÍMERO
+================================================================================
+
+El túnel de Cloudflare NO es efímero. Es un recurso persistente que se configura
+una sola vez y queda corriendo permanentemente:
+
+- Se crea UNA SOLA VEZ en el dashboard de Cloudflare
+- Tiene un ID fijo permanente (CLOUDFLARE_TUNNEL_ID en .env)
+- Las credenciales viven en ~/.cloudflared/ como archivos JSON
+- El daemon cloudflared mantiene la conexión activa permanentemente
+- Si se cae, systemd lo reinicia automáticamente (Restart=always)
+
+CÓMO FUNCIONA INTERNAMENTE:
+1. cloudflared (corriendo en el VPS) abre una conexión SALIENTE a los servidores
+   de Cloudflare (no necesita puertos de entrada abiertos en el VPS)
+2. Cloudflare recibe las peticiones HTTPS de los usuarios en dev-api.artisandevs.site
+3. Las enruta a través del túnel hacia Caddy:80 (en el VPS)
+4. Caddy las distribuye al backend o frontend
+
+CONFIGURACIÓN DEL TÚNEL (una sola vez):
+
+  # Crear el túnel (una vez)
+  cloudflared tunnel create <nombre>
+
+  # Configurar ~/.cloudflared/config.yml
+  tunnel: 00cbc17e-2070-42b8-8a49-83728afd1273
+  credentials-file: /home/kscod/.cloudflared/00cbc17e-...json
+
+  ingress:
+    - hostname: dev-api.artisandevs.site
+      service: http://localhost:8000       # Dev: FastAPI directo
+    - service: http_status:404            # Catch-all OBLIGATORIO
+
+  # Routear DNS
+  cloudflared tunnel route dns <tunnel-id> <hostname>
+
+SERVICIO SYSTEMD EN PRODUCCIÓN:
+
+  sudo tee /etc/systemd/system/cloudflared.service > /dev/null << 'EOF'
+  [Unit]
+  Description=Cloudflare Tunnel
+  After=network.target
+
+  [Service]
+  Type=simple
+  ExecStart=/usr/local/bin/cloudflared tunnel --config /root/.cloudflared/config.yml run
+  Restart=always
+  RestartSec=5
+
+  [Install]
+  WantedBy=multi-user.target
+  EOF
+
+  sudo systemctl daemon-reload
+  sudo systemctl enable cloudflared
+  sudo systemctl start cloudflared
+
+COMANDOS ÚTILES:
+
+  cloudflared tunnel ingress validate   # Validar configuración
+  cloudflared tunnel list                # Ver túneles creados
+  cloudflared tunnel info <tunnel-id>    # Info de un túnel
+  journalctl -u cloudflared -f          # Logs del servicio
+
+
+================================================================================
+CONTABO — PRECIOS (NO HAY FREE TIER)
+================================================================================
+
+Contabo NO tiene free tier permanente. Los planes más barados (2026):
+
+  Plan            RAM     vCPU    Precio (24 meses)    Precio (mes a mes)
+  ──────────────  ──────  ──────  ──────────────────    ──────────────────
+  Cloud VPS 4     8 GB    4       €5.50/mes (~USD 6)   €7.50/mes
+  Cloud VPS 6     16 GB   6       €7.50/mes (~USD 8)   €10.00/mes
+  Cloud VPS 8     24 GB   8       €14/mes (~USD 15)    €18.00/mes
+
+A veces ofrecen el primer mes gratis como promo, pero no es permanente.
+
+Para este proyecto, un Cloud VPS 4 (€5.50/mes, 8GB RAM, 4 vCPU) es suficiente
+para arrancar — el stack completo de Docker consume ~2GB de RAM con todos los
+servicios corriendo.
+
+Características del VPS:
+- Acceso SSH root completo
+- Soporte para Docker (manual)
+- Ubuntu/Debian como OS
+- NVMe storage
+- Tráfico de entrada ilimitado, salida con política de "fair usage"
+- Panel web para reinstalar OS, ver métricas, gestionar backups
+
+
+================================================================================
+FLUJO GIT — RAMAS, COMMITS, ISSUES Y PRs
+================================================================================
+
+BRANCHING STRATEGY:
+
+  main (rama protegida — producción)
+    ├── feature/consulta-wizard (rama de desarrollo)
+    ├── feature/rag-chat
+    ├── fix/uuid-double-wrapping
+    └── ...
+
+- Las ramas de desarrollo se crean desde main
+- Se trabaja en la rama feature
+- Se crea un Pull Request hacia main
+- El PR activa el gate de E2E tests (Playwright)
+- Si los tests pasan, se puede mergear a main
+- Producción hace git pull origin main para deployar
+
+CI EN CADA PUSH (rama feature) — ci-push.yml:
+
+  Se dispara en CADA push a CUALQUIER rama:
+    ├── Backend Lint (ruff check)
+    ├── Backend Unit Tests (pytest)
+    ├── Frontend Lint (eslint)
+    └── Frontend Unit Tests (vitest)
+
+CI ANTES DE MERGE A MAIN — ci-e2e.yml:
+
+  Se dispara en PR hacia main:
+    └── Stack completo Docker → Playwright E2E tests
+        ├── test-registro-onboarding.spec.ts
+        ├── test-consulta-factura.spec.ts
+        ├── test-tienda-pago.spec.ts
+        ├── test-aislamiento-tenant.spec.ts
+        └── test-chat-ia.spec.ts
+
+  No se permite merge si los tests están en rojo.
+
+COMMITS:
+
+  No hay convención formal de mensajes (no Conventional Commits). Lo que sí hay
+  es un pre-commit hook (infra/githooks/pre-commit) que:
+  - Valida el JSON Schema de backlog.json, errors.log.json, y los ADRs
+  - Previene commitear archivos con JSON malformado
+
+GESTIÓN DE TAREAS:
+
+  Las tareas se trackean en docs/tasks/backlog.json (NO en GitHub Issues):
+
+    scripts/task.sh nueva "Título de la tarea"   # Crear tarea
+    scripts/task.sh cerrar TASK-XXX              # Cerrar (requiere tests listados)
+    scripts/task.sh listar                       # Listar todas
+
+  Las decisiones técnicas van en docs/decisions/ADR-XXX.json.
+  Los errores se registran en docs/errors/errors.log.json.
+  Todo se gestiona desde CLI, no desde GitHub Issues.
+
+DEPLOY ACTUAL:
+
+  Es manual. El flujo es:
+
+    # En el VPS por SSH:
+    cd /opt/veter.v2
+    scripts/ops/deploy.sh    # git pull + docker build + migrate + healthcheck
+
+  Falta implementar (registrado como TASK-117 en Sprint 12):
+  - Pipeline CI/CD que publique imágenes Docker a GHCR
+  - Deploy automático al VPS vía SSH desde GitHub Actions
+
+RESUMEN VISUAL DEL FLUJO COMPLETO:
+
+  Desarrollador crea feature/xyz
+    │
+    ▼  (push)
+  GitHub Actions: lint + unit tests (ci-push.yml)
+    │
+    ▼  (crea PR a main)
+  GitHub Actions: E2E tests contra stack Docker (ci-e2e.yml)
+    │
+    ▼  (tests pasan, merge a main)
+  Deploy manual en Contabo: scripts/ops/deploy.sh
+    │
+    ▼
+  Producción actualizada
+
+
+================================================================================
+PUERTOS Y RECURSOS EN PRODUCCIÓN
+================================================================================
+
+En docker-compose.prod.yml, TODOS los puertos se eliminan:
+
+  Servicio        Puertos expuestos    Nota
+  ──────────────  ──────────────────   ──────────────────────────────────
+  core_db         NINGUNO              Solo accesible internamente
+  community_db    NINGUNO              Solo accesible internamente
+  redis           NINGUNO              Solo accesible internamente
+  rabbitmq        NINGUNO              Solo accesible internamente
+  backend         NINGUNO              Solo accesible vía Caddy
+  frontend        NINGUNO              Assets servidos por Caddy
+  caddy           80, 443              Solo si NO se usa Cloudflare Tunnel
+
+Con Cloudflare Tunnel activo, NI SIQUIERA Caddy necesita puertos expuestos.
+El único puerto abierto en el VPS es el 22 (SSH).
+
+RESOURCE LIMITS (ya configurados):
+
+  Servicio        CPU       Memoria
+  ──────────────  ────────  ────────
+  core_db         1.0       512 MB
+  community_db    0.5       256 MB
+  redis           0.5       128 MB
+  rabbitmq        0.5       256 MB
+  backend         1.0       512 MB
+  frontend        0.5       256 MB
+  caddy           0.25      64 MB
+  ──────────────────────────────────
+  TOTAL                    ~2 GB
+

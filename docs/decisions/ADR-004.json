@@ -1,0 +1,15 @@
+{
+  "id": "ADR-004",
+  "fecha": "2026-06-21",
+  "titulo": "Backups: Backblaze B2 como almacenamiento offsite",
+  "estado": "aceptada",
+  "contexto": "Se necesita almacenamiento offsite para backups automaticos y manuales, sin incurrir en costos altos dado que el proyecto arranca con pocos usuarios.",
+  "decision": "Se usa Backblaze B2 (S3-compatible), con bucket privado y application key de permisos acotados (no master key). Backups cifrados e incrementales via restic/rclone, encolados en q.backups. La automatizacion del volcado (dump), compresion y sincronizacion hacia el bucket se realiza mediante rclone, configurada con credenciales restringidas (Application Key) y ejecutada via cronjobs semanales (cron-backup-weekly) o manual desde el admin.",
+  "consecuencias": [
+    "Positivas: tier gratuito de 10GB de entrada; S3-compatible (permite migrar a otro proveedor S3-compatible sin reescribir codigo); costo bajo a escala; almacenamiento externo altamente disponible; automatizacion centralizada mediante rclone; compatible con estandares de cifrado en reposo",
+    "Negativas: requiere tarjeta de credito si se supera el tier gratuito; dependencia de un proveedor externo adicional; requiere mantenimiento manual del script de rclone y monitoreo de los cronjobs; dependencia de una herramienta de terceros (rclone) instalada en el servidor"
+  ],
+  "alternativas": ["Contabo Object Storage", "MinIO self-hosted", "AWS S3 CLI", "Google Cloud Storage (GCS) SDK"],
+  "actores": ["@desarrollador", "@opencode"],
+  "nota": "Este ADR consolida y reemplaza ADR-010 (2026-06-22), que cubria el mismo tema con detalle de implementacion de rclone. Las consecuencias se unifican aqui."
+}

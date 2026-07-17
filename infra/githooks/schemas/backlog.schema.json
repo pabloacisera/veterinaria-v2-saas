@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["sprint", "tareas"],
+  "properties": {
+    "sprint": { "type": "string" },
+    "tareas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "titulo", "estado", "prioridad", "dependencias", "decisiones_relacionadas", "tests_relacionados"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^TASK-\\d{3}$" },
+          "titulo": { "type": "string" },
+          "estado": { "type": "string", "enum": ["pendiente", "en_curso", "en_revision", "completada", "cancelada"] },
+          "prioridad": { "type": "string", "enum": ["alta", "media", "baja"] },
+          "asignado": { "type": "string" },
+          "dependencias": { "type": "array", "items": { "type": "string" } },
+          "decisiones_relacionadas": { "type": "array", "items": { "type": "string" } },
+          "tests_relacionados": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

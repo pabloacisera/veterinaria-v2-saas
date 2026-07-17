@@ -1,0 +1,17 @@
+{
+  "id": "ADR-011",
+  "fecha": "2026-06-22",
+  "titulo": "Agregar campo iva_enabled a tabla companies como toggle de IVA",
+  "estado": "aceptada",
+  "contexto": "El modulo Tienda (TASK-016) requiere un toggle para activar/desactivar el calculo de IVA 21% en las ventas. Por defecto esta activado, pero el usuario debe poder desactivarlo desde configuracion general si su facturacion es interna.",
+  "decision": "Agregar columna booleana iva_enabled (default TRUE) directamente en la tabla companies, en lugar de crear una tabla separada de configuraciones. Esto evita un JOIN adicional en cada request de venta y mantiene simple lo simple. Si en el futuro hay mas de 5-6 settings generales, se migrara a una tabla company_settings.",
+  "consecuencias": [
+    "Positivas: cero JOINs adicionales para leer el toggle; schema simple; facil de mantener",
+    "Negativas: si crece el numero de settings generales, la tabla companies tendra muchas columnas de configuracion; requeriria refactor a tabla separada"
+  ],
+  "alternativas": [
+    "Tabla separada company_settings con clave-valor",
+    "Columna JSONB settings en companies"
+  ],
+  "actores": ["@opencode"]
+}
