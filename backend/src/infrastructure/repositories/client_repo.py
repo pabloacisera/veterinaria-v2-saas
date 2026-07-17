@@ -91,7 +91,7 @@ class ClientRepository(ClientRepositoryInterface):
         if not fields:
             return await self.find_by_id(client_id, company_id)
 
-        fields.append(f"updated_at = NOW()")
+        fields.append("updated_at = NOW()")
         values.extend([client_id, company_id])
 
         async with self.pool.acquire() as conn:

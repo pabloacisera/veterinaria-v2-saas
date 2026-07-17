@@ -14,7 +14,7 @@ from src.interfaces.schemas.chat import (
     ChatHistoryItem,
     ChatQuotaResponse,
 )
-from src.interfaces.middleware.rag_quota import get_company_cuit_and_plan, check_rag_quota, PLAN_LIMITS
+from src.interfaces.middleware.rag_quota import get_company_cuit_and_plan, PLAN_LIMITS
 
 router = APIRouter(prefix="/api/v1/chat", tags=["chat"])
 

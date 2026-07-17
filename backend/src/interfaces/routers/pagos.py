@@ -7,6 +7,7 @@ from src.application.use_cases.cash import CreateCashMovementUseCase
 from src.domain.entities.cash import CashMovement
 from src.infrastructure.di import get_container
 from src.infrastructure.repositories.tenant_mp_repo import TenantMpRepository
+from src.infrastructure.services.encryption_service import EncryptionService
 from src.infrastructure.services.mercadopago_service import MercadoPagoTenantService
 from src.interfaces.dependencies import get_company_id
 

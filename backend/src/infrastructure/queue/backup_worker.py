@@ -1,5 +1,4 @@
 import asyncio
-import json
 import logging
 import os
 from pathlib import Path
@@ -13,7 +12,6 @@ SCRIPT_PATH = Path(__file__).resolve().parents[3] / "scripts" / "backup-manual.s
 
 async def handle_backup_message(message):
     from src.infrastructure.di import get_container
-    payload = json.loads(message.body)
     container = await get_container()
     backup_repo = container.resolve(BackupRepository)
 

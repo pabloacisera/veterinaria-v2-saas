@@ -1,4 +1,3 @@
-import pytest
 from decimal import Decimal
 from src.uuid7 import uuid7
 

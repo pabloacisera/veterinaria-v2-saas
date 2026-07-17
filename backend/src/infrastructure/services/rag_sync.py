@@ -1,12 +1,6 @@
 import logging
 from uuid import UUID
 
-from src.domain.formatters import (
-    format_client_text,
-    format_consultation_text,
-    format_pet_text,
-    format_supply_text,
-)
 
 logger = logging.getLogger(__name__)
 

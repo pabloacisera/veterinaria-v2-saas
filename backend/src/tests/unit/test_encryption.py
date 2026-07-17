@@ -1,4 +1,3 @@
-import os
 import pytest
 from src.infrastructure.services.encryption_service import EncryptionService
 

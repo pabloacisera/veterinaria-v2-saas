@@ -1,4 +1,3 @@
-import pytest
 from src.uuid7 import uuid7
 
 from src.domain.entities.pet import Pet

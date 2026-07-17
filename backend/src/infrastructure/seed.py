@@ -1,5 +1,4 @@
 import asyncio
-import os
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -75,7 +74,7 @@ async def seed():
             procedure_id, company_id,
         )
 
-        print(f"Seed data created:")
+        print("Seed data created:")
         print(f"  Company:     {company_id}")
         print(f"  User:        {user_id}")
         print(f"  Client:      {client_id}")
