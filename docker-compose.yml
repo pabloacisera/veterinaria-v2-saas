@@ -151,6 +151,19 @@ services:
           cpus: "0.5"
           memory: 256M
 
+  cloudflared:
+    image: cloudflare/cloudflared:2026.7.2
+    container_name: vet-cloudflared
+    restart: unless-stopped
+    command: tunnel run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    environment:
+      - CLOUDFLARE_TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 128M
+
 volumes:
   core_db_data:
   community_db_data:
