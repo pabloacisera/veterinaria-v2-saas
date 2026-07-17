@@ -1,5 +1,3 @@
-from decimal import Decimal
-from uuid import UUID
 
 
 def format_client_text(name: str, surname: str, doc_number: str, email: str, address: str = None) -> str:

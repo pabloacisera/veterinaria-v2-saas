@@ -21,7 +21,7 @@ class TestChatSseContract:
         events.append("data: [DONE]\n\n")
 
         stream = "".join(events)
-        lines = [l for l in stream.strip().split("\n") if l]
+        lines = [line for line in stream.strip().split("\n") if line]
 
         assert len(lines) == 4
         assert lines[0] == 'data: {"token": "token1"}'

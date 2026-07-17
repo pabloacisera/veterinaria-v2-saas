@@ -2,7 +2,7 @@ from uuid import UUID
 
 import asyncpg
 
-from src.domain.entities.community import Comment, Like, Post
+from src.domain.entities.community import Comment, Post
 from src.domain.repositories.community_repo import CommunityRepository as CommunityRepositoryInterface
 from src.uuid7 import uuid7
 

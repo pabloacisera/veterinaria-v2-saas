@@ -51,7 +51,7 @@ class TestGetEmbeddingModel:
         monkeypatch.setenv("EMBEDDINGS_MODEL", "custom-model")
         get_embedding_model.cache_clear()
 
-        model = get_embedding_model()
+        get_embedding_model()
 
         mock_st.assert_called_once_with("custom-model")
 
@@ -60,6 +60,6 @@ class TestGetEmbeddingModel:
         monkeypatch.delenv("EMBEDDINGS_MODEL", raising=False)
         get_embedding_model.cache_clear()
 
-        model = get_embedding_model()
+        get_embedding_model()
 
         mock_st.assert_called_once_with("all-MiniLM-L6-v2")

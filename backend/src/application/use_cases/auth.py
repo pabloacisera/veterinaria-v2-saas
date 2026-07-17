@@ -1,8 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
-from datetime import datetime, timedelta, timezone
-
 from src.domain.entities.subscription import PlanType, Subscription, SubscriptionStatus
 from src.domain.entities.user import AuthMethod, User, UserRole
 from src.domain.value_objects import Email, Password

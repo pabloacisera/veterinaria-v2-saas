@@ -1,6 +1,5 @@
 import logging
 import os
-from datetime import datetime, timezone
 
 from mailjet_rest import Client
 

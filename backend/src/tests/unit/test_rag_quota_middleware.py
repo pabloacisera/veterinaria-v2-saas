@@ -1,9 +1,7 @@
-from datetime import datetime
 from unittest.mock import AsyncMock, patch
 
-import pytest
 
-from src.interfaces.middleware.rag_quota import check_rag_quota, PLAN_LIMITS
+from src.interfaces.middleware.rag_quota import check_rag_quota
 
 
 class TestCheckRagQuota:

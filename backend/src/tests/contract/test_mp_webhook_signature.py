@@ -1,7 +1,5 @@
 import hashlib
 import hmac
-import os
-import pytest
 
 
 def compute_signature(secret: str, data_id: str, request_id: str) -> str:

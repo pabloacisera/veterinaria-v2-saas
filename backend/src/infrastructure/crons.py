@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from src.infrastructure.db import get_pool
 from src.infrastructure.di import get_container
@@ -80,7 +80,6 @@ async def cron_subscription_expiry_check():
 
 
 async def cron_mp_pending_reconciliation():
-    container = await get_container()
     pool = await get_pool()
     async with pool.acquire() as conn:
         rows = await conn.fetch(

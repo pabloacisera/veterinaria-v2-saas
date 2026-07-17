@@ -18,20 +18,24 @@ export default defineConfig({
       use: { browserName: "chromium" },
     },
   ],
-  webServer: [
-    {
-      command: "cd ../backend && uvicorn src.main:app --host 0.0.0.0 --port 8000",
-      port: 8000,
-      url: `${BACKEND_URL}/api/v1/auth/register`,
-      reuseExistingServer: true,
-      timeout: 120_000,
-    },
-    {
-      command: "cd ../frontend && npx vite --port 5173",
-      port: 5173,
-      url: FRONTEND_URL,
-      reuseExistingServer: true,
-      timeout: 120_000,
-    },
-  ],
+  ...(process.env.CI
+    ? {}
+    : {
+        webServer: [
+          {
+            command: "cd ../backend && uvicorn src.main:app --host 0.0.0.0 --port 8000",
+            port: 8000,
+            url: `${BACKEND_URL}/api/v1/auth/register`,
+            reuseExistingServer: true,
+            timeout: 120_000,
+          },
+          {
+            command: "cd ../frontend && npx vite --port 5173",
+            port: 5173,
+            url: FRONTEND_URL,
+            reuseExistingServer: true,
+            timeout: 120_000,
+          },
+        ],
+      }),
 });

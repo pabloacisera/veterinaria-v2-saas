@@ -4,7 +4,6 @@ from uuid import UUID
 
 from src.infrastructure.di import get_container
 from src.application.use_cases.subscription import ProcessPlatformWebhookUseCase
-from src.application.use_cases.cash import UpdateMovementStatusUseCase
 
 logger = logging.getLogger(__name__)
 
@@ -28,9 +27,6 @@ async def handle_mp_webhook_message(message):
                 if payment_id:
                     from src.infrastructure.repositories.mp_webhook_repo import MpWebhookRepository
                     from src.infrastructure.repositories.cash_repo import CashRepository
-                    from src.infrastructure.services.mercadopago_service import MercadoPagoTenantService
-                    from src.infrastructure.repositories.tenant_mp_repo import TenantMpRepository
-                    from src.infrastructure.services.encryption_service import EncryptionService
 
                     webhook_repo = container.resolve(MpWebhookRepository)
                     if await webhook_repo.is_processed(payment_id):

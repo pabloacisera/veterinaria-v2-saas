@@ -49,7 +49,6 @@ describe("Button", () => {
     render(<Button loading>Loading</Button>);
     expect(screen.getByRole("button")).toBeDisabled();
     expect(screen.getByRole("button")).toContainHTML("svg");
-    ("<svg");
   });
 
   it("deshabilita el botón cuando disabled=true", () => {
