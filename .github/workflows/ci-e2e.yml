@@ -11,8 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Create .env from env.example
-        run: cp env.example .env
+      - name: Create .env from .env.example
+        run: cp .env.example .env
 
       - name: Docker Compose up
         run: |
