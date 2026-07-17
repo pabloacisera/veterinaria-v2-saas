@@ -1,0 +1,2363 @@
+{
+  "sprints": [
+    {
+      "nombre": "Sprint 1",
+      "tareas": [
+        "TASK-001",
+        "TASK-002",
+        "TASK-003",
+        "TASK-004",
+        "TASK-005",
+        "TASK-006",
+        "TASK-007",
+        "TASK-008"
+      ]
+    },
+    {
+      "nombre": "Sprint 2",
+      "nota_cierre": "TASK-021 (Documentos) se difiere a otro sprint porque requiere los flujos completos de Consulta y Tienda con UI para poder generar facturas/prescripciones. Sin las UI de esos módulos, no hay un proceso real que dispare la generación de documentos. El sprint cumple su objetivo: stack validado, frontend base con FSD, onboarding, y UI de Clientes/Mascotas.",
+      "tareas": [
+        "TASK-010",
+        "TASK-011",
+        "TASK-012",
+        "TASK-013",
+        "TASK-014",
+        "TASK-015",
+        "TASK-016",
+        "TASK-017",
+        "TASK-018",
+        "TASK-019",
+        "TASK-020",
+        "TASK-022"
+      ]
+    },
+    {
+      "nombre": "Sprint 3 — Frontend completion",
+      "objetivo": "Completar las UI faltantes (Insumos, Caja, Tienda, Consultas). TASK-021 (Documentos) queda pendiente para otro sprint.",
+      "tareas": [
+        "TASK-023",
+        "TASK-024",
+        "TASK-025",
+        "TASK-026"
+      ],
+      "nota_cierre": "Sprint 3 completado: UI de Insumos (TASK-023), Caja (TASK-024), Tienda (TASK-025) y Consultas (TASK-026) con wizards multi-step y CRUD completo. TASK-021 se difiere a otro sprint."
+    },
+    {
+      "nombre": "Sprint 4 — Frontend Testing",
+      "objetivo": "Instalar y configurar test runner (vitest + testing-library), escribir tests unitarios y de integración para todos los componentes y features existentes del frontend, y establecer cobertura mínima obligatoria para sprints futuros.",
+      "tareas": [
+        "TASK-027",
+        "TASK-028",
+        "TASK-029",
+        "TASK-030",
+        "TASK-031",
+        "TASK-032",
+        "TASK-033"
+      ],
+      "nota_cierre": "Sprint 4 completado: 139 tests pasando en 19 archivos de test. vitest + testing-library configurado. Tests unitarios para shared/ui (6 componentes, 44 tests), features/auth (4 archivos, 17 tests), features CRUD (clients/pets/supplies, 3 archivos, 16 tests), features operativas (cash/store/consultations api, 3 archivos, 18 tests). Tests de integración para SaleWizard (10 tests) y ConsultationWizard (14 tests). Smoke tests para 10 páginas (19 tests). Coverage mínimo 80% statements establecido."
+    },
+    {
+      "nombre": "Sprint 5 — Documentos, Queues y Email real",
+      "objetivo": "Cerrar TASK-021 (PDF en Cloudinary), levantar la infraestructura de mensajeria (workers RabbitMQ), activar Mailjet con templates reales y encolar embeddings del RAG. Todo lo que viene en sprints 6-9 depende de este sprint.",
+      "tareas": [
+        "TASK-021",
+        "TASK-034",
+        "TASK-035",
+        "TASK-036",
+        "TASK-059"
+      ]
+    },
+    {
+      "nombre": "Sprint 6 — Mercado Pago completo",
+      "objetivo": "El producto puede cobrar. App 1 (el desarrollador cobra a veterinarios via Preapproval), App 2 (veterinario cobra a sus clientes via OAuth + QR dinamico + webhooks), crons de billing/expiracion, UI de planes.",
+      "nota_cierre": "Sprint 6 completado: Implementacion completa de Mercado Pago (App 1 suscripciones de plataforma + App 2 checkout OAuth por tenant), crons de billing/expiry/reconciliacion, middleware de bloqueo por suscripcion vencida (HTTP 402), UI de planes, estado de suscripcion, conexion MP, selector de metodo de pago con QR en wizards de Consulta y Tienda, banner de advertencia en Dashboard.",
+      "tareas": [
+        "TASK-037",
+        "TASK-038",
+        "TASK-039",
+        "TASK-040",
+        "TASK-041"
+      ]
+    },
+    {
+      "nombre": "Sprint 7 — Agente de IA (RAG + Chat)",
+      "objetivo": "El diferenciador central del producto: agente que conoce la veterinaria. sentence-transformers + pgvector + LangChain + streaming SSE + cuota por plan.",
+      "nota_cierre": "Sprint 7 completado: RAG funcional con sentence-transformers (all-MiniLM-L6-v2, 384 dims) + pgvector + índice HNSW + RLS. Backfill de datos existentes. Chat endpoint con SSE streaming y LangChain (OpenAI/Gemini/Groq). Cuota por plan contada en Redis por CUIT (200/500/ilimitado). UI de chat completa con efecto maquina de escribir, markdown renderizado, historial e indicador de cuota. Tests de embeddings, chat, cuota, backfill y contrato SSE.",
+      "tareas": [
+        "TASK-042",
+        "TASK-043",
+        "TASK-044",
+        "TASK-045",
+        "TASK-046"
+      ]
+    },
+    {
+      "nombre": "Sprint 8 — Subsistemas Cliente y Comunidad",
+      "objetivo": "Portal del dueño de mascota (codigo unico, descarga de documentos) y mini red social entre veterinarias (community_db: posts, comentarios, likes).",
+      "nota_cierre": "Sprint 8 completado: Codigo de acceso del cliente generado automaticamente en primera consulta (12 chars, unico), endpoint de regeneracion manual, envio por email. Portal del cliente funcional (/cliente/acceso + /cliente/inicio) con JWT de solo lectura, visualizacion de mascotas, descarga de facturas y prescripciones, e info de pago pendiente. Backend comunidad completo sobre community_db con posts/comentarios/likes, soft-delete, flag invisible por compania. UI de comunidad operativa con feed, publicacion, comentarios, likes y badge 'Proximamente' en Mensajes Directos.",
+      "tareas": [
+        "TASK-047",
+        "TASK-048",
+        "TASK-049",
+        "TASK-050"
+      ]
+    },
+    {
+      "nombre": "Sprint 9 — Tests Backend + CI/CD + Produccion",
+      "objetivo": "Sellado tecnico antes del primer usuario real: tests backend completos (unit, integration, contract), GitHub Actions, E2E Playwright, backup real con B2+rclone, UI del Administrador y deploy en Contabo.",
+      "nota_cierre": "Sprint 9 completado: Tests backend (8 domain + 12 unit + 4 integration + 4 contract). GitHub Actions (ci-push + ci-e2e). E2E Playwright (6 specs). Backup B2 con worker q.backups, cron semanal, endpoints admin. Admin UI completa con login secreto, lista de companias, bloqueo, suscripcion gratuita, export CSV y panel de backups. Produccion: Dockerfiles multi-stage, Caddyfile.prod, deploy.sh, docker-compose.prod.yml.",
+      "tareas": [
+        "TASK-051",
+        "TASK-052",
+        "TASK-053",
+        "TASK-054",
+        "TASK-055",
+        "TASK-056",
+        "TASK-057",
+        "TASK-058"
+      ]
+    },
+    {
+      "nombre": "Sprint 10 — Hardening post-E2E",
+      "objetivo": "Corregir bugs descubiertos en la auditoría E2E manual: patrón UUID(UUID()), DI faltante, subscription no creada en registro, manejo de errores en MP, tests frontend rotos y documentación de env vars.",
+      "nota_cierre": "",
+      "tareas": [
+        "TASK-060",
+        "TASK-061",
+        "TASK-062",
+        "TASK-063",
+        "TASK-064",
+        "TASK-065",
+        "TASK-066",
+        "TASK-067",
+        "TASK-068",
+        "TASK-069"
+      ]
+    },
+    {
+      "nombre": "Sprint 11 — Hardening Arquitectura",
+      "objetivo": "Elevar puntuación general de backend y frontend de ~6/10 a mínimo 8/10 en layer separation, atomización, DI/API consistency. Migrar de Nginx a Caddy-only. Cerrar deuda técnica identificada en el architectural audit.",
+      "nota_cierre": "Sprint 11 completado: Abstract repos (ABCs) creados en domain/repositories/. Todos los use cases refactorizados para usar inyección de dependencias sin imports directos de infrastructure. document.py partido (InvoiceBuilder, PrescriptionBuilder a domain/services/). AccessCodeGenerator extraído a shared domain service. PaymentMethodSelector movido a shared/ui/. Steps de ConsultationWizard, SaleWizard y OnboardingWizard extraídos a componentes individuales. api.ts unificados (admin, client-portal, DocumentDownloadButton) para usar shared/lib/api. AuthContext creado en shared/lib/. Tipos inline movidos a entities/. Dockerfile.frontend build-stage-only, Caddyfile con file_server, docker-compose frontend sin servidor propio. entrypoint.sh con alembic upgrade head. validate-env.sh mejorado para checkear todas las vars de .env.example. ADR-006 actualizado. SPECS.md §2.9 ya refleja Caddy-only. TASK-076 diferida (admin.py 232 líneas no prioritaria). TASK-080/081 diferidas (coverage de tests no urgente).",
+      "tareas": [
+        "TASK-070",
+        "TASK-071",
+        "TASK-072",
+        "TASK-073",
+        "TASK-074",
+        "TASK-075",
+        "TASK-076",
+        "TASK-077",
+        "TASK-078",
+        "TASK-079",
+        "TASK-080",
+        "TASK-081",
+        "TASK-082",
+        "TASK-083",
+        "TASK-084",
+        "TASK-085",
+        "TASK-086",
+        "TASK-087",
+        "TASK-088",
+        "TASK-089",
+        "TASK-090",
+        "TASK-091",
+        "TASK-092",
+        "TASK-093",
+        "TASK-094",
+        "TASK-095",
+        "TASK-096"
+      ]
+    },
+    {
+      "nombre": "Sprint 12 — Pre-Production Hardening",
+      "objetivo": "Cerrado técnico antes del primer deploy a producción real. Seguridad, infraestructura, testing, deployment, monitoreo y documentación operacional.",
+      "tareas": [
+        "TASK-102",
+        "TASK-103",
+        "TASK-104",
+        "TASK-105",
+        "TASK-106",
+        "TASK-107",
+        "TASK-108",
+        "TASK-109",
+        "TASK-110",
+        "TASK-111",
+        "TASK-112",
+        "TASK-113",
+        "TASK-114",
+        "TASK-115",
+        "TASK-116",
+        "TASK-117",
+        "TASK-118",
+        "TASK-119",
+        "TASK-120",
+        "TASK-121",
+        "TASK-122",
+        "TASK-123",
+        "TASK-124",
+        "TASK-125",
+        "TASK-126",
+        "TASK-127"
+      ],
+      "nota_cierre": ""
+    }
+  ],
+  "tareas": [
+    {
+      "id": "TASK-001",
+      "titulo": "Inicializar monorepo: estructura de carpetas base segun SPECS.md seccion 2.1",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-002",
+      "titulo": "Configurar docker-compose.yml base: core_db (Postgres+pgvector), community_db, Redis, RabbitMQ, Caddy",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-001"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-001",
+        "ADR-002",
+        "ADR-003",
+        "ADR-006"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-003",
+      "titulo": "Implementar RLS en core_db: politica base + mecanismo SET LOCAL app.current_company_id",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-002"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-001"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-004",
+      "titulo": "Flujo de autenticacion: registro manual + Google OAuth + JWT access/refresh",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-003"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-005",
+      "titulo": "Validador de CUIT/DNI (funcion pura, modulo 11) en domain/",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/domain/tests/test_cuit.py"
+      ]
+    },
+    {
+      "id": "TASK-006",
+      "titulo": "Subsistema Administrador: login con credenciales fijas + flujo de reset por token-link",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-004"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-007",
+      "titulo": "Scripts de soporte: dev-up.sh, dev-down.sh, dev-reset-db.sh, seed-test-data.sh",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-002"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-008",
+      "titulo": "CLI de soporte para docs/: task.sh, decision.sh, error.sh + pre-commit hook de validacion de schema",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-001"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-010",
+      "titulo": "Setup de Alembic: configuracion inicial, migracion base (extension pgvector + esquema + politicas RLS), nunca SQL manual",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-002"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-001",
+        "ADR-002"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-011",
+      "titulo": "CRUD de Clientes: domain entity, use cases, repositorio, endpoints REST, validacion DNI/CUIT, unicidad por compañia",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-003"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/domain/tests/test_clients.py"
+      ]
+    },
+    {
+      "id": "TASK-012",
+      "titulo": "CRUD de Mascotas: domain entity, relacion con cliente (opcional), fotos (Cloudinary), busqueda/selector",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-011"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/domain/tests/test_pets.py"
+      ]
+    },
+    {
+      "id": "TASK-013",
+      "titulo": "Gestion de Insumos y Precios: domain entity, unidad base, stock, presentaciones, carga manual/xlsx",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-003"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/domain/tests/test_supplies.py"
+      ]
+    },
+    {
+      "id": "TASK-014",
+      "titulo": "Flujo de Consulta Medica multi-step: wizard con borrador en Redis, prescripcion y facturacion",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-012",
+        "TASK-013"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/domain/tests/test_consultations.py"
+      ]
+    },
+    {
+      "id": "TASK-015",
+      "titulo": "Modulo de Caja: ingresos/egresos, movimientos, estados pagado/pendiente, busqueda y filtros",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-014"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/domain/tests/test_cash.py"
+      ]
+    },
+    {
+      "id": "TASK-016",
+      "titulo": "Tienda: venta de insumos independiente de consulta, wizard multi-step, IVA configurable",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-013"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-011"
+      ],
+      "tests_relacionados": [
+        "backend/src/domain/tests/test_store.py"
+      ]
+    },
+    {
+      "id": "TASK-017",
+      "titulo": "Validar stack completo: Docker compose up, migraciones Alembic, seed data, smoke tests de todos los endpoints",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-007",
+        "TASK-010"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-018",
+      "titulo": "Setup frontend React + Feature-Sliced Design: Vite, Tailwind, ruteo, landing page + login/register UI",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-017"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-019",
+      "titulo": "Dashboard principal post-login + wizard de onboarding (plan, config, precios, primer cliente/mascota)",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-018"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-020",
+      "titulo": "UI de Clientes y Mascotas: listado, creacion, edicion, busqueda, soft-delete",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-019",
+        "TASK-011",
+        "TASK-012"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-021",
+      "titulo": "Generacion y versionado de documentos (factura/prescripcion PDF) en Cloudinary + tabla documentos_generados",
+      "descripcion": "Implementar el sistema de generacion de PDFs para facturas y prescripciones. Los documentos se generan una sola vez y se cachean en Cloudinary. Solo se regeneran si los datos que los originaron cambiaron (flag requiere_regeneracion). Incluye: migracion Alembic para tabla documentos_generados, worker para q.pdf-generation, logica de versionado, endpoint de descarga que sirve desde Cloudinary sin regenerar si no es necesario.",
+      "criterios_de_aceptacion": [
+        "Tabla documentos_generados con campos: id, tipo, entidad_origen_id, version, cloudinary_public_id, es_version_actual, requiere_regeneracion, generado_en",
+        "RLS aplicada sobre documentos_generados (company_id via entidad_origen)",
+        "Worker q.pdf-generation consume el mensaje, genera PDF con ReportLab/WeasyPrint y sube a Cloudinary bajo veterinaria.v2/{company_id}/{entity_id}/docs/",
+        "GET /api/v1/consultas/{id}/factura y /prescripcion sirven la URL de Cloudinary (sin regenerar si es_version_actual=true y requiere_regeneracion=false)",
+        "Al editar datos de una consulta/venta que afecten el documento, se setea requiere_regeneracion=true automaticamente",
+        "Al solicitar descarga con requiere_regeneracion=true, se encola regeneracion, se sube nueva version (version+1), la anterior pasa a es_version_actual=false",
+        "Migracion Alembic versionada, no SQL manual",
+        "Tests unitarios del use case de documentos (mock de Cloudinary y cola)"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-017",
+        "TASK-014",
+        "TASK-016"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/domain/tests/test_documents.py",
+        "backend/src/tests/integration/test_document_endpoints.py"
+      ],
+      "nota": "Diferida desde Sprint 2. Ahora los flujos de Consulta y Tienda estan completos con UI — las dependencias estan satisfechas."
+    },
+    {
+      "id": "TASK-022",
+      "titulo": "Activacion de cuenta por codigo de 6 digitos via email + Redis TTL",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-004",
+        "TASK-017",
+        "TASK-002"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-012"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-023",
+      "titulo": "UI de Insumos: listado, creacion, edicion, busqueda, gestion de stock",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-013",
+        "TASK-020"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-024",
+      "titulo": "UI de Caja: listado de movimientos, filtros, registro de ingreso/egreso, cambio de estado",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-015",
+        "TASK-020"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-025",
+      "titulo": "UI de Tienda: wizard multi-step de venta de insumos, seleccion de productos, resumen",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-016",
+        "TASK-023"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-026",
+      "titulo": "UI de Consultas: wizard multi-step con seleccion de paciente, procedimientos, insumos, prescripcion y facturacion",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-014",
+        "TASK-023",
+        "TASK-024"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-027",
+      "titulo": "Configurar vitest + testing-library: instalar dependencias, vitest.config.ts, setupTests, scripts test",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/vitest.config.ts",
+        "frontend/src/test/setup.ts"
+      ]
+    },
+    {
+      "id": "TASK-028",
+      "titulo": "Tests unitarios shared/ui: Button, Input, Card, Modal, Badge, Table (render, props, events, accessibility)",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-027"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/shared/ui/Button.test.tsx",
+        "frontend/src/shared/ui/Input.test.tsx",
+        "frontend/src/shared/ui/Card.test.tsx",
+        "frontend/src/shared/ui/Modal.test.tsx",
+        "frontend/src/shared/ui/Badge.test.tsx",
+        "frontend/src/shared/ui/Table.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-029",
+      "titulo": "Tests unitarios features/auth: LoginForm, RegisterForm, ActivateForm, api (login/register/activate flows)",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-027"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/auth/LoginForm.test.tsx",
+        "frontend/src/features/auth/RegisterForm.test.tsx",
+        "frontend/src/features/auth/ActivateForm.test.tsx",
+        "frontend/src/features/auth/api.test.ts"
+      ]
+    },
+    {
+      "id": "TASK-030",
+      "titulo": "Tests unitarios features CRUD: clients (ClientList, ClientForm, api), pets (PetList, PetForm, api), supplies (SupplyList, SupplyForm, api)",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-027"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/clients/api.test.ts",
+        "frontend/src/features/pets/api.test.ts",
+        "frontend/src/features/supplies/api.test.ts"
+      ]
+    },
+    {
+      "id": "TASK-031",
+      "titulo": "Tests unitarios features operativas: cash (CashMovementList, CashMovementForm, api), store (SaleWizard, api), consultations (ConsultationWizard, api)",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-027"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/cash/api.test.ts",
+        "frontend/src/features/store/api.test.ts",
+        "frontend/src/features/consultations/api.test.ts"
+      ]
+    },
+    {
+      "id": "TASK-032",
+      "titulo": "Tests de integración wizards: SaleWizard (flujo completo 4 pasos), ConsultationWizard (flujo completo 5 pasos)",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-027",
+        "TASK-030",
+        "TASK-031"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/store/SaleWizard.test.tsx",
+        "frontend/src/features/consultations/ConsultationWizard.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-033",
+      "titulo": "Tests de páginas + smoke: Landing, Login, Register, DashboardHome, DashboardClients, DashboardPets, DashboardInsumos, DashboardCaja, DashboardTienda, DashboardConsultas",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-027",
+        "TASK-028",
+        "TASK-030",
+        "TASK-031"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/pages/__smoke__.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-034",
+      "titulo": "Workers RabbitMQ: setup aio-pika, consumidores para q.emails, q.pdf-generation y q.notificaciones",
+      "descripcion": "Implementar la infraestructura de workers async con aio-pika. Crear el modulo infrastructure/queue/ con: conexion robusta a RabbitMQ (aio_pika.connect_robust), declaracion de colas durables, patron publisher/consumer reutilizable, y los tres workers iniciales del Sprint 5: email_worker (consume q.emails, llama a EmailService), pdf_worker (consume q.pdf-generation, genera y sube a Cloudinary), notification_worker (consume q.notificaciones, registra alertas internas). Los workers se levantan junto con FastAPI en el startup event.",
+      "criterios_de_aceptacion": [
+        "Modulo infrastructure/queue/ con publisher.py y consumer base reutilizable",
+        "email_worker: consume q.emails, usa EmailService.send() con template_id y variables, loguea error si falla pero no crashea el worker",
+        "pdf_worker: consume q.pdf-generation, llama al use case de documentos, sube a Cloudinary, actualiza documentos_generados",
+        "notification_worker: consume q.notificaciones, registra en tabla interna o loguea segun tipo (stock_bajo, suscripcion_vence)",
+        "Todos los workers son idempotentes: si el mensaje ya fue procesado, lo acknowledges sin reprocesar",
+        "El startup/shutdown de FastAPI levanta y baja los workers sin bloquear el event loop",
+        "Tests unitarios de cada worker con mock de RabbitMQ y de los servicios que llaman"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-021"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-003"
+      ],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_email_worker.py",
+        "backend/src/tests/unit/test_pdf_worker.py",
+        "backend/src/tests/unit/test_notification_worker.py"
+      ]
+    },
+    {
+      "id": "TASK-035",
+      "titulo": "Mailjet real: 7 templates en el panel + EmailService operativo con template_id constantes",
+      "descripcion": "Crear los 7 templates transaccionales en el panel de Mailjet (Dashboard → Transactional → My Templates). Reemplazar el EmailService actual (que usa HTML inline para activacion) por uno que usa TemplateID real y la Send API v3.1. Los IDs de template se guardan como constantes en el codigo (no en .env). Confirmar que los emails de activacion, codigo de cliente, reset admin, cambio de password, stock bajo, suscripcion por vencer y bienvenida llegan correctamente en sandbox de Mailjet.",
+      "criterios_de_aceptacion": [
+        "7 templates creados en Mailjet con los nombres y variables definidos en INTEGRATIONS.md seccion 5",
+        "Constantes TEMPLATE_* definidas en infrastructure/services/email_service.py",
+        "EmailService.send() usa mailjet v3.1, TemplateLanguage=True, manejo de errores con retry en q.emails",
+        "Flujo de activacion de cuenta actualizado para usar TEMPLATE_ACTIVACION_CUENTA real (codigo de 6 digitos en la variable del template)",
+        "Plan gratuito Mailjet: alerta en logs si se acerca al limite de 200 emails/dia",
+        "Tests unitarios de EmailService mockeando el cliente de Mailjet",
+        "Test de integracion (contract) que verifica la estructura del payload enviado a Mailjet sin llamadas reales"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-034"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_email_service.py",
+        "backend/src/tests/contract/test_mailjet_contract.py"
+      ]
+    },
+    {
+      "id": "TASK-036",
+      "titulo": "Worker q.rag-sync: encolar embedding al crear/modificar cliente, mascota, consulta e insumo",
+      "descripcion": "Implementar el productor de mensajes de RAG: cada vez que se crea o modifica un cliente, mascota, consulta o insumo, el use case correspondiente debe encolar un mensaje en q.rag-sync con el texto a embebir y el tipo/id de la entidad. El worker de q.rag-sync (a implementar en TASK-042) consumira esos mensajes. En este sprint solo se implementa el producer y la cola; el consumer/embeddings van en Sprint 7.",
+      "criterios_de_aceptacion": [
+        "Use cases de client, pet, consultation y supply encolan en q.rag-sync al hacer create/update (no al soft-delete)",
+        "Payload del mensaje: {company_id, entity_type, entity_id, text} donde text es la representacion textual del objeto para embebir",
+        "El encolado es fire-and-forget: si RabbitMQ no esta disponible, se loguea el error pero no se falla la operacion principal",
+        "Formato de texto por entidad: cliente (nombre, apellido, dni, email, direccion), mascota (nombre, raza, sexo, edad, observaciones), consulta (motivo, diagnostico, tratamiento, procedimientos), insumo (nombre, marca, descripcion, precio)",
+        "Tests unitarios verificando que el publisher es llamado con el payload correcto al ejecutar cada use case"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-034",
+        "TASK-011",
+        "TASK-012",
+        "TASK-013",
+        "TASK-014"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-002",
+        "ADR-003"
+      ],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_rag_sync_producer.py"
+      ]
+    },
+    {
+      "id": "TASK-037",
+      "titulo": "Suscripciones de plataforma (MP App 1): Preapproval plans, endpoint de suscripcion, worker mp-webhooks, idempotencia",
+      "descripcion": "Implementar el cobro recurrente del desarrollador a los veterinarios via Mercado Pago App 1. Incluye: crear los 3 planes de Preapproval (mensual $35.000, semestral $180.000, anual $420.000) en sandbox de MP, endpoint POST /api/v1/suscripciones/iniciar que retorna la init_point del plan elegido, webhook POST /api/v1/webhooks/mp/platform que encola en q.mp-webhooks, worker que procesa el webhook y actualiza el estado de suscripcion en core_db, tabla mp_webhook_events para idempotencia. Verificacion de firma del webhook con HMAC-SHA256.",
+      "criterios_de_aceptacion": [
+        "Tabla suscripciones con campos: id (UUIDv7), company_id, plan (mensual|semestral|anual), estado (activa|vencida|bloqueada|trial), inicio, fin, mp_preapproval_id, mp_plan_id",
+        "RLS sobre tabla suscripciones (company_id)",
+        "3 planes creados en MP sandbox, sus IDs guardados como constantes en el codigo",
+        "POST /api/v1/suscripciones/iniciar: recibe {plan} y retorna {init_point, preapproval_id}",
+        "Webhook /api/v1/webhooks/mp/platform: responde 200 en menos de 1 segundo, encola en q.mp-webhooks",
+        "Worker mp-webhooks platform: verifica firma HMAC, extrae payment_id, verifica idempotencia en mp_webhook_events, actualiza suscripcion",
+        "Tabla mp_webhook_events: id, payment_id (UNIQUE), source (platform|tenant), procesado_en",
+        "Migracion Alembic para todas las tablas nuevas",
+        "Tests unitarios del worker con mock de la API de MP",
+        "Test de contrato del webhook que verifica la firma HMAC"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-034"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_subscription_use_case.py",
+        "backend/src/tests/unit/test_mp_platform_worker.py",
+        "backend/src/tests/contract/test_mp_webhook_signature.py",
+        "backend/src/tests/integration/test_subscription_endpoints.py"
+      ]
+    },
+    {
+      "id": "TASK-038",
+      "titulo": "Crons de suscripcion: billing mensual, expiry-check, logica de bloqueo/gracia por plan vencido",
+      "descripcion": "Implementar los 3 crons definidos en SPECS §2.8 relacionados con suscripciones. Cada cron solo encola trabajo, no lo ejecuta directamente. cron-subscription-billing: encola el cobro recurrente para suscripciones activas cuyo proximo_cobro <= hoy. cron-subscription-expiry-check: marca como 'vencida' las suscripciones sin renovacion, aplica periodo de gracia de 3 dias antes de bloquear. La cuenta bloqueada (estado='bloqueada') no puede hacer login ni usar el sistema, pero sus datos se conservan. Notificacion por email 7 dias antes del vencimiento y al bloquearse.",
+      "criterios_de_aceptacion": [
+        "cron-subscription-billing: se ejecuta diariamente, encola en q.mp-webhooks el cobro de suscripciones que vencen ese dia",
+        "cron-subscription-expiry-check: se ejecuta diariamente, marca vencidas y bloqueadas segun reglas de gracia",
+        "Campo proximo_cobro en tabla suscripciones, actualizado automaticamente por el worker de MP al confirmar pago",
+        "Middleware de autenticacion rechaza con HTTP 402 si company.estado='bloqueada', con mensaje claro de suscripcion vencida",
+        "Email TEMPLATE_SUSCRIPCION_VENCE enviado 7 dias antes y al bloquearse (via q.emails)",
+        "Tests unitarios de la logica de bloqueo/gracia sin dependencias externas",
+        "Test de integracion del middleware de bloqueo"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-037"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_subscription_expiry.py",
+        "backend/src/tests/integration/test_subscription_middleware.py"
+      ]
+    },
+    {
+      "id": "TASK-039",
+      "titulo": "Checkout OAuth por tenant (MP App 2): flujo OAuth completo, tabla tenant_mp_credentials, cifrado con ENCRYPTION_KEY",
+      "descripcion": "Implementar el flujo OAuth de Mercado Pago por tenant (App 2). El veterinario conecta su propia cuenta de MP desde Configuracion. El backend genera la URL de autorizacion con state=company_id, el callback intercambia el code por el access_token del veterinario y lo guarda cifrado con Fernet (ENCRYPTION_KEY) en la tabla tenant_mp_credentials. Endpoints: GET /api/v1/mercadopago/oauth/iniciar, GET /api/v1/mercadopago/oauth/callback, GET /api/v1/mercadopago/oauth/estado (si ya tiene credenciales).",
+      "criterios_de_aceptacion": [
+        "Tabla tenant_mp_credentials segun definicion en INTEGRATIONS.md seccion 3 (id, company_id UNIQUE, access_token cifrado, refresh_token cifrado, token_expires_at, mp_user_id)",
+        "Cifrado Fernet correcto: encrypt/decrypt usando ENCRYPTION_KEY del .env",
+        "GET /api/v1/mercadopago/oauth/iniciar retorna {auth_url} con state=company_id",
+        "GET /api/v1/mercadopago/oauth/callback intercambia code, guarda credenciales cifradas, redirige al frontend con ?status=success",
+        "GET /api/v1/mercadopago/oauth/estado retorna {conectado: bool, mp_user_id: str|null}",
+        "El access_token NUNCA se devuelve en ninguna respuesta de API ni se loguea",
+        "Migracion Alembic para tenant_mp_credentials",
+        "Tests unitarios de encrypt/decrypt y del use case de OAuth",
+        "Test de contrato del flujo OAuth (mock del endpoint de token de MP)"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-034"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_mp_oauth_use_case.py",
+        "backend/src/tests/unit/test_encryption.py",
+        "backend/src/tests/contract/test_mp_oauth_contract.py",
+        "backend/src/tests/integration/test_mp_oauth_endpoints.py"
+      ]
+    },
+    {
+      "id": "TASK-040",
+      "titulo": "Checkout tenant: QR dinamico, transferencia/efectivo, webhook mp/tenant → actualizacion de caja, cron de reconciliacion",
+      "descripcion": "Implementar el cobro del veterinario a sus clientes usando el access_token de tenant_mp_credentials. Tres metodos de pago: efectivo (registra directamente como pagado), transferencia (registra pendiente, espera webhook), QR dinamico (crea orden en MP con external_reference=company_id, genera qr_data para mostrar en frontend). Webhook /api/v1/webhooks/mp/tenant identifica al tenant por external_reference, actualiza estado de caja. Cron cron-mp-pending-reconciliation: consulta la API de MP por pagos pending con mas de 24hs y los reconcilia.",
+      "criterios_de_aceptacion": [
+        "POST /api/v1/pagos/consulta/{consulta_id} y /api/v1/pagos/venta/{venta_id}: reciben {metodo: efectivo|transferencia|qr}, crean movimiento en caja, retornan {movimiento_id, qr_data?}",
+        "QR: se crea una orden MP con el access_token del tenant, external_reference=company_id, notification_url apunta al webhook de tenant",
+        "Webhook /api/v1/webhooks/mp/tenant: responde 200 inmediato, encola en q.mp-webhooks",
+        "Worker mp-webhooks tenant: obtiene el payment de MP, extrae external_reference (company_id), verifica idempotencia, actualiza caja a 'pagado'",
+        "cron-mp-pending-reconciliation: ejecuta diariamente, consulta pagos pending de mas de 24hs, reconcilia los aprobados",
+        "Tests unitarios del worker tenant y del caso de uso de pago con mock del SDK de MP",
+        "Test de contrato del webhook tenant"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-039"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_tenant_checkout_use_case.py",
+        "backend/src/tests/unit/test_mp_tenant_worker.py",
+        "backend/src/tests/contract/test_mp_tenant_webhook_contract.py",
+        "backend/src/tests/integration/test_checkout_endpoints.py"
+      ]
+    },
+    {
+      "id": "TASK-041",
+      "titulo": "UI de suscripcion/planes: eleccion de plan, estado activo, conectar Mercado Pago (tenant), metodo de pago en wizards",
+      "descripcion": "Pantallas del Sistema de Usuario relacionadas con pagos. (1) Pagina de planes: mostrar los 3 planes con precios, boton de suscribirse que redirige al init_point de MP. (2) Estado de suscripcion en Configuracion: plan actual, fecha de vencimiento, estado. (3) Conectar Mercado Pago en Configuracion: boton que inicia el OAuth, muestra estado conectado/desconectado. (4) Seleccion de metodo de pago en el step final del wizard de Consultas y Tienda: efectivo / transferencia / QR con visualizacion del codigo QR.",
+      "criterios_de_aceptacion": [
+        "Pagina /planes muestra los 3 planes con precios ARS y beneficios, boton de suscripcion llama a POST /api/v1/suscripciones/iniciar y redirige",
+        "Configuracion → Suscripcion: muestra plan, estado (activa/vencida/bloqueada), prox. vencimiento",
+        "Configuracion → Mercado Pago: boton 'Conectar' llama a GET /api/v1/mercadopago/oauth/iniciar, muestra estado actual",
+        "Step de pago en wizards: selector efectivo/transferencia/QR, si QR se muestra el qr_data como imagen QR (usar qrcode.react o libreria equivalente)",
+        "Si la suscripcion esta vencida, el dashboard muestra banner de advertencia con link a /planes",
+        "Tests de componentes: PlanCard, SubscriptionStatus, MercadoPagoConnect, PaymentMethodSelector",
+        "Tests de integracion: flujo completo de seleccion de plan hasta redirect a MP"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-037",
+        "TASK-038",
+        "TASK-040"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/subscriptions/PlanCard.test.tsx",
+        "frontend/src/features/subscriptions/SubscriptionStatus.test.tsx",
+        "frontend/src/features/subscriptions/MercadoPagoConnect.test.tsx",
+        "frontend/src/features/payments/PaymentMethodSelector.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-042",
+      "titulo": "Setup RAG: sentence-transformers (all-MiniLM-L6-v2, 384 dims), tabla rag_embeddings con indice HNSW, migracion Alembic, RLS",
+      "descripcion": "Implementar la infraestructura del sistema de embeddings. Incluye: migracion Alembic que habilita la extension pgvector (si no esta habilitada), crea la tabla rag_embeddings con columna vector(384), crea el indice HNSW (m=16, ef_construction=64) y aplica RLS con politica de aislamiento por company_id. Modulo infrastructure/rag/embeddings.py con get_embedding_model() cargado con lru_cache al inicio de FastAPI y generate_embedding(text) → list[float]. Worker consumer de q.rag-sync que llama a generate_embedding y hace upsert en rag_embeddings.",
+      "criterios_de_aceptacion": [
+        "Migracion Alembic: CREATE EXTENSION IF NOT EXISTS vector, tabla rag_embeddings segun INTEGRATIONS.md seccion 7, indice HNSW, RLS",
+        "get_embedding_model() usa lru_cache(maxsize=1), carga 'all-MiniLM-L6-v2', no descarga el modelo en cada request",
+        "generate_embedding(text) retorna lista de 384 floats",
+        "Worker q.rag-sync: consume mensajes, llama a generate_embedding, hace upsert en rag_embeddings (INSERT ... ON CONFLICT DO UPDATE)",
+        "RLS correcta: la politica usa company_id = current_setting('app.current_company_id')::UUID",
+        "VECTOR_DIMENSION=384 en .env (informar al desarrollador si no existe)",
+        "EMBEDDINGS_MODEL=all-MiniLM-L6-v2 en .env (informar al desarrollador si no existe)",
+        "Tests unitarios de generate_embedding (mock del modelo), del worker (mock de la DB)"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-036"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-002"
+      ],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_embeddings.py",
+        "backend/src/tests/unit/test_rag_sync_worker.py"
+      ]
+    },
+    {
+      "id": "TASK-043",
+      "titulo": "Ingesta inicial RAG: backfill de todos los datos existentes del tenant al activar el agente por primera vez",
+      "descripcion": "Cuando un tenant activa el agente de IA por primera vez (o manualmente desde configuracion), se deben embebir todos sus datos existentes. Implementar un endpoint POST /api/v1/rag/backfill que itera sobre todos los clientes, mascotas, consultas e insumos del tenant y encola un mensaje en q.rag-sync por cada entidad. El proceso es async (el endpoint retorna inmediatamente con un job_id), y el progreso puede consultarse via GET /api/v1/rag/backfill/{job_id}.",
+      "criterios_de_aceptacion": [
+        "POST /api/v1/rag/backfill: requiere autenticacion de tenant admin, encola todos los registros activos (no deleted_at), retorna {job_id, total_entidades}",
+        "El backfill no duplica embeddings: si una entidad ya tiene embedding vigente y no fue modificada, se saltea",
+        "GET /api/v1/rag/backfill/{job_id}: retorna {estado, procesadas, total, errores[]}",
+        "Configuracion de la empresa tiene campo rag_activado (booleano, false por defecto), que el usuario puede activar",
+        "Si rag_activado=false, el endpoint de chat retorna HTTP 403 con mensaje claro",
+        "Tests unitarios del use case de backfill (mock de repositorios y publisher)"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-042"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_rag_backfill_use_case.py",
+        "backend/src/tests/integration/test_rag_backfill_endpoint.py"
+      ]
+    },
+    {
+      "id": "TASK-044",
+      "titulo": "Endpoint de chat: LangChain + multiples LLMs (OpenAI/Gemini/Groq), respuesta streaming SSE, persistencia + cache Redis DB2",
+      "descripcion": "Implementar el endpoint central del agente de IA. POST /api/v1/chat (con streaming SSE). El flujo: (1) buscar contexto relevante en rag_embeddings por similitud coseno con la query del usuario, (2) construir el prompt con ese contexto + historial reciente de la conversacion (desde Redis DB2), (3) llamar al LLM configurado por el tenant via LangChain, (4) streamear la respuesta token a token via Server-Sent Events, (5) persistir la conversacion completa en tabla chat_conversations de core_db, (6) actualizar cache Redis DB2. El LLM configurado se lee de company.llm_provider y company.llm_model.",
+      "criterios_de_aceptacion": [
+        "Tabla chat_conversations: id, company_id, role (user|assistant), content, created_at. RLS aplicada.",
+        "GET /api/v1/chat/historial: retorna las ultimas N conversaciones del tenant",
+        "POST /api/v1/chat: acepta {query: str}, retorna SSE stream con chunks de texto",
+        "LangChain como capa de abstraccion: soporta OpenAI (ChatOpenAI), Gemini (ChatGoogleGenerativeAI), Groq (ChatGroq), seleccionable por company.llm_provider",
+        "Si el tenant no tiene datos (rag_embeddings vacio), el agente responde pero incluye en el prompt una instruccion de aclarar que responde sin contexto especifico de la empresa",
+        "Historial reciente: ultimos 10 intercambios, guardados en Redis DB2 con TTL 1 hora, clave rag:chat:{company_id}",
+        "Migracion Alembic para chat_conversations",
+        "Tests unitarios del use case de chat (mock de LangChain y rag_embeddings)",
+        "Test de contrato del endpoint SSE"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-042"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_chat_use_case.py",
+        "backend/src/tests/contract/test_chat_sse_contract.py",
+        "backend/src/tests/integration/test_chat_endpoint.py"
+      ]
+    },
+    {
+      "id": "TASK-045",
+      "titulo": "Cuota de requests al RAG: conteo por CUIT en Redis DB2, middleware de throttle por plan (200/500/ilimitado)",
+      "descripcion": "Implementar el rate limiting de negocio del agente de IA, contado por CUIT de la compania (no por user_id). La cuota se resetea mensualmente. Middleware FastAPI que intercepta POST /api/v1/chat y verifica el cupo antes de procesar. Si el cupo esta agotado, retorna HTTP 429 con el mensaje de cuota agotada y la fecha de reset. El middleware obtiene el CUIT del JWT del tenant activo y el plan de la tabla suscripciones.",
+      "criterios_de_aceptacion": [
+        "Clave Redis: rag:quota:{company_cuit}:{YYYY-MM}, TTL 31 dias, se incrementa en 1 por cada request al chat",
+        "Limites por plan: mensual=200, semestral=500, anual=-1 (ilimitado)",
+        "HTTP 429 con body {error: 'cuota_agotada', requests_usados, limite, reset_en: 'YYYY-MM-DD'} si cupo agotado",
+        "El middleware usa el CUIT de la compania, no el ID del usuario",
+        "GET /api/v1/chat/cuota: retorna {usado, limite, plan, reset_en} para mostrar en la UI",
+        "Si la suscripcion esta vencida/bloqueada, cuota = 0 (no se permite ningun request al chat)",
+        "Tests unitarios del middleware con mock de Redis y de la tabla de suscripciones"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-044",
+        "TASK-038"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_rag_quota_middleware.py",
+        "backend/src/tests/integration/test_chat_quota_enforcement.py"
+      ]
+    },
+    {
+      "id": "TASK-046",
+      "titulo": "UI de Chat: panel con efecto maquina de escribir, markdown renderizado, historial, indicador de cuota",
+      "descripcion": "Implementar la pagina de chat del Sistema de Usuario. El chat consume el endpoint SSE del backend y muestra la respuesta token a token (efecto maquina de escribir). Las respuestas del agente se renderizan como HTML procesando el markdown (usar marked o react-markdown). El panel lateral muestra el historial de conversaciones. El header del chat muestra la cuota restante del mes (ej: '47/200 requests usados'). Si la cuota esta agotada, el input se deshabilita y se muestra un mensaje con la fecha de reset.",
+      "criterios_de_aceptacion": [
+        "Pagina /dashboard/chat accesible desde el sidebar",
+        "El input de chat envia el mensaje y comienza a mostrar la respuesta en streaming (token a token, sin esperar la respuesta completa)",
+        "El markdown de la respuesta se renderiza como HTML (negrita, listas, codigo en bloque, etc.)",
+        "Panel lateral con historial de las ultimas 10 conversaciones, clickeable para releer",
+        "Indicador de cuota: '{usado}/{limite} requests este mes', con barra de progreso",
+        "Si cuota agotada: input deshabilitado, mensaje 'Cuota agotada. Se renueva el {fecha}'",
+        "Loading skeleton mientras llega el primer token",
+        "Tests de componentes: ChatInput, ChatMessage (markdown rendering), ChatQuotaBar, ChatHistoryPanel"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-044"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/chat/ChatInput.test.tsx",
+        "frontend/src/features/chat/ChatMessage.test.tsx",
+        "frontend/src/features/chat/ChatQuotaBar.test.tsx",
+        "frontend/src/features/chat/ChatHistoryPanel.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-047",
+      "titulo": "Codigo de acceso del cliente: generacion automatica en primera consulta, regeneracion manual, envio por Mailjet",
+      "descripcion": "Implementar la generacion automatica del codigo de acceso del cliente (ver SPECS §4.9). El codigo se genera la primera vez que una mascota de ese cliente genera una consulta. Minimo 12 caracteres alfanumericos, unico en toda la plataforma, vincula (company_id, client_id). Se guarda en la tabla clientes (campo access_code). El veterinario puede regenerarlo desde la ficha del cliente (genera uno nuevo e invalida el anterior). El envio va por Mailjet (TEMPLATE_CODIGO_CLIENTE) via q.emails.",
+      "criterios_de_aceptacion": [
+        "Campo access_code (VARCHAR 12, UNIQUE a nivel de plataforma) en tabla clientes, nullable (null hasta la primera consulta)",
+        "Al crear la primera consulta de una mascota con dueño: si el cliente no tiene access_code, generarlo automaticamente y enviarlo por email",
+        "Generacion: secrets.token_urlsafe(9)[:12] o similar, colision resuelta con retry hasta 3 intentos",
+        "POST /api/v1/clientes/{id}/regenerar-codigo: genera nuevo codigo, invalida el anterior, envia email, requiere rol admin del tenant",
+        "El codigo se muestra ofuscado en la UI de la ficha del cliente (no en claro), con boton 'Regenerar'",
+        "Tests unitarios de la logica de generacion y del use case",
+        "Test de integracion del endpoint de regeneracion"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-021",
+        "TASK-035"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-012"
+      ],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_access_code_generation.py",
+        "backend/src/tests/integration/test_access_code_endpoints.py"
+      ]
+    },
+    {
+      "id": "TASK-048",
+      "titulo": "Portal del cliente (subsistema B): acceso por codigo unico, visualizar/descargar facturas y prescripciones",
+      "descripcion": "Implementar el subsistema de acceso del dueño de mascota. Es una seccion separada del frontend (rutas /cliente/*), sin el sidebar del dashboard. El cliente ingresa su access_code en /cliente/acceso y accede a una vista de solo lectura de las facturas (pagadas y pendientes) y prescripciones de sus mascotas. Si hay facturación pendiente por QR/transferencia, muestra el QR o el alias/CBU para pagar.",
+      "criterios_de_aceptacion": [
+        "GET /api/v1/cliente/acceso: recibe {access_code}, retorna JWT de solo lectura del cliente (no del veterinario)",
+        "GET /api/v1/cliente/mis-mascotas: lista mascotas vinculadas al cliente, protegido por JWT de cliente",
+        "GET /api/v1/cliente/facturas: lista facturas (pagadas y pendientes) con link de descarga desde Cloudinary",
+        "GET /api/v1/cliente/prescripciones: lista prescripciones con link de descarga",
+        "Si factura pendiente por QR: incluye {qr_data, alias, cbu} en la respuesta",
+        "Frontend: pagina /cliente/acceso (formulario de codigo), pagina /cliente/inicio (lista de mascotas y documentos), diseno distinto al dashboard pero con la misma identidad visual",
+        "El JWT de cliente es de solo lectura: no puede crear ni modificar nada",
+        "Tests de integracion de los endpoints de cliente",
+        "Tests de componentes del portal: ClienteAcceso, ClienteInicio, ClienteFacturas"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-047"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/integration/test_client_portal_endpoints.py",
+        "frontend/src/features/client-portal/ClienteAcceso.test.tsx",
+        "frontend/src/features/client-portal/ClienteFacturas.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-049",
+      "titulo": "Backend Comunidad: entidades Post/Comment/Like en community_db, endpoints REST, flag invisible por compania",
+      "descripcion": "Implementar el backend del modulo de comunidad sobre community_db. Las entidades cruzan tenants (una veterinaria puede ver publicaciones de otra), por eso viven en community_db y no en core_db. El aislamiento es a nivel de query por company_id (no RLS de Postgres — community_db no tiene esa politica). Las compañias con invisible=true no publican ni son contactables. V1: publicaciones con texto e imagen opcional, comentarios, likes. Sin mensajes directos (Fase 2).",
+      "criterios_de_aceptacion": [
+        "Modelos en community_db: posts (id UUIDv7, company_id, contenido, imagen_url, created_at, deleted_at), comments (id, post_id, company_id, contenido, created_at, deleted_at), likes (id, post_id, company_id, created_at, UNIQUE post_id+company_id)",
+        "GET /api/v1/comunidad/posts: feed paginado (20 por pagina), excluye posts de companias con invisible=true",
+        "POST /api/v1/comunidad/posts: crea post, verifica que company.invisible=false",
+        "POST /api/v1/comunidad/posts/{id}/comentarios: agrega comentario",
+        "POST /api/v1/comunidad/posts/{id}/like: toggle like (idempotente)",
+        "Soft-delete en posts y comentarios (deleted_at)",
+        "Las dos bases (core_db y community_db) nunca se tocan en la misma transaccion (ver SKILLS.md regla 5)",
+        "Migracion separada para community_db",
+        "Tests unitarios de los use cases de comunidad (mock de repositorios community_db)"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/integration/test_community_endpoints.py"
+      ]
+    },
+    {
+      "id": "TASK-050",
+      "titulo": "UI Comunidad: feed de publicaciones, crear post, comentar, dar like, badge Proximamente en Mensajes Directos",
+      "descripcion": "Implementar la pantalla de comunidad del Sistema de Usuario. Feed de publicaciones de todas las veterinarias (excepto las invisibles). El usuario puede crear publicaciones con texto y foto opcional (subida a Cloudinary). Puede comentar y dar like. El sidebar de mensajes directos muestra un badge 'Proximamente' pero no es funcional (Fase 2).",
+      "criterios_de_aceptacion": [
+        "Pagina /dashboard/comunidad accesible desde el sidebar",
+        "Feed paginado con scroll infinito o boton 'Cargar mas'",
+        "PostCard: muestra nombre de la veterinaria, contenido, imagen (si tiene), cantidad de likes y comentarios, boton de like con toggle visual",
+        "Modal o pagina de detalle del post con los comentarios",
+        "Formulario de nuevo post: texto + imagen opcional (preview antes de subir)",
+        "Sidebar o tab 'Mensajes Directos' con badge 'Proximamente' (disabled, no clickeable)",
+        "Si company.invisible=true en configuracion, el usuario ve la comunidad pero no puede publicar ni comentar (con mensaje explicativo)",
+        "Tests de componentes: PostCard, PostFeed, CreatePostForm, CommentList"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-049"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/community/PostCard.test.tsx",
+        "frontend/src/features/community/PostFeed.test.tsx",
+        "frontend/src/features/community/CreatePostForm.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-051",
+      "titulo": "Tests unitarios backend: use cases de auth, client, pet, supply, cash, consultation, store (pytest, sin DB real)",
+      "descripcion": "Escribir los tests unitarios faltantes del backend. Las carpetas backend/src/tests/unit/ e integration/ estan vacias. Esta tarea cubre la capa de use cases: cada use case debe tener tests que verifican la logica de negocio con mocks de los repositorios y servicios. Sin levantar Docker ni base de datos real. Usar pytest con unittest.mock o pytest-mock.",
+      "criterios_de_aceptacion": [
+        "Test de auth: registro (manual y Google), login, refresh, logout, activacion por codigo",
+        "Test de client: crear con CUIT valido/invalido, duplicado, soft-delete, busqueda",
+        "Test de pet: crear con/sin dueño, limite de 3 fotos, soft-delete",
+        "Test de supply: crear, actualizar stock (unidad base), stock insuficiente",
+        "Test de cash: crear movimiento, cambiar estado, filtros",
+        "Test de consultation: wizard multi-step, borrador en Redis, generar prescripcion/factura",
+        "Test de store: wizard multi-step, calculo IVA on/off, stock descontado al confirmar",
+        "Cobertura minima del 80% en la capa application/ medida con pytest-cov",
+        "Los tests corren con 'scripts/test-unit.sh' sin ninguna dependencia externa"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-001"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-052",
+      "titulo": "Tests de integracion backend: endpoints REST con httpx + DB de test, fixtures, seed de prueba",
+      "descripcion": "Escribir los tests de integracion del backend: levantan FastAPI en modo test con una base de datos de Postgres dedicada (usando las variables de .env.test.local). Se usan fixtures de pytest para crear y limpiar datos entre tests. Cada modulo principal tiene su archivo de tests de integracion que verifica el comportamiento end-to-end del endpoint (HTTP request → DB → HTTP response), incluyendo RLS (que un tenant no puede ver datos de otro).",
+      "criterios_de_aceptacion": [
+        "Configuracion de pytest para levantar FastAPI con DB de test (pytest-asyncio, httpx.AsyncClient)",
+        "Fixtures: crear compania de test, usuario de test, JWT de test, datos seed de prueba",
+        "Tests de integracion para: auth (registro/login/activate), clients (CRUD + RLS), pets (CRUD), supplies (CRUD + stock), cash (CRUD), consultations (crear + steps), stores (crear + completar), admin (login + operaciones)",
+        "Test de RLS: verificar que tenant A no puede ver datos de tenant B aunque haga requests validos",
+        "Las variables de test (DB URL, etc.) vienen de .env.test.local, nunca del .env real",
+        "Los tests corren con 'scripts/test-integration.sh'"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-051"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/integration/test_rls_isolation.py"
+      ]
+    },
+    {
+      "id": "TASK-053",
+      "titulo": "Tests de contrato (mocks de terceros): Mercado Pago, Mailjet, Cloudinary — sin llamadas reales",
+      "descripcion": "Implementar los tests de contrato que verifican que el sistema interactua correctamente con los servicios externos sin hacer llamadas reales. Se usan mocks/stubs que simulan las respuestas de la API de cada servicio. Esto permite detectar breaking changes en la integracion sin depender de conectividad ni de credenciales validas en CI.",
+      "criterios_de_aceptacion": [
+        "Contract test MP platform: verifica que el payload de Preapproval tiene todos los campos requeridos por la API de MP",
+        "Contract test MP tenant: verifica el payload de creacion de orden QR y el formato del webhook incoming",
+        "Contract test Mailjet: verifica que el payload enviado a Send API v3.1 tiene la estructura correcta (Messages, TemplateID, TemplateLanguage, Variables)",
+        "Contract test Cloudinary: verifica que los parametros de upload (folder, public_id, resource_type, overwrite) son correctos",
+        "Contract test Google OAuth: verifica el flujo de intercambio de code por token",
+        "Todos los contract tests usan responses.mock o httpretty para interceptar llamadas HTTP sin llegar a la red",
+        "Los contract tests corren junto con los de integracion en 'scripts/test-integration.sh'"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-035",
+        "TASK-040"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/contract/test_mailjet_contract.py",
+        "backend/src/tests/contract/test_cloudinary_contract.py",
+        "backend/src/tests/contract/test_google_oauth_contract.py"
+      ]
+    },
+    {
+      "id": "TASK-054",
+      "titulo": "GitHub Actions: Workflow 1 (unit+integration en cada push), Workflow 2 (e2e antes de merge a main), coverage report",
+      "descripcion": "Implementar los dos workflows de CI definidos en SPECS §10.3. Workflow 1 (.github/workflows/ci-push.yml): se dispara en cada push a cualquier rama, corre backend unit tests (pytest) y frontend unit tests (vitest), sube el reporte de coverage. Workflow 2 (.github/workflows/ci-e2e.yml): se dispara en pull request hacia main, levanta el stack completo con docker-compose y corre los tests e2e de Playwright. Ambos workflows fallan si algun test falla (no se mergea con tests en rojo).",
+      "criterios_de_aceptacion": [
+        ".github/workflows/ci-push.yml: trigger on push, steps: checkout, setup Python + Node, install deps backend y frontend, correr pytest (unit), correr vitest, subir coverage a codecov o artefacto del workflow",
+        ".github/workflows/ci-e2e.yml: trigger on pull_request (branches: main), steps: checkout, docker compose up (stack completo), esperar healthcheck, correr Playwright, docker compose down",
+        "Los secrets de CI (OPENAI_API_KEY, etc.) se configuran en GitHub Secrets, no en archivos commiteados",
+        "El workflow usa .env.test.local para las variables de test (commiteado como .env.test.local.example en el repo)",
+        "Badge de CI en README.md",
+        "Los workflows fallan claramente si hay tests en rojo, con output legible"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-051",
+        "TASK-052"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        ".github/workflows/ci-push.yml",
+        ".github/workflows/ci-e2e.yml"
+      ]
+    },
+    {
+      "id": "TASK-055",
+      "titulo": "E2E Playwright full-stack: flujos criticos (registro → onboarding → consulta → factura → pago → descarga PDF)",
+      "descripcion": "Implementar los tests end-to-end con Playwright sobre el stack completo (frontend + backend + DB + colas). Los tests viven en tests/e2e-full-stack/. Se prioriza el flujo de negocio critico: un nuevo veterinario se registra, activa su cuenta, completa el onboarding, carga un cliente, una mascota, hace una consulta, genera la factura, la paga y la descarga. Un segundo test verifica el aislamiento entre tenants.",
+      "criterios_de_aceptacion": [
+        "test-registro-onboarding.spec.ts: registro → activacion por codigo → onboarding → dashboard",
+        "test-consulta-factura.spec.ts: crear cliente → mascota → consulta → prescripcion → factura → descarga PDF",
+        "test-tienda-pago.spec.ts: insumos → venta en tienda → pago efectivo → movimiento en caja",
+        "test-aislamiento-tenant.spec.ts: dos tenants distintos no pueden ver datos del otro",
+        "test-chat-ia.spec.ts: enviar pregunta al chat, verificar que responde (mock del LLM en test)",
+        "Los tests usan la DB de test (docker-compose con perfil test), no la de desarrollo",
+        "Playwright configurado en playwright.config.ts con baseURL del frontend de test",
+        "Los tests corren con 'scripts/test-e2e.sh'"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-054"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "tests/e2e-full-stack/test-registro-onboarding.spec.ts",
+        "tests/e2e-full-stack/test-consulta-factura.spec.ts",
+        "tests/e2e-full-stack/test-tienda-pago.spec.ts",
+        "tests/e2e-full-stack/test-aislamiento-tenant.spec.ts",
+        "tests/e2e-full-stack/test-chat-ia.spec.ts"
+      ]
+    },
+    {
+      "id": "TASK-056",
+      "titulo": "Backup real funcional: script backup.sh con rclone+B2 operativo, worker q.backups, cron-backup-weekly",
+      "descripcion": "Implementar el sistema de backup completo. El script scripts/backup.sh ya existe pero debe ser funcional con rclone real. El worker de q.backups ejecuta el script, loguea el resultado. El cron semanal encola el job. El admin puede disparar un backup manual via la UI. Incluye configuracion de rclone para B2 con las variables del .env y politica de retencion de 30 dias en el panel de B2.",
+      "criterios_de_aceptacion": [
+        "scripts/backup.sh: pg_dump de core_db y community_db, compresion gzip, sync a B2 con rclone --fast-list, limpieza de temporales, log de exito/fracaso",
+        "Worker q.backups: ejecuta scripts/backup.sh via subprocess, captura stdout/stderr, loguea en tabla backups_log (id, tipo: auto|manual, estado: ok|error, mensaje, ejecutado_en)",
+        "cron-backup-weekly: se ejecuta cada domingo a las 3am, encola en q.backups",
+        "POST /api/v1/admin/backup/manual: requiere autenticacion de admin, encola en q.backups, retorna {job_id}",
+        "GET /api/v1/admin/backup/historial: lista los ultimos 10 backups con estado",
+        "Tabla backups_log con migracion Alembic",
+        "rclone.conf generado programaticamente si no existe, usando B2_KEY_ID y B2_APPLICATION_KEY del .env",
+        "Tests unitarios del worker (mock de subprocess)"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-034"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-004",
+        "ADR-010"
+      ],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_backup_worker.py",
+        "backend/src/tests/integration/test_backup_endpoints.py"
+      ]
+    },
+    {
+      "id": "TASK-057",
+      "titulo": "Subsistema Administrador UI: ver usuarios/planes, bloquear por CUIT, suscripcion gratuita, backup manual, exportar con pandas",
+      "descripcion": "Implementar la interfaz del subsistema Administrador (acceso oculto por /access_role/admin/developer). Pantallas: (1) Lista de tenants con plan, estado, CUIT, fecha de vencimiento. (2) Detalle de tenant: bloquear/desbloquear, otorgar suscripcion gratuita por N dias. (3) Backups: historial y boton de backup manual. (4) Exportar: descargar CSV/XLSX de usuarios y suscripciones generado con pandas en el backend.",
+      "criterios_de_aceptacion": [
+        "GET /api/v1/admin/companias: lista paginada con filtros por estado (activa/vencida/bloqueada) y plan",
+        "POST /api/v1/admin/companias/{id}/bloquear y /desbloquear: cambia estado y envia email de notificacion",
+        "POST /api/v1/admin/companias/{id}/suscripcion-gratuita: recibe {dias}, extiende la suscripcion sin cobro",
+        "GET /api/v1/admin/exportar/companias: genera y retorna CSV con pandas (columns: cuit, nombre, plan, estado, inicio, fin, requests_usados)",
+        "Frontend /access_role/admin/developer: login con credenciales fijas, ruta no enlazada publicamente",
+        "UI: tabla de tenants con acciones inline, modal de detalle, seccion de backups",
+        "Tests de integracion de los endpoints admin (autenticacion, permisos)"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-038",
+        "TASK-056"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/integration/test_admin_endpoints.py",
+        "frontend/src/features/admin/AdminCompanyList.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-058",
+      "titulo": "Produccion en Contabo: Docker Compose prod, Caddy configurado, cloudflared en prod, Postgres sin puertos expuestos, validate-env.sh en CI",
+      "descripcion": "Preparar y validar el stack de produccion en el VPS Contabo. Incluye: Dockerfile optimizado para backend (multi-stage), Caddyfile de produccion (auto_https off, reverse proxy a backend:8000 y frontend:80), docker-compose para produccion (sin puertos de Postgres/Redis/RabbitMQ expuestos al host), cloudflared como servicio systemd apuntando al puerto de Caddy, script de deploy (scripts/deploy.sh), y validacion de variables de entorno en CI antes del deploy.",
+      "criterios_de_aceptacion": [
+        "infra/Dockerfile.backend: multi-stage (builder + runtime), sin secrets en la imagen",
+        "infra/Dockerfile.frontend: build estatico de Vite + servido por Nginx alpine",
+        "infra/Caddyfile.prod: auto_https off, reverse_proxy /api/* backend:8000, reverse_proxy /* frontend:80",
+        "docker-compose.prod.yml: todos los servicios internos sin 'ports' expuestos al host (solo redes internas de Docker)",
+        "scripts/deploy.sh: pull de la imagen, docker compose up -d --build, migraciones Alembic, smoke test de health endpoint",
+        "scripts/validate-env.sh verifica que todas las variables requeridas del .env.example estan seteadas, falla con lista de las faltantes",
+        "validate-env.sh corre en el workflow de CI antes del deploy",
+        "README.md actualizado con instrucciones de deploy y de primer setup en un VPS nuevo"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-054"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-005",
+        "ADR-006"
+      ],
+      "tests_relacionados": [
+        "scripts/validate-env.sh",
+        "scripts/deploy.sh"
+      ]
+    },
+    {
+      "id": "TASK-059",
+      "titulo": "UI de descarga de documentos (factura/prescripcion PDF) en Consultas y Tienda",
+      "descripcion": "Agregar botones de descarga de factura y prescripcion en las UIs de Consulta (TASK-026) y Tienda (TASK-025), que consumen los endpoints implementados en TASK-021. En el detalle de la consulta/venta, mostrar un boton 'Descargar Factura' y (si aplica) 'Descargar Prescripcion' que obtienen la URL del PDF desde el backend y la abren/descargan. Incluir indicador de estado (generando/listo) y skeleton loading mientras el worker de PDF procesa.",
+      "criterios_de_aceptacion": [
+        "Pagina de detalle de Consulta: boton 'Descargar Factura' si la consulta tiene procedimientos/insumos facturables, boton 'Descargar Prescripcion' si tiene tratamiento",
+        "Pagina de detalle de Tienda: boton 'Descargar Factura' en la venta completada",
+        "Al hacer clic: si el documento ya existe (es_version_actual=true), descarga directa desde Cloudinary; si requiere regeneracion, muestra loading hasta que el worker termina",
+        "Estado 'generando...' con spinner mientras el worker de q.pdf-generation procesa el PDF",
+        "Si el PDF falla, mostrar mensaje de error con opcion de reintentar",
+        "Tests de componentes: DocumentDownloadButton (loading, success, error states)",
+        "Tests de integracion: flujo de clic → llamada al endpoint → descarga"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-021",
+        "TASK-026",
+        "TASK-025"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/documents/DocumentDownloadButton.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-060",
+      "titulo": "Auditoría y fix de patrón UUID(UUID()) en use cases",
+      "descripcion": "En store.py y consultation.py, los campos client_id/procedure_id/supply_id llegan como UUID object desde Pydantic pero se vuelven a pasar por UUID() causando AttributeError. Se parchearon los casos conocidos. Pendiente: auditoría con grep para encontrar todos los casos restantes en application/use_cases/.",
+      "criterios_de_aceptacion": [
+        "grep -rn 'UUID(data' src/application/ no debe mostrar falsos positivos",
+        "StoreSaleUseCase acepta client_id como string o UUID",
+        "AddProcedureUseCase acepta procedure_id como string o UUID",
+        "AddSupplyUseCase acepta supply_id como string o UUID"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-061",
+      "titulo": "Subscription auto-creada al registrar compañía",
+      "descripcion": "RegisterUserUseCase no creaba una Subscription al registrar, por lo que el trial nunca comenzaba. GoogleAuthUseCase tampoco. Se agregó subscription_repo al constructor y se crea Subscription(trial, 15 días) post-registro. GoogleAuthUseCase queda pendiente.",
+      "criterios_de_aceptacion": [
+        "Al registrar un nuevo usuario, la tabla subscriptions tiene una fila con company_id, plan=mensual, status=trial, end_date=+15 días",
+        "GET /api/v1/suscripciones/estado devuelve start_date y end_date reales (no null)",
+        "GoogleAuthUseCase también crea subscription"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-062",
+      "titulo": "GrantFreeSubscription no falla si no hay subscription",
+      "descripcion": "GrantFreeSubscriptionUseCase.admin.py lanzaba ValueError si la compañía no tenía subscription. Se modificó para crear una Subscription(activa) automáticamente si no existe, en vez de fallar.",
+      "criterios_de_aceptacion": [
+        "POST /access_role/admin/developer/companias/{id}/suscripcion-gratuita funciona aunque la compañía no tenga subscription",
+        "Crea la subscription con plan=mensual, status=activa y la extiende por N días"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-061"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-063",
+      "titulo": "Registrar repositorios faltantes en DI container",
+      "descripcion": "ConsultationRepository, CashRepository, StoreRepository, ProcedureRepository y SupplyRepository se instanciaban pero no se registraban en el container, causando None al resolverlos. Esto afectaba a client_portal.py (facturas, prescripciones) y cualquier otro router que los necesitara.",
+      "criterios_de_aceptacion": [
+        "GET /api/v1/cliente/facturas no da 500",
+        "GET /api/v1/cliente/prescripciones no da 500",
+        "Todos los repositorios creados en create_container() están registrados con container.register()"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-064",
+      "titulo": "Imports faltantes en consultations.py",
+      "descripcion": "El router consultations.py no importaba AddProcedureItem ni AddSupplyItem, causando 500 al agregar procedimientos/insumos a una consulta.",
+      "criterios_de_aceptacion": [
+        "POST /api/v1/consultations/{id}/procedures funciona",
+        "POST /api/v1/consultations/{id}/supplies funciona"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-065",
+      "titulo": "Timeout en conexión RabbitMQ de worker_manager.py",
+      "descripcion": "aio_pika.connect_robust() no tenía timeout, causando que el servidor se colgara indefinidamente si RabbitMQ no estaba disponible. Se agregó asyncio.wait_for con 10s. Además se agregó flag DISABLE_WORKERS=1 para desarrollo.",
+      "criterios_de_aceptacion": [
+        "Si RabbitMQ no responde en 10s, el worker_manager lanza TimeoutError en vez de colgarse",
+        "Con DISABLE_WORKERS=1, los workers/crons no arrancan"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-066",
+      "titulo": "Manejo de error en suscripciones/iniciar sin MP credentials",
+      "descripcion": "POST /api/v1/suscripciones/iniciar devuelve 500 cuando Mercado Pago no responde (MP credentials no configuradas). KeyError: 'id' en subscription.py:40 al acceder a preapproval['id']. Se necesita validación temprana y error amigable.",
+      "criterios_de_aceptacion": [
+        "Si faltan credenciales MP, devolver 400 con mensaje claro (no 500)",
+        "Si MP devuelve error, capturarlo y devolver error descriptivo",
+        "Documentar qué env vars de MP se requieren en .env.example"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-067",
+      "titulo": "Corregir tests frontend ConsultationWizard (3 fallas)",
+      "descripcion": "Tres tests en ConsultationWizard.test.tsx fallan porque buscan un heading 'Confirmar consulta' que no existe en el DOM. El wizard salta del paso Pago directamente a completar, sin pasar por una pantalla de confirmación. Los tests esperan stepHeading('Confirmar consulta') después de navegar desde Insumos.",
+      "criterios_de_aceptacion": [
+        "Los 3 tests corrigen su expectativa al heading correcto del step actual",
+        "O el wizard agrega un paso de confirmación entre Pago y completar",
+        "npm run test pasa sin fallas en ConsultationWizard.test.tsx"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/consultations/ConsultationWizard.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-068",
+      "titulo": "Corregir test frontend DocumentDownloadButton (1 falla)",
+      "descripcion": "DocumentDownloadButton.test.tsx falla porque anchor.download es undefined en vez de 'mi-factura.pdf'. El botón 'Descargar factura' no genera un anchor con download attribute al hacer click. Se debe revisar el handler del botón.",
+      "criterios_de_aceptacion": [
+        "Al hacer click en 'Descargar factura', se crea un anchor <a> con download='mi-factura.pdf' en el DOM",
+        "npm run test pasa sin fallas en DocumentDownloadButton.test.tsx"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/documents/DocumentDownloadButton.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-069",
+      "titulo": "Configurar y documentar env vars faltantes para administración y MP",
+      "descripcion": "Varias variables de entorno necesarias no están documentadas en .env.example ni tienen valores por defecto: SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD (para login admin), MP_* credentials (para Mercado Pago), MP_OAUTH_WEBHOOK_URL. También falta validación en validate-env.sh.",
+      "criterios_de_aceptacion": [
+        ".env.example incluye SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD con comentarios",
+        ".env.example incluye todas las MP_* vars con comentarios",
+        "validate-env.sh verifica que no falten estas vars en CI",
+        "README.md menciona cómo generar/configurar cada una"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "scripts/validate-env.sh"
+      ]
+    },
+    {
+      "id": "TASK-070",
+      "titulo": "Crear abstract repository interfaces en domain/repositories/ (Protocols/ABCs)",
+      "descripcion": "El domain layer no tiene interfaces abstractas para repositorios. Crear directorio domain/repositories/ con Protocols/ABCs para cada repositorio (ClientRepository, PetRepository, SupplyRepository, ConsultationRepository, DocumentRepository, CompanyRepository, UserRepository, PaymentRepository, SubscriptionRepository, ChatRepository, CommunityRepository, BackupRepository, AdminRepository). Cada interfaz debe definir métodos abstractos que los repositorios concretos en infrastructure/repositories/ deben implementar. Esto permite que los use cases dependan de abstracciones y no de infraestructura directa.",
+      "criterios_de_aceptacion": [
+        "domain/repositories/ contiene un Protocol o ABC por cada repositorio concreto existente",
+        "Cada interfaz define tipos abstractos para métodos (Create*, Update*, Find*, Delete*, etc.)",
+        "No hay imports de infrastructure/ en domain/repositories/",
+        "Los repositorios concretos heredan/implementan las interfaces definidas"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-071",
+      "titulo": "Refactorizar chat.py — inyectar dependencias en vez de imports directos de infraestructura",
+      "descripcion": "chat.py importa directamente de infrastructure/services/ y infrastructure/repositories/. Refactorizar para recibir dependencias por constructor/inyección, usando las nuevas interfaces abstractas de domain/repositories/.",
+      "criterios_de_aceptacion": [
+        "ChatUseCase no importa directamente de src.infrastructure.*",
+        "Todas las dependencias se reciben por constructor",
+        "El DI container se actualiza para inyectar las dependencias correctas"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-070"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-072",
+      "titulo": "Refactorizar rag.py — inyectar dependencias en vez de imports directos de infraestructura",
+      "descripcion": "rag.py importa directamente de infrastructure/services/. Refactorizar para inyección de dependencias vía constructor.",
+      "criterios_de_aceptacion": [
+        "RagUseCase no importa directamente de src.infrastructure.*",
+        "Todas las dependencias se reciben por constructor",
+        "El DI container se actualiza"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-070"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-073",
+      "titulo": "Refactorizar use cases restantes con imports de infraestructura (subscription, backup, client, consultation, pet, supply)",
+      "descripcion": "Los siguientes use cases importan infraestructura directo: subscription.py, backup.py, client.py, consultation.py, pet.py, supply.py. Refactorizar cada uno para usar interfaces abstractas e inyección de dependencias.",
+      "criterios_de_aceptacion": [
+        "Ninguno de los 6 use cases importa directamente de src.infrastructure.*",
+        "Todos reciben dependencias por constructor",
+        "El DI container se actualiza para todos"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-070"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-074",
+      "titulo": "Eliminar lazy imports del pattern 'from src.infrastructure.services...' en use cases",
+      "descripcion": "Varios use cases usan lazy imports dentro de métodos para evitar circular imports. Eliminar este patrón reemplazándolo por inyección de dependencias vía constructor.",
+      "criterios_de_aceptacion": [
+        "No hay imports dentro de métodos de use cases que importen de src.infrastructure.*",
+        "Todas las dependencias se declaran en el constructor y se inyectan desde el container"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-070"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-075",
+      "titulo": "Split document.py (260 líneas) — extraer builders de factura",
+      "descripcion": "document.py tiene 260 líneas combinando lógica de facturas, prescripciones y regeneración. Extraer builders específicos (InvoiceBuilder, PrescriptionBuilder) a archivos separados en application/use_cases/ o domain/services/.",
+      "criterios_de_aceptacion": [
+        "document.py se reduce a <100 líneas como orquestador",
+        "InvoiceBuilder y PrescriptionBuilder están en archivos separados",
+        "Los tests existentes siguen pasando sin modificaciones mayores"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-076",
+      "titulo": "Split admin.py (232 líneas) — extraer lógica compartida de listado/export",
+      "descripcion": "admin.py tiene 232 líneas con lógica de listado de compañías, export CSV y gestión de backups. Extraer el export CSV y la lógica de listado paginado a servicios separados.",
+      "criterios_de_aceptacion": [
+        "admin.py se reduce a <100 líneas como orquestador",
+        "AdminListService y AdminExportService están en archivos separados",
+        "Los tests existentes siguen pasando"
+      ],
+      "estado": "diferida",
+      "prioridad": "baja",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-077",
+      "titulo": "Extraer generación de código de acceso duplicado en shared domain service",
+      "descripcion": "La lógica de generación de código de acceso (12 chars, único) está duplicada en varios use cases. Extraer a un domain service compartido (AccessCodeGenerator) en domain/services/.",
+      "criterios_de_aceptacion": [
+        "AccessCodeGenerator existe en domain/services/ como función/Clase pura sin dependencias externas",
+        "Todos los use cases que generan códigos de acceso usan AccessCodeGenerator",
+        "No hay generación de código duplicada en use cases"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-078",
+      "titulo": "Registrar MarkDocumentForRegenerationUseCase en DI container",
+      "descripcion": "MarkDocumentForRegenerationUseCase existe pero no está registrado en src/infrastructure/di.py. Agregar su registro para que pueda ser inyectado en los routers que lo necesitan.",
+      "criterios_de_aceptacion": [
+        "MarkDocumentForRegenerationUseCase está registrado en el DI container",
+        "Los routers existentes lo reciben por inyección en vez de instanciarlo manualmente"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-070"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-079",
+      "titulo": "Mover MercadoPagoTenantService y EncryptionService a DI container (hoy creados inline en pagos.py)",
+      "descripcion": "En pagos.py, MercadoPagoTenantService y EncryptionService se crean inline con new. Moverlos al DI container e inyectarlos en los use cases que los necesitan.",
+      "criterios_de_aceptacion": [
+        "MercadoPagoTenantService está registrado en el DI container",
+        "EncryptionService está registrado en el DI container",
+        "pagos.py recibe ambas dependencias por inyección"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-070"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-080",
+      "titulo": "Aumentar cobertura de tests unitarios para use cases que no cubren todos los branches",
+      "descripcion": "Varios use cases tienen tests que no cubren todos los branches (éxito, error, casos edge). Identificar y agregar tests faltantes para cada use case priorizado.",
+      "criterios_de_aceptacion": [
+        "Cobertura de branches >= 80% en use cases core (auth, clients, pets, consultations, documents)",
+        "Cada método público de cada use case tiene al menos un test de éxito y uno de error",
+        "Los tests usan mocks de las nuevas interfaces abstractas"
+      ],
+      "estado": "diferida",
+      "prioridad": "baja",
+      "asignado": "",
+      "dependencias": [
+        "TASK-070"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-081",
+      "titulo": "Tests de integración para flujos críticos faltantes",
+      "descripcion": "Identificar y agregar tests de integración para flujos críticos que hoy no tienen cobertura: registro completo con creación de suscripción, ciclo de pago MP completo, generación de documentos con Cloudinary, flujo RAG con embeddings.",
+      "criterios_de_aceptacion": [
+        "Test de integración para flujo de registro + suscripción",
+        "Test de integración para webhook MP",
+        "Test de integración para generación de documentos",
+        "Test de integración para RAG backfill"
+      ],
+      "estado": "diferida",
+      "prioridad": "baja",
+      "asignado": "",
+      "dependencias": [
+        "TASK-070"
+      ],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-082",
+      "titulo": "Mover PaymentMethodSelector de features/payments/ a shared/ui/",
+      "descripcion": "PaymentMethodSelector es usado por ConsultationWizard y SaleWizard, que están en otros features. Moverlo a shared/ui/ para eliminar cross-feature import.",
+      "criterios_de_aceptacion": [
+        "PaymentMethodSelector está en shared/ui/ o shared/ui/payments/",
+        "ConsultationWizard y SaleWizard importan desde shared/",
+        "payments/ ya no exporta PaymentMethodSelector"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-083",
+      "titulo": "Refactorizar ConsultationWizard (632 líneas) — extraer 6 step components individuales",
+      "descripcion": "ConsultationWizard tiene 632 líneas con 6 pasos inline. Extraer cada paso a su propio componente en features/consultations/steps/. El wizard debe ser un orquestador que renderiza el step activo.",
+      "criterios_de_aceptacion": [
+        "Cada paso es un componente separado en features/consultations/steps/",
+        "ConsultationWizard se reduce a <150 líneas como orquestador",
+        "Los tests existentes siguen pasando",
+        "La funcionalidad es idéntica"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-084",
+      "titulo": "Refactorizar SaleWizard (418 líneas) — extraer 5 step components individuales",
+      "descripcion": "SaleWizard tiene 418 líneas con 5 pasos inline. Extraer cada paso a su propio componente en features/store/steps/.",
+      "criterios_de_aceptacion": [
+        "Cada paso es un componente separado en features/store/steps/",
+        "SaleWizard se reduce a <120 líneas como orquestador",
+        "Los tests existentes siguen pasando",
+        "La funcionalidad es idéntica"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-085",
+      "titulo": "Refactorizar OnboardingWizard (314 líneas) — extraer 4 step components individuales",
+      "descripcion": "OnboardingWizard tiene 314 líneas con 4 pasos inline. Extraer cada paso a su propio componente en features/onboarding/steps/.",
+      "criterios_de_aceptacion": [
+        "Cada paso es un componente separado en features/onboarding/steps/",
+        "OnboardingWizard se reduce a <100 líneas como orquestador",
+        "Los tests existentes siguen pasando",
+        "La funcionalidad es idéntica"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-086",
+      "titulo": "Unificar client-portal/api.ts para usar shared/lib/api.ts en vez de su propio HTTP client",
+      "descripcion": "features/client-portal/api.ts tiene su propio HTTP client duplicando la lógica de shared/lib/api.ts. Refactorizar para usar el API client centralizado.",
+      "criterios_de_aceptacion": [
+        "client-portal/api.ts no define headers, base URL ni manejo de errores propio",
+        "Todas las llamadas HTTP en client-portal usan shared/lib/api.ts",
+        "La funcionalidad es idéntica"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-087",
+      "titulo": "Unificar admin/api.ts para usar shared/lib/api.ts en vez de su propio HTTP client",
+      "descripcion": "features/admin/api.ts tiene su propio HTTP client duplicando la lógica de shared/lib/api.ts. Refactorizar para usar el API client centralizado.",
+      "criterios_de_aceptacion": [
+        "admin/api.ts no define headers, base URL ni manejo de errores propio",
+        "Todas las llamadas HTTP en admin usan shared/lib/api.ts",
+        "La funcionalidad es idéntica"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-088",
+      "titulo": "Refactorizar DocumentDownloadButton para usar shared/lib/api.ts en vez de raw fetch",
+      "descripcion": "DocumentDownloadButton usa raw fetch directo. Refactorizar para usar el API client centralizado shared/lib/api.ts para descarga de documentos.",
+      "criterios_de_aceptacion": [
+        "DocumentDownloadButton no usa fetch directo",
+        "Toda comunicación HTTP usa shared/lib/api.ts",
+        "La funcionalidad de descarga es idéntica"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-089",
+      "titulo": "Crear AuthContext para evitar token checks duplicados en páginas",
+      "descripcion": "Cada página verifica el token JWT manualmente (redirect a login si no existe). Crear un AuthContext en shared/lib/ o app/ que centralice la lógica de autenticación y exponga un hook useAuth().",
+      "criterios_de_aceptacion": [
+        "AuthContext existe y expone useAuth() con user, isAuthenticated, login, logout",
+        "Todas las páginas usan useAuth() en vez de checkear token manualmente",
+        "El token check en páginas existentes se reemplaza por el contexto"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-090",
+      "titulo": "Mover tipos inline de admin/client-portal a entities/",
+      "descripcion": "admin/ y client-portal/ definen tipos TypeScript inline que deberían estar en entities/. Mover Company, Backup, PaymentInfo, ClientAccess, etc. a sus respectivos archivos en entities/.",
+      "criterios_de_aceptacion": [
+        "No hay tipos de dominio definidos inline en admin/ o client-portal/",
+        "entities/ contiene todos los tipos compartidos",
+        "Las importaciones se actualizan para apuntar a entities/"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-091",
+      "titulo": "Modificar Dockerfile.frontend — cambiar de nginx:alpine a solo build stage para que Caddy sirva estáticos",
+      "descripcion": "Hoy Dockerfile.frontend usa nginx:alpine para servir los estáticos. Como Caddy reemplazó a Nginx (ADR-006), cambiar para que solo tenga el build stage de node y los assets se copien a Caddy o a un volume compartido.",
+      "criterios_de_aceptacion": [
+        "Dockerfile.frontend no usa nginx:alpine",
+        "El build stage produce los assets en /app/dist o similar",
+        "Caddy puede servir los estáticos desde el directorio de build"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [
+        "ADR-006"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-092",
+      "titulo": "Actualizar Caddyfile y Caddyfile.prod — agregar file_server para estáticos, eliminar reverse_proxy a frontend",
+      "descripcion": "Hoy Caddy hace reverse_proxy al frontend en puerto 80/5173. Configurar file_server para servir los estáticos del frontend directamente, eliminando la dependencia de Nginx/frontend server.",
+      "criterios_de_aceptacion": [
+        "Caddyfile sirve estáticos con file_server desde el directorio de build del frontend",
+        "Caddyfile.prod hace lo mismo para producción",
+        "No hay reverse_proxy apuntando al frontend",
+        "El reverse_proxy al backend se mantiene"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-091"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-006"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-093",
+      "titulo": "Actualizar docker-compose.yml — frontend service solo build stage, sin server propio",
+      "descripcion": "El service frontend en docker-compose.yml no debe correr un servidor (nginx o node). Debe ser solo un build stage que produce los assets. Los assets se sirven via Caddy.",
+      "criterios_de_aceptacion": [
+        "Frontend service no expone puertos",
+        "Frontend service no tiene command/entrypoint de servidor",
+        "Los assets estáticos están disponibles para Caddy (multi-stage build o volume)"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [
+        "TASK-091"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-006"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-094",
+      "titulo": "Agregar entrypoint con migraciones Alembic automáticas al backend",
+      "descripcion": "Hoy el backend no ejecuta migraciones automáticamente al iniciar. Agregar un entrypoint script que ejecute 'alembic upgrade head' antes de arrancar uvicorn en producción.",
+      "criterios_de_aceptacion": [
+        "Entrypoint script ejecuta alembic upgrade head antes de uvicorn",
+        "Si la migración falla, el container no arranca (fail fast)",
+        "Solo se ejecuta en producción (no en desarrollo local)"
+      ],
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-095",
+      "titulo": "Actualizar SPECS.md §2.9 para reflejar arquitectura Caddy-only (sin Nginx)",
+      "descripcion": "SPECS.md §2.9 (Arquitectura de Red) aún menciona Nginx como reverse proxy. Actualizar para reflejar que Caddy es el único reverse proxy/servidor web, y que Cloudflare Tunnel provee TLS.",
+      "criterios_de_aceptacion": [
+        "§2.9 no menciona Nginx",
+        "§2.9 describe correctamente Caddy sirviendo estáticos + reverse proxy a backend",
+        "§2.9 menciona Cloudflare Tunnel para TLS/HTTPS",
+        "Cualquier otra sección que mencione Nginx se actualiza"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-091",
+        "TASK-092"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-006"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-096",
+      "titulo": "Verificar y actualizar ADR-006 si es necesario",
+      "descripcion": "ADR-006 documenta la decisión de reemplazar Nginx por Caddy. Verificar que refleje correctamente el estado actual (Caddy sirviendo estáticos + reverse proxy) y actualizar si falta detalle sobre file_server o la eliminación total de Nginx.",
+      "criterios_de_aceptacion": [
+        "ADR-006 refleja que Caddy sirve estáticos con file_server",
+        "ADR-006 refleja que Nginx fue eliminado completamente",
+        "ADR-006 menciona Cloudflare Tunnel para TLS"
+      ],
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [
+        "TASK-091",
+        "TASK-092"
+      ],
+      "decisiones_relacionadas": [
+        "ADR-006"
+      ],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-097",
+      "titulo": "Mover Dockerfiles a backend/ y frontend/ + copiar alembic/ en imagen Docker",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/Dockerfile",
+        "frontend/Dockerfile"
+      ]
+    },
+    {
+      "id": "TASK-098",
+      "titulo": "Corregir puertos en scripts/dev-up.sh (5444/5435)",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "scripts/dev-up.sh"
+      ]
+    },
+    {
+      "id": "TASK-099",
+      "titulo": "Organizar scripts: mover ruido a scripts/utils/ + crear Makefile",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "Makefile",
+        "README.md"
+      ]
+    },
+    {
+      "id": "TASK-100",
+      "titulo": "Migrar refresh token de localStorage a httpOnly cookie + Secure flag",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/auth/LoginForm.test.tsx",
+        "frontend/src/features/auth/api.test.ts"
+      ]
+    },
+    {
+      "id": "TASK-101",
+      "titulo": "Split admin.py — extraer list/export/backup a servicios separados",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/integration/test_admin_endpoints.py"
+      ]
+    },
+    {
+      "id": "TASK-102",
+      "titulo": "Configurar rate limiting en Cloudflare (borde anti-flood)",
+      "descripcion": "Configurar reglas de rate limiting en el dashboard de Cloudflare para proteger la API contra flood genérico. Definir umbrales por endpoint (api/ y no-api/) y configurar la acción (block, challenge, managed challenge).",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-103",
+      "titulo": "Rotar todas las credenciales/secrets para producción (no reusar las de dev)",
+      "descripcion": "Generar nuevos JWT_SECRET, JWT_REFRESH_SECRET, ENCRYPTION_KEY, MP_* tokens, MAILJET keys, CLOUDINARY keys, B2 keys, GOOGLE_CLIENT_SECRET, AFIPSDK_ACCESS_TOKEN. Actualizar .env del servidor sin tocar el .env local.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-104",
+      "titulo": "Verificar HTTPS/TLS: Caddy auto_https o Cloudflare Tunnel TLS termination",
+      "descripcion": "Confirmar que el TLS está terminado correctamente. En producción con Cloudflare Tunnel, TLS se termina en Cloudflare. Verificar que Caddy no intenta configurar su propio TLS (auto_https off en Caddyfile.prod).",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-105",
+      "titulo": "Auditar CSP headers y CORS restringido en Caddyfile.prod",
+      "descripcion": "Verificar que Content-Security-Policy está configurado en Caddyfile.prod y que CORS_ORIGINS apunta al dominio de producción real (no localhost).",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-106",
+      "titulo": "Confirmar backups periódicos de volúmenes Docker (core_db_data, etc.)",
+      "descripcion": "Verificar que los named volumes de Docker (core_db_data, community_db_data, redis_data, rabbitmq_data) se preservan entre restarts. Documentar procedimiento de backup de volúmenes en el runbook.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-107",
+      "titulo": "Configurar monitoring: Prometheus + Grafana para métricas de app e infraestructura",
+      "descripcion": "Agregar servicios Prometheus y Grafana al docker-compose.prod.yml. Exponer métricas de FastAPI (prometheus-fastapi-instrumentator), Redis, PostgreSQL, RabbitMQ. Crear dashboards básicos.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-108",
+      "titulo": "Configurar alerting: caída de servicio, disco lleno, memoria, backups fallidos",
+      "descripcion": "Configurar alertas en Grafana o servicio externo (UptimeRobot/Pingdom) para: caída de healthcheck, disco >85%, memoria >90%, último backup fallido.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-109",
+      "titulo": "Configurar Cloudflare CDN para assets estáticos (JS, CSS, imágenes)",
+      "descripcion": "En el dashboard de Cloudflare, habilitar Caching Level (Standard) y Browser Cache TTL para assets estáticos del frontend (dist/). Configurar Page Rules si es necesario.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-110",
+      "titulo": "Evaluar necesidad de read replicas de Postgres (>100 usuarios concurrentes)",
+      "descripcion": "Monitorear carga de PostgreSQL en producción. Si hay más de 100 usuarios concurrentes, evaluar read replicas. No implementar ahora — solo documentar el procedimiento.",
+      "estado": "pendiente",
+      "prioridad": "baja",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-111",
+      "titulo": "Evaluar load balancing si hay múltiples instancias backend",
+      "descripcion": "Caddy soporta balanceo de carga nativo (reverse_proxy backend1:8000 backend2:8000). Documentar cómo escalar horizontalmente si el volumen lo requiere.",
+      "estado": "pendiente",
+      "prioridad": "baja",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-112",
+      "titulo": "Ejecutar suite E2E completa contra producción (o staging idéntico)",
+      "descripcion": "Correr tests/e2e-full-stack/* contra un entorno de staging con datos reales. Verificar que los 5 specs pasan: registro, consulta+factura, tienda+pago, aislamiento-tenant, chat-ia.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-113",
+      "titulo": "Ejecutar integration tests con BD real de producción",
+      "descripcion": "Correr pytest src/tests/integration contra una BD de staging que refleje producción. Verificar RLS, transacciones, y edge cases con datos reales.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-114",
+      "titulo": "Ejecutar contract tests contra APIs reales de terceros",
+      "descripcion": "Correr pytest src/tests/contract con credenciales de sandbox/producción reales para validar que las integraciones con MP, Mailjet, Cloudinary, B2 funcionan correctamente.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-115",
+      "titulo": "Ejecutar load test con k6 o artillery en endpoints críticos",
+      "descripcion": "Crear scripts de load test para endpoints críticos: POST /api/v1/auth/login, POST /api/v1/consultations, POST /api/v1/chat, GET /api/v1/clients. Medir latencia p95, p99, throughput.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-116",
+      "titulo": "Probar restauración de backup desde Backblaze B2",
+      "descripcion": "Ejecutar backup manual, descargar desde B2, restaurar en una BD de test, verificar integridad de datos. Documentar procedimiento de restore.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-117",
+      "titulo": "CI/CD: pipeline que publique imágenes a registry (Docker Hub/GHCR) y deploy automático",
+      "descripcion": "Extender GitHub Actions para: build Docker images → push a GHCR → deploy automático al VPS Contabo via SSH. Incluir healthcheck post-deploy.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-118",
+      "titulo": "Verificar zero-downtime deploy (rolling update strategy)",
+      "descripcion": "Documentar y probar estrategia de deploy sin downtime: nueva imagen → healthcheck → traffic switch. Verificar que no se pierden conexiones activas.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-119",
+      "titulo": "Documentar procedimiento de rollback (última imagen + docker compose)",
+      "descripcion": "Crear sección en runbook con pasos de rollback: 1) docker compose down, 2) taggear imagen actual como rollback-YYYYMMDD, 3)docker compose up con imagen anterior.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-120",
+      "titulo": "Configurar registros DNS apuntando al VPS Contabo",
+      "descripcion": "Configurar DNS en Cloudflare: A record o CNAME apuntando al IP del VPS Contabo. Verificar propagación con dig/nslookup.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-121",
+      "titulo": "Verificar certificados SSL/Let's Encrypt o Cloudflare Origin CA",
+      "descripcion": "Si Cloudflare Tunnel termina TLS, no se necesita certificado local. Si se usa Caddy directo, verificar que Let's Encrypt o Cloudflare Origin CA emite certificados válidos.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-122",
+      "titulo": "Configurar error tracking (Sentry o similar) para backend y frontend",
+      "descripcion": "Integrar Sentry (o error tracking equivalente) en FastAPI y React. Capturar excepciones no manejadas con contexto (user, tenant, URL).",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-123",
+      "titulo": "Configurar uptime monitoring externo (Pingdom, UptimeRobot)",
+      "descripcion": "Configurar check de healthcheck externo que valide que /health responde 200. Alertar por email/Slack si hay caída.",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-124",
+      "titulo": "Verificar log aggregation: Docker logs + Loki si aplica",
+      "descripcion": "Verificar que logs de todos los servicios son accesibles via docker logs. Evaluar Loki+Grafana para log aggregation centralizada.",
+      "estado": "pendiente",
+      "prioridad": "baja",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-125",
+      "titulo": "Documentar runbook: deploy, rollback, backup, restore, escalado",
+      "descripcion": "Crear/runbook.md con procedimientos operacionales paso a paso: deploy, rollback, backup manual, restore, escalar backend, rotar secrets, troubleshoot común.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-126",
+      "titulo": "Actualizar architecture diagram si hubo cambios de infraestructura",
+      "descripcion": "Verificar que SPECS.md §2.9 y cualquier diagrama reflejen la arquitectura actual (Caddy-only, Cloudflare Tunnel, Docker Compose prod). Actualizar si hay diferencias.",
+      "estado": "pendiente",
+      "prioridad": "baja",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-127",
+      "titulo": "Fix entrypoint.sh: agregar migraciones de community_db",
+      "descripcion": "El entrypoint.sh actual solo ejecuta 'alembic upgrade head' para core_db. Agregar 'alembic -c community_alembic.ini upgrade head' para community_db. Esto es crítico para producción.",
+      "estado": "pendiente",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "ADR-008",
+  "fecha": "2026-06-21",
+  "titulo": "Frontend: Feature-Sliced Design",
+  "estado": "aceptada",
+  "contexto": "Se necesita una arquitectura de frontend escalable y mantenible por un humano para un proyecto React de tamano considerable, con multiples wizards multi-step y tres subsistemas distintos.",
+  "decision": "Se adopta Feature-Sliced Design (app, pages, widgets, features, entities, shared) con dependencias unidireccionales.",
+  "consecuencias": [
+    "Positivas: organizacion por funcionalidad de negocio en lugar de por capa tecnica; escala bien con multiples features independientes",
+    "Negativas: curva de aprendizaje inicial para quien no conozca la metodologia"
+  ],
+  "alternativas": ["Atomic Design", "Estructura por tipo de archivo (components/, hooks/, etc)"],
+  "actores": ["@desarrollador", "@opencode"]
+}

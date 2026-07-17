@@ -1,0 +1,14 @@
+{
+  "id": "ADR-002",
+  "fecha": "2026-06-21",
+  "titulo": "RAG: solo pgvector, sin ChromaDB",
+  "estado": "aceptada",
+  "contexto": "El plan original mencionaba tanto ChromaDB como pgvector para el almacenamiento de embeddings del RAG.",
+  "decision": "Usamos unicamente pgvector sobre la misma instancia de Postgres (core_db). No se suma ChromaDB.",
+  "consecuencias": [
+    "Positivas: un sistema vectorial menos para sincronizar, backupear y operar; menos contenedores en docker-compose",
+    "Negativas: ninguna identificada para el volumen de datos esperado en este proyecto"
+  ],
+  "alternativas": ["ChromaDB en paralelo", "Pinecone u otro vector store administrado"],
+  "actores": ["@desarrollador", "@opencode"]
+}

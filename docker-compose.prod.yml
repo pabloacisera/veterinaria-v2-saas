@@ -1,0 +1,27 @@
+services:
+  core_db:
+    ports: []
+
+  community_db:
+    ports: []
+
+  redis:
+    ports: []
+
+  rabbitmq:
+    ports: []
+
+  caddy:
+    volumes:
+      - ./infra/Caddyfile.prod:/etc/caddy/Caddyfile
+      - caddy_data:/data
+
+  backend:
+    ports: []
+    volumes: []
+    env_file:
+      - .env
+
+  frontend:
+    ports: []
+    volumes: []

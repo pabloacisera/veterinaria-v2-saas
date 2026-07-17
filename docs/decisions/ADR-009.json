@@ -1,0 +1,14 @@
+{
+  "id": "ADR-009",
+  "fecha": "2026-06-21",
+  "titulo": "IDs publicos: UUIDv7 en lugar de hashids",
+  "estado": "aceptada",
+  "contexto": "El plan original proponia ofuscar IDs secuenciales con hashids. El desarrollador tuvo una experiencia negativa previa con esa libreria (dificil de hacer funcionar, costosa a nivel backend).",
+  "decision": "Se usan UUIDv7 como identificador publico de toda entidad, expuestos directamente en API y URLs, sin capa de hash/unhash.",
+  "consecuencias": [
+    "Positivas: UUIDs no son adivinables igual que un ID secuencial; UUIDv7 son ordenables por tiempo de creacion, lo que mejora el rendimiento de indices en Postgres respecto a UUIDv4 random; elimina la complejidad y el costo de mantener hashids",
+    "Negativas: ninguna identificada"
+  ],
+  "alternativas": ["Hashids", "UUIDv4"],
+  "actores": ["@desarrollador", "@opencode"]
+}

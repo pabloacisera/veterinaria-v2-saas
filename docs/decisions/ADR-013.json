@@ -1,0 +1,22 @@
+{
+  "id": "ADR-013",
+  "fecha": "2026-07-04",
+  "titulo": "Migración de refresh token a httpOnly cookie + Secure flag",
+  "estado": "aceptada",
+  "contexto": "El refresh token JWT se almacenaba en localStorage del navegador, vulnerable a ataques XSS. Si un atacante ejecuta JS malicioso en el contexto de la app, puede robar el token y suplantar sesiones. El access token sigue en memoria (variable JS) y se envía como header Authorization, pero el refresh token necesita persistencia entre recargas de página.",
+  "decision": "Migrar el refresh token a una httpOnly cookie con SameSite=Lax. El backend lo setea en login/refresh y lo lee directamente de la cookie en el endpoint /refresh, sin exponerlo al JavaScript del frontend. En producción se agrega Secure=True. El frontend deja de guardar refresh_token en localStorage. El access token continúa en memoria/envío manual.",
+  "consecuencias": [
+    "Positivo: el refresh token no es accesible desde JavaScript (immune a XSS)",
+    "Positivo: el navegador envía la cookie automáticamente en requests a /api/v1/auth/refresh, simplificando el frontend",
+    "Positivo: SameSite=Lax protege contra CSRF en endpoints de auth",
+    "Negativo: el refresh token no funcionará entre dominios diferentes (no aplica — monorepo single-domain)",
+    "Negativo: el endpoint /refresh debe aceptar el token tanto desde cookie como desde body (retrocompatibilidad durante migración)",
+    "Técnico: Starlette/FastAPI soporta request.cookies nativamente, sin librerías extras"
+  ],
+  "alternativas": [
+    "Mantener localStorage + mitigar con CSP headers (ya existe CSP en Caddyfile.prod, pero no bloquea completamente XSS de primer orden)",
+    "Usar sessionStorage (no persiste entre pestañas, misma vulnerabilidad XSS)",
+    "Usar Web Workers + IndexedDB (más complejo, misma superficie de ataque JS)"
+  ],
+  "actores": ["@opencode", "@kscod"]
+}

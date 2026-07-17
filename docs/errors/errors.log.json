@@ -1,0 +1,122 @@
+[
+  {
+    "id": "ERR-001",
+    "fecha": "2026-06-23",
+    "titulo": "Backlog desincronizado: tareas marcadas como pendiente con codigo existente",
+    "descripcion": "TASK-042 a TASK-046 (RAG+Chat, Sprint 7) y TASK-051 a TASK-053 (tests backend, Sprint 9) estaban marcadas como 'pendiente' en backlog.json pero el codigo completo existia en backend/src/ y frontend/src/. Causa raiz: el backlog se actualizo manualmente sin verificar el estado real del codigo.",
+    "severidad": "alta",
+    "estado": "resuelto",
+    "resolucion": "Actualizar backlog.json: cambiar estado de TASK-042-046 y TASK-051-053 a 'completada'. Agregar notas de cierre de Sprint 7 y 9.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-002",
+    "fecha": "2026-06-23",
+    "titulo": "SPECS.md referencia paths de tests incorrectos",
+    "descripcion": "SPECS.md seccion 2.2 y 10.2 referencian backend/tests/ como ubicacion de tests, pero el codigo real tiene los tests en backend/src/tests/. Esto causa confusion al buscar archivos de test.",
+    "severidad": "media",
+    "estado": "resuelto",
+    "resolucion": "Actualizar SPECS.md: backend/tests/ → backend/src/tests/ en secciones 2.2, 3.5 y 10.2.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-003",
+    "fecha": "2026-06-24",
+    "titulo": "Migracion Alembic 015 en arbol incorrecto",
+    "descripcion": "La migracion 015_community_tables.py fue creada en backend/alembic/versions/ (arbol de core_db) pero crea tablas de community_db (posts, comments, likes). Si se ejecuta alembic upgrade head contra core_db, creara tablas de comunidad en la base equivocada.",
+    "severidad": "alta",
+    "estado": "resuelto",
+    "resolucion": "Mover 015 a backend/community_alembic/versions/001_community_tables.py con su propio env.py e ini. Eliminar 015 del arbol de core_db. Agregar paso de migracion de community_db a scripts/migrate.sh y deploy.sh.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-004",
+    "fecha": "2026-06-24",
+    "titulo": "Dockerfiles de produccion no existian aunque docker-compose.yml los referenciaba",
+    "descripcion": "docker-compose.yml perfil production referenciaba infra/Dockerfile.backend y infra/Dockerfile.frontend pero esos archivos no existian. Causa: la infraestructura de produccion se planifico en TASK-058 pero las dependencias no se crearon antes.",
+    "severidad": "alta",
+    "estado": "resuelto",
+    "resolucion": "Crear infra/Dockerfile.backend (multi-stage python:3.12-slim) e infra/Dockerfile.frontend (node:20-alpine build + nginx:alpine serve). Crear Caddyfile.prod, docker-compose.prod.yml y scripts/deploy.sh.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-005",
+    "fecha": "2026-06-24",
+    "titulo": "community_db sin mecanismo de migraciones versionadas",
+    "descripcion": "community_db solo tenia init SQL en infra/postgres/community_db/init/ que corre al crear el contenedor. No habia forma de versionar cambios en el schema de community_db via Alembic, a diferencia de core_db que tiene migraciones completas.",
+    "severidad": "media",
+    "estado": "resuelto",
+    "resolucion": "Crear backend/community_alembic/ con env.py, script.py.mako y community_alembic.ini independiente. Mover la migracion de tablas de comunidad a este arbol como version 001.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-006",
+    "fecha": "2026-06-25",
+    "titulo": "SPECS.md no reflejaba cambio a codigo de 6 digitos para activacion (ADR-012)",
+    "descripcion": "La seccion 4.1 de SPECS.md describia activacion por link de Mailjet, pero ADR-012 cambio a codigo de 6 digitos via Redis. El documento no se actualizo tras la decision.",
+    "severidad": "media",
+    "estado": "resuelto",
+    "resolucion": "Actualizar seccion 4.1 de SPECS.md para reflejar el mecanismo de codigo de 6 digitos con Redis TTL, referenciando ADR-012.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-007",
+    "fecha": "2026-06-25",
+    "titulo": "POST /suscripciones/iniciar retornaba 500 sin credenciales MP",
+    "descripcion": "InitSubscriptionUseCase llamaba self.mp_service.create_preapproval() sin validar credenciales MP. Si MP_PLATFORM_ACCESS_TOKEN faltaba o la API de MP devolvia error, el response no tenia key 'id' causando KeyError. El router solo capturaba ValueError, no Exception generica.",
+    "severidad": "alta",
+    "estado": "resuelto",
+    "resolucion": "Agregar validacion de MP_PLATFORM_ACCESS_TOKEN en constructor de MercadoPagoPlatformService. Validar response de create_preapproval() y get_preapproval(). Capturar Exception generica en router mercadopago.py. Actualizar use case para propagar errores como ValueError.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-008",
+    "fecha": "2026-06-26",
+    "titulo": "PaymentMethodSelector duplicado en features/payments/ y shared/ui/",
+    "descripcion": "El componente PaymentMethodSelector existia en dos ubicaciones: features/payments/ y shared/ui/. El test correspondiente estaba en features/payments/ importando un archivo que ya no existia (el componente se habia movido a shared/ui/).",
+    "severidad": "media",
+    "estado": "resuelto",
+    "resolucion": "Eliminar features/payments/PaymentMethodSelector.tsx. Mover test a shared/ui/PaymentMethodSelector.test.tsx. Actualizar import path del test.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-009",
+    "fecha": "2026-06-26",
+    "titulo": "Catches silenciados en frontend (7 ubicaciones)",
+    "descripcion": "7 locations en frontend usaban `.catch(() => {})` o `catch { // silent }` sin logging, ocultando errores de red y fallos de API.",
+    "severidad": "media",
+    "estado": "resuelto",
+    "resolucion": "Reemplazar todos los `.catch(() => {})` con `.catch((err) => console.warn(...))` y el `catch { // silent }` con `catch (err) { console.warn(...) }` en los 7 archivos afectados.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-010",
+    "fecha": "2026-06-26",
+    "titulo": "entrypoint.sh duplicado en infra/ y backend/",
+    "descripcion": "Dos archivos entrypoint.sh identicos existian: infra/entrypoint.sh (no referenciado) y backend/entrypoint.sh (el usado por Dockerfile).",
+    "severidad": "baja",
+    "estado": "resuelto",
+    "resolucion": "Eliminar infra/entrypoint.sh.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-011",
+    "fecha": "2026-06-26",
+    "titulo": "Faltaban .gitignore raiz y .dockerignore para backend/frontend",
+    "descripcion": "No existia .gitignore en la raiz del proyecto ni .dockerignore en backend/ o frontend/. Esto permitia que archivos como .venv, node_modules, __pycache__ y .env fueran incluidos en el contexto de build de Docker.",
+    "severidad": "media",
+    "estado": "resuelto",
+    "resolucion": "Crear .gitignore raiz, backend/.dockerignore y frontend/.dockerignore con exclusiones apropiadas.",
+    "actores": ["@opencode"]
+  },
+  {
+    "id": "ERR-012",
+    "fecha": "2026-06-26",
+    "titulo": "Servicios docker-compose sin limites de recursos",
+    "descripcion": "Ningun servicio en docker-compose.yml tenia limites de CPU o memoria, lo que permite que un contenedor consuma todos los recursos del host.",
+    "severidad": "media",
+    "estado": "resuelto",
+    "resolucion": "Agregar bloques deploy.resources.limits a todos los servicios: core_db (1cpu/512MB), community_db (0.5cpu/256MB), redis (0.5cpu/128MB), rabbitmq (0.5cpu/256MB), backend (1cpu/512MB), frontend (0.5cpu/256MB), caddy (0.25cpu/64MB).",
+    "actores": ["@opencode"]
+  }
+]

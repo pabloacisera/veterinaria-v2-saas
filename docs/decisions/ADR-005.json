@@ -1,0 +1,14 @@
+{
+  "id": "ADR-005",
+  "fecha": "2026-06-21",
+  "titulo": "HTTPS para Mercado Pago: Cloudflare Named Tunnel, no ngrok",
+  "estado": "aceptada",
+  "contexto": "Mercado Pago requiere HTTPS para webhooks. El desarrollador ya administra el dominio artisandevs.site via Cloudflare.",
+  "decision": "Se usa unicamente Cloudflare Tunnel (cloudflared), tanto en desarrollo (subdominio dedicado tuneleado a la maquina local) como en produccion (tunel hacia el puerto interno de Caddy en el VPS). Se descarta ngrok del stack por completo.",
+  "consecuencias": [
+    "Positivas: URL estable y gratuita en ambos entornos; no requiere exponer puertos publicos en el VPS; aprovecha infraestructura ya existente del desarrollador",
+    "Negativas: dependencia total de Cloudflare como punto de entrada; requiere mantener cloudflared corriendo"
+  ],
+  "alternativas": ["ngrok (free o pago)"],
+  "actores": ["@desarrollador", "@opencode"]
+}

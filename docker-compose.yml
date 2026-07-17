@@ -1,0 +1,160 @@
+services:
+  core_db:
+    image: pgvector/pgvector:pg16
+    container_name: vet-core-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: veterinaria_v2
+      POSTGRES_PASSWORD: veterinaria_dev
+      POSTGRES_DB: core_db
+    ports:
+      - "5444:5432"
+    volumes:
+      - core_db_data:/var/lib/postgresql/data
+      - ./infra/postgres/core_db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U veterinaria_v2 -d core_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  community_db:
+    image: postgres:16
+    container_name: vet-community-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: veterinaria_v2
+      POSTGRES_PASSWORD: veterinaria_dev
+      POSTGRES_DB: community_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - community_db_data:/var/lib/postgresql/data
+      - ./infra/postgres/community_db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U veterinaria_v2 -d community_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  redis:
+    image: redis:7-alpine
+    container_name: vet-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: vet-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: veterinaria_v2
+      RABBITMQ_DEFAULT_PASS: veterinaria_dev
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: vet-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - frontend_dist:/www
+    depends_on:
+      - backend
+    profiles:
+      - production
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 64M
+
+  backend:
+    build: ./backend
+    container_name: vet-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      core_db:
+        condition: service_healthy
+      community_db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src
+    profiles:
+      - production
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+
+  frontend:
+    build: ./frontend
+    container_name: vet-frontend
+    restart: "no"
+    volumes:
+      - frontend_dist:/app/dist
+    profiles:
+      - production
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+volumes:
+  core_db_data:
+  community_db_data:
+  redis_data:
+  rabbitmq_data:
+  caddy_data:
+  frontend_dist:

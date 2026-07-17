@@ -1,0 +1,42 @@
+#!/bin/bash
+set -e
+
+echo "=== Pre-commit: Validating JSON files ==="
+
+SCHEMA_DIR="infra/githooks/schemas"
+
+validate_json() {
+    local file="$1"
+    local schema="$2"
+    local label="$3"
+
+    if [ ! -f "$file" ]; then
+        return 0
+    fi
+
+    if command -v python3 &> /dev/null; then
+        if python3 -c "
+import json, sys
+try:
+    with open('$file') as f:
+        data = json.load(f)
+    print(f'  $label: $file - valid JSON')
+except json.JSONDecodeError as e:
+    print(f'  ERROR: $label: $file - invalid JSON: {e}')
+    sys.exit(1)
+" 2>&1; then
+            :
+        else
+            exit 1
+        fi
+    fi
+}
+
+validate_json "docs/tasks/backlog.json" "" "backlog"
+validate_json "docs/errors/errors.log.json" "" "errors"
+
+for adr in docs/decisions/ADR-*.json; do
+    [ -f "$adr" ] && validate_json "$adr" "" "adr"
+done
+
+echo "=== Pre-commit validation passed ==="
