@@ -1,10 +1,11 @@
+import os
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr
 
 from src.application.use_cases.auth import (
     ActivateUserUseCase,
-    GoogleAuthUseCase,
     LoginUseCase,
     RefreshTokenUseCase,
     RegisterUserUseCase,

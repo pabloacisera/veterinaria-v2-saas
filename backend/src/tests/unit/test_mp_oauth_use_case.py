@@ -1,9 +1,7 @@
 import os
-import pytest
 from uuid import uuid4
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock
 
-from src.infrastructure.services.encryption_service import EncryptionService
 from src.domain.entities.tenant_mp_credential import TenantMpCredential
 
 

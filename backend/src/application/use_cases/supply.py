@@ -1,7 +1,7 @@
 from decimal import Decimal
 from uuid import UUID
 
-from src.domain.entities.supply import Procedure, Supply, SupplyPresentation
+from src.domain.entities.supply import Procedure, Supply
 from src.domain.services.rag_sync_service import RagSyncService
 from src.domain.formatters import format_supply_text
 

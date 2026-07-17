@@ -1,4 +1,3 @@
-import pytest
 
 from src.domain.cuit import extract_dni, validate_cuit
 
