@@ -544,8 +544,27 @@ tests/               e2e-full-stack/
 ### 10.3 CI (GitHub Actions)
 
 Workflow 1: unit + integration en cada push. Workflow 2: e2e antes de mergear a `main`.
+Workflow 3: code review (AI agent) en cada PR.
 
-### 10.4 Vínculo con tareas
+### 10.4 Code Review Agent
+
+Un agente de IA revisa cada PR automáticamente. Flujo:
+
+1. **Static Review** (`.github/scripts/static-review.sh`): 8 validaciones estáticas
+   - Clean Architecture (backend + frontend)
+   - No secrets hardcoded, .env no commiteado
+   - UUIDv7, soft-delete, migrations seguras
+   - Tests presentes, docker-compose válido
+
+2. **AI Review** (Groq API — `llama-3.1-70b-versatile`): análisis semántico del diff contra
+   SPECS.md + SKILLS.md. Evalúa arquitectura, seguridad, lógica, convenciones.
+
+3. **Veredicto**: PASS o FAIL. Si hay errores críticos → el job falla → no se permite merge.
+
+El resultado se postea como comentario en el PR. El secret `GROQ_API_KEY` debe estar
+configurado en el repo.
+
+### 10.5 Vínculo con tareas
 
 Campo `tests_relacionados: []` en cada tarea. Sin tests → estado `en_revision`, no `completada`.
 
