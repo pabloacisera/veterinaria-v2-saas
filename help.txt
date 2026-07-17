@@ -322,6 +322,31 @@ CI ANTES DE MERGE A MAIN — ci-e2e.yml:
 
   No se permite merge si los tests están en rojo.
 
+CODE REVIEW (AI AGENT) — code-review.yml:
+
+  Se dispara en cada PR (abierto, sincronizado, reabierto):
+
+  Job 1: Static Review (.github/scripts/static-review.sh)
+    ├── Clean Architecture backend (domain/ vs infrastructure/, interfaces/)
+    ├── Clean Architecture frontend (shared/ vs features/, widgets/, pages/)
+    ├── No secrets hardcoded
+    ├── .env no commiteado
+    ├── UUIDv7 (no uuid4)
+    ├── Migraciones no destructivas
+    ├── Tests presentes para archivos modificados
+    └── docker-compose válido
+
+  Job 2: AI Review (Groq API — llama-3.1-70b-versatile)
+    ├── Lee diff del PR + SPECS.md + SKILLS.md
+    ├── Analiza: arquitectura, seguridad, lógica, convenciones
+    └── Postea comentario en el PR con veredicto (PASS/FAIL)
+
+  Si el AI review encuentra errores críticos → el job falla → no se permite merge.
+  El secret GROQ_API_KEY debe estar configurado en el repo de GitHub.
+
+  PR Template (.github/pull_request_template.md):
+    Checklist que el autor llena al abrir el PR.
+
 COMMITS:
 
   No hay convención formal de mensajes (no Conventional Commits). Lo que sí hay
