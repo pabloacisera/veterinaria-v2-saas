@@ -2358,6 +2358,16 @@
       "dependencias": [],
       "decisiones_relacionadas": [],
       "tests_relacionados": []
+    },
+    {
+      "id": "TASK-128",
+      "titulo": "Reemplazar sentence-transformers por fastembed en embeddings",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
     }
   ]
 }
