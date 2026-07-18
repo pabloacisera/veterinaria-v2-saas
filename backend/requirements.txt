@@ -20,8 +20,7 @@ reportlab==4.2.0
 cloudinary==1.40.0
 mercadopago==3.2.0
 cryptography==43.0.0
-sentence-transformers==3.0.1
-torch==2.4.0
+fastembed
 pgvector==0.3.6
 langchain==0.3.0
 langchain-community==0.3.0

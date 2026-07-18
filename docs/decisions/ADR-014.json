@@ -1,0 +1,21 @@
+{
+  "id": "ADR-014",
+  "fecha": "2026-07-18",
+  "titulo": "Embeddings: fastembed en lugar de sentence-transformers",
+  "estado": "propuesta",
+  "contexto": "sentence-transformers==3.0.1 y torch==2.4.0 (~2GB) son demasiado pesados para los servidores de produccion. El backend falla al iniciar si no estan instalados. Necesitamos una alternativa ligera que produzca los mismos embeddings (384d, all-MiniLM-L6-v2) sin cambiar pgvector ni re-embedir datos existentes.",
+  "decision": "Reemplazar sentence-transformers + torch por fastembed (ONNX Runtime, ~90MB). fastembed soporta sentence-transformers/all-MiniLM-L6-v2 oficialmente, produce vectores de 384 dimensiones, y es compatible con los embeddings existentes en pgvector. La API cambia de model.encode() a model.embed().",
+  "consecuencias": [
+    "Positivas: eliminacion de ~2GB de dependencias, arranque mas rapido, sin costo de API externa",
+    "Positivas: mismo modelo, mismas dimensiones, cero migracion de DB",
+    "Negativas: fastembed es menos conocido que sentence-transformers (pero mantenido por Qdrant)",
+    "Negativas: la inferencia ONNX puede tener ligeras diferencias numericas vs PyTorch (no afecta calidad para este caso de uso)"
+  ],
+  "alternativas": [
+    "OpenAI text-embedding-3-small (requiere migracion 384->1536 + costo API)",
+    "Cohere embed-english-v3.0 (requiere migracion 384->1024 + costo API)",
+    "Cloudflare Workers AI bge-base (requiere migracion 384->768 + dependencia de CF)"
+  ],
+  "actores": ["@desarrollador", "@opencode"],
+  "nota": "ADR-002 (RAG: solo pgvector) se mantiene. Este ADR solo cambia la libreria de generacion de embeddings, no el vector store."
+}
