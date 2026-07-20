@@ -198,7 +198,13 @@
         "TASK-125",
         "TASK-126",
         "TASK-127",
-        "TASK-128"
+        "TASK-128",
+        "TASK-129",
+        "TASK-130",
+        "TASK-131",
+        "TASK-132",
+        "TASK-133",
+        "TASK-134"
       ],
       "nota_cierre": ""
     }
@@ -2373,6 +2379,72 @@
       "tests_relacionados": [
         "backend/src/tests/unit/test_embeddings.py"
       ]
+    },
+    {
+      "id": "TASK-129",
+      "titulo": "Fix trial hardcoded a 15 dias en RegisterUserUseCase",
+      "descripcion": "RegisterUserUseCase hardcodeaba timedelta(days=15) en vez de leer TRIAL_PERIOD_DAYS. Corregido para leer la env var con default 3.",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": ["ADR-015"],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-130",
+      "titulo": "Fix cron de expiracion no cubre estado trial",
+      "descripcion": "list_expiring_soon y list_expired solo consultaban status 'activa' y 'vencida'. Agregado 'trial' a ambas queries para que el cron detecte trials expirados.",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": ["ADR-015"],
+      "tests_relacionados": ["backend/src/tests/unit/test_subscription_expiry.py"]
+    },
+    {
+      "id": "TASK-131",
+      "titulo": "Fix middleware solo bloqueaba en estado bloqueada",
+      "descripcion": "El middleware de suscripcion solo verificaba status == 'bloqueada'. Agregado 'vencida' al check para bloquear suscripciones vencidas.",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": ["ADR-015"],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-132",
+      "titulo": "Fix min_stock ausente en plantilla CSV y backend COLUMN_MAP",
+      "descripcion": "La plantilla de carga masiva no incluia columna 'Stock Minimo' y el backend no la mapeaba. Todo insumo cargado por CSV quedaba con min_stock=0.",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": ["backend/src/tests/unit/test_supplies_upload.py"]
+    },
+    {
+      "id": "TASK-133",
+      "titulo": "Fix SaleWizard sin selector de clientes existentes",
+      "descripcion": "El wizard de venta solo tenia input de texto libre. Implementado selector con useClients hook replicando patron de ConsultationWizard.",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": ["frontend/src/features/store/SaleWizard.test.tsx"]
+    },
+    {
+      "id": "TASK-134",
+      "titulo": "Limpiar MP_PLATFORM_ENV muerta de .env.example",
+      "descripcion": "MP_PLATFORM_ENV era una variable que nunca se leia en el codigo. Eliminada de .env.example y validate-env.sh, documentado que el modo sandbox depende del token.",
+      "estado": "completada",
+      "prioridad": "baja",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
     }
   ]
 }
