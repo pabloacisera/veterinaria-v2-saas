@@ -1,6 +1,4 @@
-from unittest.mock import AsyncMock
-
-import pytest
+from unittest.mock import AsyncMock, patch
 
 from src.infrastructure.di import Container
 from src.domain.services.chat_history_service import ChatHistoryService
@@ -30,7 +28,12 @@ class TestChatHistoryDIResolution:
         assert hasattr(resolved, "get_history")
         assert hasattr(resolved, "save_history")
 
-    async def test_chat_history_get_history_returns_list(self):
+    @patch("src.infrastructure.services.chat_history_service.get_redis")
+    async def test_chat_history_get_history_returns_list(self, mock_get_redis):
+        mock_redis = AsyncMock()
+        mock_redis.get = AsyncMock(return_value=None)
+        mock_get_redis.return_value = mock_redis
+
         container = _make_container()
         service = container.resolve(ChatHistoryService)
         from uuid import UUID

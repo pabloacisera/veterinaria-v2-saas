@@ -3,12 +3,10 @@ from urllib.parse import quote
 
 from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import JSONResponse
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from src.application.use_cases.auth import GoogleAuthUseCase
-from src.infrastructure.auth.cookie_service import set_auth_cookies
 from src.infrastructure.di import get_container
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
