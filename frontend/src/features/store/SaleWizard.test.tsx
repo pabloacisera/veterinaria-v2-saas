@@ -20,6 +20,10 @@ vi.mock("@/features/supplies/api", () => ({
   fetchSupplies: vi.fn(),
 }));
 
+vi.mock("@/shared/hooks/useClients", () => ({
+  useClients: vi.fn(() => ({ data: [], isLoading: false })),
+}));
+
 vi.mock("./api", () => ({
   createSale: vi.fn(),
   saveDraft: vi.fn(),
@@ -54,7 +58,7 @@ describe("SaleWizard", () => {
   it("renderiza el paso 1 (Cliente) con el título", () => {
     renderWithQC(<SaleWizard onComplete={onComplete} onCancel={onCancel} />);
     expect(stepHeading("Cliente")).toBeInTheDocument();
-    expect(screen.getByText("Nombre del cliente")).toBeInTheDocument();
+    expect(screen.getByText("Buscar cliente")).toBeInTheDocument();
   });
 
   it("navega entre pasos con botones Atrás y Continuar", async () => {

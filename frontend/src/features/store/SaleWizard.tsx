@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Card } from "@/shared/ui/Card";
-import { Button } from "@/shared/ui/Button";
 import { useSupplies } from "@/shared/hooks/useSupplies";
+import { useClients } from "@/shared/hooks/useClients";
 import { useCreateSale, useSaveDraft, useClearDraft } from "@/shared/hooks/useStore";
 import type { SupplyData } from "@/entities/supply/types";
+import type { ClientData } from "@/entities/client/types";
 import { apiPost } from "@/shared/lib/api";
 import { ClientStep } from "./steps/ClientStep";
 import { ItemsStep } from "./steps/ItemsStep";
@@ -24,10 +25,13 @@ interface LineItem {
 export function SaleWizard({ onComplete, onCancel }: SaleWizardProps) {
   const [step, setStep] = useState(0);
   const { data: supplies = [] } = useSupplies({ limit: 100 });
+  const { data: allClients = [] } = useClients({ limit: 100 });
   const createSaleMutation = useCreateSale();
   const saveDraftMutation = useSaveDraft();
   const clearDraftMutation = useClearDraft();
 
+  const [clientSearch, setClientSearch] = useState("");
+  const [selectedClient, setSelectedClient] = useState<ClientData | null>(null);
   const [clientName, setClientName] = useState("");
   const [items, setItems] = useState<LineItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState("efectivo");
@@ -37,6 +41,12 @@ export function SaleWizard({ onComplete, onCancel }: SaleWizardProps) {
   const [supplySearch, setSupplySearch] = useState("");
   const [selectedSupply, setSelectedSupply] = useState<SupplyData | null>(null);
   const [itemQuantity, setItemQuantity] = useState(1);
+
+  const filteredClients = allClients.filter(
+    (c) =>
+      `${c.name} ${c.surname}`.toLowerCase().includes(clientSearch.toLowerCase()) ||
+      c.email.toLowerCase().includes(clientSearch.toLowerCase())
+  );
 
   const filteredSupplies = supplies.filter(
     (s) =>
@@ -67,7 +77,10 @@ export function SaleWizard({ onComplete, onCancel }: SaleWizardProps) {
     await saveDraftMutation.mutateAsync({
       step,
       data: {
-        client_name: clientName,
+        client_id: selectedClient?.id,
+        client_name: selectedClient
+          ? `${selectedClient.name} ${selectedClient.surname}`
+          : clientName || undefined,
         items: items.map((i) => ({
           supply_id: i.supply.id,
           quantity: i.quantity,
@@ -88,7 +101,10 @@ export function SaleWizard({ onComplete, onCancel }: SaleWizardProps) {
           quantity: i.quantity,
           unit_price: Number(i.supply.unit_price),
         })),
-        client_name: clientName || undefined,
+        client_id: selectedClient?.id,
+        client_name: selectedClient
+          ? `${selectedClient.name} ${selectedClient.surname}`
+          : clientName || undefined,
         payment_method: paymentMethod,
         notes: notes || undefined,
       });
@@ -147,6 +163,17 @@ export function SaleWizard({ onComplete, onCancel }: SaleWizardProps) {
 
       {step === 0 && (
         <ClientStep
+          clientSearch={clientSearch}
+          onClientSearchChange={(v) => {
+            setClientSearch(v);
+            setSelectedClient(null);
+          }}
+          filteredClients={filteredClients}
+          selectedClient={selectedClient}
+          onSelectClient={(c) => {
+            setSelectedClient(c);
+            setClientSearch(`${c.name} ${c.surname}`);
+          }}
           clientName={clientName}
           onClientNameChange={setClientName}
           onCancel={onCancel}
@@ -194,6 +221,7 @@ export function SaleWizard({ onComplete, onCancel }: SaleWizardProps) {
       {step === 3 && (
         <ConfirmationStep
           clientName={clientName}
+          selectedClient={selectedClient}
           paymentMethod={paymentMethod}
           items={items}
           subtotal={subtotal}

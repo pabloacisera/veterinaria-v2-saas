@@ -41,7 +41,7 @@ async def _check_subscription_blocked(company_id):
             """,
             company_id,
         )
-    if row and row["status"] == "bloqueada":
+    if row and row["status"] in ("bloqueada", "vencida"):
         return True
     return False
 

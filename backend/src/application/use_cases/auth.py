@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
@@ -44,7 +45,8 @@ class RegisterUserUseCase:
         created = await self.user_repo.create(user)
 
         now = datetime.now(timezone.utc)
-        trial_end = now + timedelta(days=15)
+        trial_days = int(os.getenv("TRIAL_PERIOD_DAYS", "3"))
+        trial_end = now + timedelta(days=trial_days)
         sub = Subscription(
             company_id=company.id,
             plan=PlanType.MENSUAL,

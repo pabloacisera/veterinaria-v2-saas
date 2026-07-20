@@ -57,8 +57,8 @@ export async function uploadSuppliesCsv(file: File): Promise<UploadResult> {
 }
 
 export function downloadTemplate() {
-  const header = "Nombre,Marca,Descripcion,Precio Unitario,Unidad Base,Stock Inicial\n";
-  const example = "Vacuna Antirrábica,Zoetis,Vacuna antirrábica canina,2500,dosis,50\n";
+  const header = "Nombre,Marca,Descripcion,Precio Unitario,Unidad Base,Stock Inicial,Stock Minimo\n";
+  const example = "Vacuna Antirrábica,Zoetis,Vacuna antirrábica canina,2500,dosis,50,10\n";
   const blob = new Blob([header + example], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
