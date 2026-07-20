@@ -16,3 +16,5 @@ export function DashboardCaja() {
     </div>
   );
 }
+
+export default DashboardCaja;

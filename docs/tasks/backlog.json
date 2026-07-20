@@ -81,8 +81,8 @@
     },
     {
       "nombre": "Sprint 7 — Agente de IA (RAG + Chat)",
-      "objetivo": "El diferenciador central del producto: agente que conoce la veterinaria. sentence-transformers + pgvector + LangChain + streaming SSE + cuota por plan.",
-      "nota_cierre": "Sprint 7 completado: RAG funcional con sentence-transformers (all-MiniLM-L6-v2, 384 dims) + pgvector + índice HNSW + RLS. Backfill de datos existentes. Chat endpoint con SSE streaming y LangChain (OpenAI/Gemini/Groq). Cuota por plan contada en Redis por CUIT (200/500/ilimitado). UI de chat completa con efecto maquina de escribir, markdown renderizado, historial e indicador de cuota. Tests de embeddings, chat, cuota, backfill y contrato SSE.",
+      "objetivo": "El diferenciador central del producto: agente que conoce la veterinaria. fastembed (ONNX) + pgvector + LangChain + streaming SSE + cuota por plan.",
+      "nota_cierre": "Sprint 7 completado: RAG funcional con fastembed (all-MiniLM-L6-v2, 384 dims) + pgvector + índice HNSW + RLS. Backfill de datos existentes. Chat endpoint con SSE streaming y LangChain (OpenAI/Gemini/Groq). Cuota por plan contada en Redis por CUIT (200/500/ilimitado). UI de chat completa con efecto maquina de escribir, markdown renderizado, historial e indicador de cuota. Tests de embeddings, chat, cuota, backfill y contrato SSE.",
       "tareas": [
         "TASK-042",
         "TASK-043",
@@ -197,7 +197,8 @@
         "TASK-124",
         "TASK-125",
         "TASK-126",
-        "TASK-127"
+        "TASK-127",
+        "TASK-128"
       ],
       "nota_cierre": ""
     }
@@ -2362,12 +2363,16 @@
     {
       "id": "TASK-128",
       "titulo": "Reemplazar sentence-transformers por fastembed en embeddings",
-      "estado": "pendiente",
+      "estado": "completada",
       "prioridad": "media",
       "asignado": "",
       "dependencias": [],
-      "decisiones_relacionadas": [],
-      "tests_relacionados": []
+      "decisiones_relacionadas": [
+        "ADR-014"
+      ],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_embeddings.py"
+      ]
     }
   ]
 }

@@ -15,6 +15,22 @@ export function Login() {
   const googleSuccess = searchParams.get("google") === "success";
 
   useEffect(() => {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const params = new URLSearchParams(hash);
+      if (params.get("google") === "success") {
+        const accessToken = params.get("access_token");
+        const refreshToken = params.get("refresh_token");
+        const email = params.get("email") || "";
+        const name = params.get("name") || "";
+        if (!accessToken) return;
+        if (refreshToken) localStorage.setItem("refresh_token", refreshToken);
+        login(accessToken, { email, name });
+        window.history.replaceState({}, "", window.location.pathname);
+        navigate("/dashboard", { replace: true });
+        return;
+      }
+    }
     if (googleSuccess && !isAuthenticated) {
       setLoading(true);
       fetchCurrentUser()
@@ -24,7 +40,7 @@ export function Login() {
         })
         .catch(() => setLoading(false));
     }
-  }, []);
+  }, [googleSuccess, isAuthenticated, login, navigate]);
 
   async function handleSuccess(token: string) {
     try {
@@ -66,3 +82,5 @@ export function Login() {
     </div>
   );
 }
+
+export default Login;

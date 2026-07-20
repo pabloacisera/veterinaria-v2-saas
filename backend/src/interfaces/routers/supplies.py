@@ -1,5 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+import io
 from uuid import UUID
+
+import pandas as pd
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 
 from src.application.use_cases.supply import (
     CreateSupplyUseCase, DeleteSupplyUseCase,
@@ -12,6 +15,61 @@ from src.interfaces.schemas.supply import (
 )
 
 router = APIRouter(prefix="/api/v1/supplies", tags=["supplies"])
+
+COLUMN_MAP = {
+    "Nombre": "name",
+    "Marca": "brand",
+    "Descripcion": "description",
+    "Precio Unitario": "unit_price",
+    "Unidad Base": "unit_base",
+    "Stock Inicial": "stock_quantity",
+}
+
+
+@router.post("/upload", status_code=201)
+async def upload_supplies_csv(
+    file: UploadFile = File(...),
+    container=Depends(get_container),
+    company_id: UUID = Depends(get_company_id),
+):
+    if not file.filename or not file.filename.endswith((".csv", ".xlsx")):
+        raise HTTPException(status_code=400, detail="Formato no soportado. Use CSV o XLSX.")
+
+    content = await file.read()
+    try:
+        if file.filename.endswith(".xlsx"):
+            df = pd.read_excel(io.BytesIO(content))
+        else:
+            df = pd.read_csv(io.StringIO(content.decode("utf-8-sig")))
+    except Exception:
+        raise HTTPException(status_code=400, detail="Error al leer el archivo. Verifique el formato.")
+
+    df.rename(columns=COLUMN_MAP, inplace=True)
+
+    required = {"name", "unit_base"}
+    if not required.issubset(df.columns):
+        missing = required - set(df.columns)
+        raise HTTPException(status_code=400, detail=f"Columnas faltantes: {', '.join(missing)}")
+
+    use_case = container.resolve(CreateSupplyUseCase)
+    created = []
+    errors = []
+    for idx, row in df.iterrows():
+        try:
+            data = {
+                "name": str(row["name"]).strip(),
+                "unit_base": str(row.get("unit_base", "unidad")).strip(),
+                "brand": str(row["brand"]).strip() if pd.notna(row.get("brand")) else None,
+                "description": str(row["description"]).strip() if pd.notna(row.get("description")) else None,
+                "unit_price": float(row["unit_price"]) if pd.notna(row.get("unit_price")) else 0,
+                "stock_quantity": float(row["stock_quantity"]) if pd.notna(row.get("stock_quantity")) else 0,
+            }
+            supply = await use_case.execute(company_id=company_id, data=data)
+            created.append(supply.id)
+        except (ValueError, KeyError) as e:
+            errors.append({"fila": idx + 2, "error": str(e)})
+
+    return {"created": len(created), "errors": errors}
 
 
 @router.post("", response_model=SupplyResponse, status_code=201)

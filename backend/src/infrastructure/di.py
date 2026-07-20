@@ -98,6 +98,7 @@ from src.infrastructure.services.cloudinary_service import CloudinaryService
 from src.infrastructure.services.email_service import EmailService
 from src.infrastructure.services.pdf_service import PDFService
 
+from src.domain.services.chat_history_service import ChatHistoryService as ChatHistoryServiceInterface
 from src.infrastructure.services.chat_history_service import ChatHistoryService
 from src.infrastructure.services.embedding_service import EmbeddingService
 from src.infrastructure.services.llm_provider_service import LLMProvider
@@ -185,7 +186,7 @@ def create_container(pool, community_pool=None) -> Container:
     container.register(QueuePublisher, queue_publisher)
     container.register(RagRepository, rag_repo)
     container.register(SessionService, session_service)
-    container.register(ChatHistoryService, chat_history_service)
+    container.register(ChatHistoryServiceInterface, chat_history_service)
     container.register(EmbeddingService, embedding_service)
     container.register(LLMProvider, llm_provider)
     container.register(RagSyncService, rag_sync_service)
