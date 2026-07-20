@@ -623,30 +623,30 @@ IA usa estos embeddings para responder preguntas sobre los datos de la empresa.
 ### Variables del `.env`
 
 ```
-EMBEDDINGS_MODEL=all-MiniLM-L6-v2
-VECTOR_DIMENSION=384    # CRÍTICO: all-MiniLM-L6-v2 produce 384 dimensiones, NO 768
+EMBEDDINGS_MODEL=sentence-transformers/all-MiniLM-L6-v2
+VECTOR_DIMENSION=384    # CRITICO: all-MiniLM-L6-v2 produce 384 dimensiones, NO 768
 ```
 
-### Instalación
+### Instalacion
 
 ```bash
-pip install sentence-transformers torch pgvector langchain langchain-community
+pip install fastembed pgvector langchain langchain-community
 ```
 
-### Inicialización del modelo (cargar una sola vez al arrancar FastAPI)
+### Inicializacion del modelo (cargar una sola vez al arrancar FastAPI)
 
 ```python
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 from functools import lru_cache
 
 @lru_cache(maxsize=1)
-def get_embedding_model() -> SentenceTransformer:
-    model_name = os.getenv("EMBEDDINGS_MODEL", "all-MiniLM-L6-v2")
-    return SentenceTransformer(model_name)
+def get_embedding_model() -> TextEmbedding:
+    model_name = os.getenv("EMBEDDINGS_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+    return TextEmbedding(model_name=model_name)
 
 def generate_embedding(text: str) -> list[float]:
     model = get_embedding_model()
-    embedding = model.encode(text, batch_size=32, show_progress_bar=False)
+    embedding = list(model.embed([text]))[0]
     return embedding.tolist()
 ```
 
