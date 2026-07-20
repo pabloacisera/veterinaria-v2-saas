@@ -5,14 +5,15 @@ import { AdminCompanyDetail } from "@/features/admin/AdminCompanyDetail";
 import { AdminBackupPanel } from "@/features/admin/AdminBackupPanel";
 import { AdminExportPanel } from "@/features/admin/AdminExportPanel";
 import { Button } from "@/shared/ui/Button";
+import { Building2, HardDrive, Download } from "lucide-react";
 import type { CompanyAdmin } from "@/features/admin/api";
 
 type Section = "companias" | "backups" | "exportar";
 
-const navItems: { key: Section; label: string; icon: string }[] = [
-  { key: "companias", label: "Compañías", icon: "🏢" },
-  { key: "backups", label: "Backups", icon: "💾" },
-  { key: "exportar", label: "Exportar", icon: "📥" },
+const navItems: { key: Section; label: string; icon: typeof Building2 }[] = [
+  { key: "companias", label: "Compañías", icon: Building2 },
+  { key: "backups", label: "Backups", icon: HardDrive },
+  { key: "exportar", label: "Exportar", icon: Download },
 ];
 
 export function AdminDashboard() {
@@ -54,7 +55,7 @@ export function AdminDashboard() {
                   : "text-gray-300 hover:bg-gray-800 hover:text-white"
               }`}
             >
-              <span className="text-lg">{item.icon}</span>
+              <item.icon size={18} />
               {item.label}
             </button>
           ))}
@@ -94,3 +95,5 @@ export function AdminDashboard() {
     </div>
   );
 }
+
+export default AdminDashboard;

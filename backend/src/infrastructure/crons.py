@@ -49,8 +49,8 @@ async def cron_subscription_expiry_check():
     soon = await sub_repo.list_expiring_soon(days=7)
     for sub in soon:
         await queue.publish("q.emails", {
+            "type": "subscription_expiry",
             "to_email": "",
-            "template_id": "suscripcion_vence",
             "variables": {
                 "dias_restantes": (sub.end_date - datetime.now(timezone.utc)).days,
                 "plan_nombre": sub.plan.value,

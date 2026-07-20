@@ -65,6 +65,7 @@ scripts/start-all.sh
 | `make migrate` | Ejecuta migraciones Alembic |
 | `make seed` | Carga datos de prueba |
 | `make reset` | Resetea base de datos |
+| `make clear` | Limpia todos los datos (tablas + Redis) |
 | `make test` | Tests unitarios + integración |
 | `make lint` | Linting (ruff + eslint) |
 | `make format` | Formateo (black + prettier) |
@@ -79,6 +80,7 @@ scripts/start-all.sh
 | `scripts/dev-down.sh` | Para y limpia contenedores |
 | `scripts/migrate.sh` | Ejecuta migraciones Alembic |
 | `scripts/seed-test-data.sh` | Carga datos de prueba |
+| `scripts/dev-clear-data.sh` | Limpia todas las tablas y Redis |
 | `scripts/test-unit.sh` | Tests unitarios |
 | `scripts/test-integration.sh` | Tests de integración |
 | `scripts/test-e2e.sh` | Tests E2E con Playwright |

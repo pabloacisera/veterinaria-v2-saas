@@ -1,21 +1,35 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  User,
+  PawPrint,
+  ClipboardList,
+  Pill,
+  Wallet,
+  Globe,
+  Bot,
+  Store,
+  Star,
+  Settings,
+  MessageCircle,
+} from "lucide-react";
 
 const navItems = [
-  { label: "Dashboard", path: "/dashboard", icon: "📊" },
-  { label: "Clientes", path: "/dashboard/clientes", icon: "👤" },
-  { label: "Mascotas", path: "/dashboard/mascotas", icon: "🐾" },
-  { label: "Consultas", path: "/dashboard/consultas", icon: "📋" },
-  { label: "Insumos", path: "/dashboard/insumos", icon: "💊" },
-  { label: "Caja", path: "/dashboard/caja", icon: "💰" },
-  { label: "Comunidad", path: "/dashboard/comunidad", icon: "🌐" },
-  { label: "IA Chat", path: "/dashboard/chat", icon: "🤖" },
-  { label: "Tienda", path: "/dashboard/tienda", icon: "🏪" },
-  { label: "Planes", path: "/dashboard/planes", icon: "⭐" },
-  { label: "Configuración", path: "/dashboard/configuracion", icon: "⚙️" },
+  { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+  { label: "Clientes", path: "/dashboard/clientes", icon: User },
+  { label: "Mascotas", path: "/dashboard/mascotas", icon: PawPrint },
+  { label: "Consultas", path: "/dashboard/consultas", icon: ClipboardList },
+  { label: "Insumos", path: "/dashboard/insumos", icon: Pill },
+  { label: "Caja", path: "/dashboard/caja", icon: Wallet },
+  { label: "Comunidad", path: "/dashboard/comunidad", icon: Globe },
+  { label: "IA Chat", path: "/dashboard/chat", icon: Bot },
+  { label: "Tienda", path: "/dashboard/tienda", icon: Store },
+  { label: "Planes", path: "/dashboard/planes", icon: Star },
+  { label: "Configuración", path: "/dashboard/configuracion", icon: Settings },
 ];
 
 const extraItems = [
-  { label: "Mensajes Directos", icon: "💬", badge: "Próximamente" },
+  { label: "Mensajes Directos", icon: MessageCircle, badge: "Próximamente" },
 ];
 
 interface SidebarProps {
@@ -45,7 +59,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               }`}
             >
-              <span className="text-lg">{item.icon}</span>
+              <item.icon size={18} />
               {item.label}
             </button>
           );
@@ -57,7 +71,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
               key={item.label}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed"
             >
-              <span className="text-lg">{item.icon}</span>
+              <item.icon size={18} />
               <span className="flex-1">{item.label}</span>
               <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full font-medium">
                 {item.badge}

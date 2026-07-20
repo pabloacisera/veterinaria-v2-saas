@@ -7,7 +7,9 @@
     "severidad": "alta",
     "estado": "resuelto",
     "resolucion": "Actualizar backlog.json: cambiar estado de TASK-042-046 y TASK-051-053 a 'completada'. Agregar notas de cierre de Sprint 7 y 9.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-002",
@@ -17,7 +19,9 @@
     "severidad": "media",
     "estado": "resuelto",
     "resolucion": "Actualizar SPECS.md: backend/tests/ → backend/src/tests/ en secciones 2.2, 3.5 y 10.2.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-003",
@@ -27,7 +31,9 @@
     "severidad": "alta",
     "estado": "resuelto",
     "resolucion": "Mover 015 a backend/community_alembic/versions/001_community_tables.py con su propio env.py e ini. Eliminar 015 del arbol de core_db. Agregar paso de migracion de community_db a scripts/migrate.sh y deploy.sh.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-004",
@@ -37,7 +43,9 @@
     "severidad": "alta",
     "estado": "resuelto",
     "resolucion": "Crear infra/Dockerfile.backend (multi-stage python:3.12-slim) e infra/Dockerfile.frontend (node:20-alpine build + nginx:alpine serve). Crear Caddyfile.prod, docker-compose.prod.yml y scripts/deploy.sh.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-005",
@@ -47,7 +55,9 @@
     "severidad": "media",
     "estado": "resuelto",
     "resolucion": "Crear backend/community_alembic/ con env.py, script.py.mako y community_alembic.ini independiente. Mover la migracion de tablas de comunidad a este arbol como version 001.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-006",
@@ -57,7 +67,9 @@
     "severidad": "media",
     "estado": "resuelto",
     "resolucion": "Actualizar seccion 4.1 de SPECS.md para reflejar el mecanismo de codigo de 6 digitos con Redis TTL, referenciando ADR-012.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-007",
@@ -67,7 +79,9 @@
     "severidad": "alta",
     "estado": "resuelto",
     "resolucion": "Agregar validacion de MP_PLATFORM_ACCESS_TOKEN en constructor de MercadoPagoPlatformService. Validar response de create_preapproval() y get_preapproval(). Capturar Exception generica en router mercadopago.py. Actualizar use case para propagar errores como ValueError.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-008",
@@ -77,7 +91,9 @@
     "severidad": "media",
     "estado": "resuelto",
     "resolucion": "Eliminar features/payments/PaymentMethodSelector.tsx. Mover test a shared/ui/PaymentMethodSelector.test.tsx. Actualizar import path del test.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-009",
@@ -87,7 +103,9 @@
     "severidad": "media",
     "estado": "resuelto",
     "resolucion": "Reemplazar todos los `.catch(() => {})` con `.catch((err) => console.warn(...))` y el `catch { // silent }` con `catch (err) { console.warn(...) }` en los 7 archivos afectados.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-010",
@@ -97,7 +115,9 @@
     "severidad": "baja",
     "estado": "resuelto",
     "resolucion": "Eliminar infra/entrypoint.sh.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-011",
@@ -107,7 +127,9 @@
     "severidad": "media",
     "estado": "resuelto",
     "resolucion": "Crear .gitignore raiz, backend/.dockerignore y frontend/.dockerignore con exclusiones apropiadas.",
-    "actores": ["@opencode"]
+    "actores": [
+      "@opencode"
+    ]
   },
   {
     "id": "ERR-012",
@@ -117,6 +139,18 @@
     "severidad": "media",
     "estado": "resuelto",
     "resolucion": "Agregar bloques deploy.resources.limits a todos los servicios: core_db (1cpu/512MB), community_db (0.5cpu/256MB), redis (0.5cpu/128MB), rabbitmq (0.5cpu/256MB), backend (1cpu/512MB), frontend (0.5cpu/256MB), caddy (0.25cpu/64MB).",
+    "actores": [
+      "@opencode"
+    ]
+  },
+  {
+    "id": "ERR-013",
+    "fecha": "2026-07-19T15:13:44Z",
+    "titulo": "Email de activación no llega durante registro - Mailjet 401 account blocked",
+    "descripcion": "El email de activación no llega al usuario durante el registro. Mailjet retorna 401 'account temporarily blocked'. El código no verifica el return value de send_activation_code(), retornando 201 incluso cuando el email falla.此外, crons.py publica a q.emails sin campo 'type' ni 'code', causando error en email_worker.",
+    "severidad": "alta",
+    "estado": "resuelto",
+    "resolucion": "1. Actualizar API keys de Mailjet en .env. 2. Fix RegisterUserUseCase para verificar return value de send_activation_code() y lanzar excepción si falla. 3. Fix crons.py para incluir campo 'type'='subscription_expiry' en payload. 4. Fix email_worker.py para manejar tipo 'subscription_expiry' sin requerir campo 'code'.",
     "actores": ["@opencode"]
   }
 ]

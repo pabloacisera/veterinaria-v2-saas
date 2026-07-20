@@ -33,7 +33,7 @@ export function Dashboard() {
       .catch(() => {
         setChecking(false);
       });
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
   if (checking) {
     return (
@@ -59,3 +59,5 @@ export function Dashboard() {
     </DashboardLayout>
   );
 }
+
+export default Dashboard;
