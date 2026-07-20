@@ -61,7 +61,7 @@ async def cron_subscription_expiry_check():
 
     expired = await sub_repo.list_expired()
     for sub in expired:
-        if sub.status == SubscriptionStatus.ACTIVA:
+        if sub.status in (SubscriptionStatus.ACTIVA, SubscriptionStatus.TRIAL):
             if sub.grace_period_end and datetime.now(timezone.utc) > sub.grace_period_end:
                 await sub_repo.update_status(sub.id, SubscriptionStatus.BLOQUEADA)
                 logger.info(f"Suscripción {sub.id} bloqueada por vencimiento")

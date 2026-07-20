@@ -23,6 +23,7 @@ COLUMN_MAP = {
     "Precio Unitario": "unit_price",
     "Unidad Base": "unit_base",
     "Stock Inicial": "stock_quantity",
+    "Stock Minimo": "min_stock",
 }
 
 
@@ -63,6 +64,7 @@ async def upload_supplies_csv(
                 "description": str(row["description"]).strip() if pd.notna(row.get("description")) else None,
                 "unit_price": float(row["unit_price"]) if pd.notna(row.get("unit_price")) else 0,
                 "stock_quantity": float(row["stock_quantity"]) if pd.notna(row.get("stock_quantity")) else 0,
+                "min_stock": float(row["min_stock"]) if pd.notna(row.get("min_stock")) else 0,
             }
             supply = await use_case.execute(company_id=company_id, data=data)
             created.append(supply.id)
