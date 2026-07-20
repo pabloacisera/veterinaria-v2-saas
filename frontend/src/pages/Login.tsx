@@ -42,10 +42,10 @@ export function Login() {
     }
   }, [googleSuccess, isAuthenticated, login, navigate]);
 
-  async function handleSuccess(token: string) {
+  async function handleSuccess(token: string, expiresIn?: number) {
     try {
       const userData = await fetchCurrentUser();
-      login(token, { email: userData.email, name: userData.name });
+      login(token, { email: userData.email, name: userData.name }, expiresIn);
     } catch {
       // /auth/me may fail; dashboard guard will redirect if unauthenticated
     }

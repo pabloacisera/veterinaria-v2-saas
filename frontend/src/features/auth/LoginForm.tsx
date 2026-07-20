@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/Button";
 import { loginUser } from "./api";
 
 interface LoginFormProps {
-  onSuccess: (token: string) => void;
+  onSuccess: (token: string, expiresIn?: number) => void;
 }
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
@@ -29,7 +29,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     setLoading(true);
     try {
       const result = await loginUser({ email, password });
-      onSuccess(result.access_token);
+      onSuccess(result.access_token, result.expires_in);
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : "Error al iniciar sesión";

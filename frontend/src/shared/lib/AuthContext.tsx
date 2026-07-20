@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
-import { apiGet, apiPost } from "./api";
+import { apiGet, apiPost, startSessionTimer, stopSessionTimer } from "./api";
 
 interface AuthUser {
   email: string;
@@ -9,7 +9,7 @@ interface AuthUser {
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
-  login: (token: string, user: AuthUser) => void;
+  login: (token: string, user: AuthUser, expiresIn?: number) => void;
   logout: () => void;
 }
 
@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const login = useCallback((token: string, userData: AuthUser) => {
+  const login = useCallback((token: string, userData: AuthUser, expiresIn?: number) => {
     if (import.meta.env.PROD) {
       setUser(userData);
     } else {
@@ -38,9 +38,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("auth_user", JSON.stringify(userData));
       setUser(userData);
     }
+    if (expiresIn) {
+      startSessionTimer(expiresIn);
+    }
   }, []);
 
   const logout = useCallback(() => {
+    stopSessionTimer();
     if (import.meta.env.PROD) {
       apiPost("/auth/logout", {}).catch(() => {});
     } else {
