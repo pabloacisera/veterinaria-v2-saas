@@ -8,7 +8,7 @@ vi.mock("@/shared/lib/api", () => ({
 }));
 
 vi.mock("@/shared/hooks/useSupplies", () => ({
-  useSupplies: vi.fn(() => ({ data: [], isLoading: false, refetch: vi.fn() })),
+  useSupplies: vi.fn(() => ({ data: { items: [], total_count: 0 }, isLoading: false, refetch: vi.fn() })),
   useDeleteSupply: vi.fn(() => ({ mutateAsync: vi.fn() })),
   useCreateSupply: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
   useUpdateSupply: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),

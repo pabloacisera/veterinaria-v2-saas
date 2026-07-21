@@ -2,17 +2,25 @@ import { useState } from "react";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
+import { Pagination } from "@/shared/ui/Pagination";
 import { usePets, useDeletePet } from "@/shared/hooks/usePets";
 import type { PetData } from "./api";
+
+const PAGE_SIZE = 20;
 
 interface PetListProps {
   onEdit: (pet: PetData) => void;
   onCreate: () => void;
+  ownerId?: string;
 }
 
-export function PetList({ onEdit, onCreate }: PetListProps) {
+export function PetList({ onEdit, onCreate, ownerId }: PetListProps) {
   const [search, setSearch] = useState("");
-  const { data: pets = [], isLoading } = usePets({ search: search || undefined, limit: 100 });
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = usePets({ search: search || undefined, owner_id: ownerId, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
+  const pets = data?.items ?? [];
+  const totalCount = data?.total_count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const deleteMutation = useDeletePet();
 
   async function handleDelete(id: string) {
@@ -71,7 +79,7 @@ export function PetList({ onEdit, onCreate }: PetListProps) {
           <Input
             placeholder="Buscar mascota..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           />
         </div>
         <Button onClick={onCreate}>Nueva mascota</Button>
@@ -83,6 +91,7 @@ export function PetList({ onEdit, onCreate }: PetListProps) {
         loading={isLoading}
         emptyMessage="No hay mascotas registradas"
       />
+      <Pagination page={page} totalPages={totalPages} totalItems={totalCount} onPageChange={setPage} />
     </div>
   );
 }
