@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef } from "react";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
@@ -12,26 +12,12 @@ interface SupplyListProps {
   onCreate: () => void;
 }
 
-interface UploadMessage {
-  type: "success" | "error";
-  text: string;
-}
-
 export function SupplyList({ onEdit, onCreate }: SupplyListProps) {
   const [search, setSearch] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [uploadMessage, setUploadMessage] = useState<UploadMessage | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { data: supplies = [], isLoading, refetch } = useSupplies({ search: search || undefined, limit: 100 });
   const deleteMutation = useDeleteSupply();
-
-  const clearUploadMessage = useCallback(() => setUploadMessage(null), []);
-
-  useEffect(() => {
-    if (!uploadMessage) return;
-    const timer = setTimeout(clearUploadMessage, 5000);
-    return () => clearTimeout(timer);
-  }, [uploadMessage, clearUploadMessage]);
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este insumo?")) return;
@@ -46,19 +32,18 @@ export function SupplyList({ onEdit, onCreate }: SupplyListProps) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    setUploadMessage(null);
     try {
       const result = await uploadSuppliesCsv(file);
       if (result.errors.length > 0) {
-        const msg = result.errors.map((er) => `Fila ${er.fila}: ${er.error}`).join(", ");
-        setUploadMessage({ type: "error", text: `${result.created} creados. Errores: ${msg}` });
+        const msg = result.errors.map((er) => `Fila ${er.fila}: ${er.error}`).join("\n");
+        alert(`${result.created} creados. Errores:\n${msg}`);
       } else {
-        setUploadMessage({ type: "success", text: `${result.created} insumos creados correctamente` });
+        alert(`${result.created} insumos creados correctamente`);
       }
       refetch();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al subir archivo";
-      setUploadMessage({ type: "error", text: message });
+      alert(message);
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -154,17 +139,6 @@ export function SupplyList({ onEdit, onCreate }: SupplyListProps) {
           <Button onClick={onCreate}>Nuevo insumo</Button>
         </div>
       </div>
-      {uploadMessage && (
-        <div
-          className={`px-4 py-2 rounded-lg text-sm ${
-            uploadMessage.type === "success"
-              ? "bg-green-50 text-green-800 border border-green-200"
-              : "bg-red-50 text-red-800 border border-red-200"
-          }`}
-        >
-          {uploadMessage.text}
-        </div>
-      )}
       <Table
         columns={columns}
         data={supplies}
