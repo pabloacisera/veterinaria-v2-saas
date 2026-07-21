@@ -1,4 +1,5 @@
 import { apiGet, apiPost, apiPut, apiDelete } from "@/shared/lib/api";
+import type { PaginatedResponse } from "@/shared/types/pagination";
 export type {
   PetData,
   CreatePetInput,
@@ -13,7 +14,7 @@ export function fetchPets(params?: import("@/entities/pet/types").PetListParams)
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/pet/types").PetData[]>(`/pets${qs ? `?${qs}` : ""}`);
+  return apiGet<PaginatedResponse<import("@/entities/pet/types").PetData>>(`/pets${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchPet(id: string) {

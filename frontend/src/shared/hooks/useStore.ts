@@ -4,10 +4,15 @@ import * as api from "@/features/store/api";
 const KEY = "store";
 
 export function useSales(params?: { limit?: number; offset?: number }) {
-  return useQuery({
+  const query = useQuery({
     queryKey: [KEY, "sales", params],
     queryFn: () => api.fetchSales(params),
   });
+  return {
+    ...query,
+    data: query.data?.items ?? [],
+    total: query.data?.total ?? 0,
+  };
 }
 
 export function useSale(id: string) {
@@ -22,7 +27,7 @@ export function useCreateSale() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: import("@/entities/store/types").CreateSaleInput) => api.createSale(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [KEY, "sales"] }),
   });
 }
 

@@ -1,4 +1,5 @@
 import { apiGet, apiPost, apiDelete } from "@/shared/lib/api";
+import type { PaginatedResponse } from "@/shared/types/pagination";
 export type {
   ConsultationData,
   CreateConsultationInput,
@@ -20,7 +21,7 @@ export function fetchConsultations(params?: import("@/entities/consultation/type
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/consultation/types").ConsultationData[]>(`/consultations${qs ? `?${qs}` : ""}`);
+  return apiGet<PaginatedResponse<import("@/entities/consultation/types").ConsultationData>>(`/consultations${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchConsultation(id: string) {

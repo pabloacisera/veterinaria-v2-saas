@@ -4,10 +4,15 @@ import * as api from "@/features/consultations/api";
 const KEY = "consultations";
 
 export function useConsultations(params?: { limit?: number; offset?: number }) {
-  return useQuery({
+  const query = useQuery({
     queryKey: [KEY, params],
     queryFn: () => api.fetchConsultations(params),
   });
+  return {
+    ...query,
+    data: query.data?.items ?? [],
+    total: query.data?.total ?? 0,
+  };
 }
 
 export function useConsultation(id: string) {
