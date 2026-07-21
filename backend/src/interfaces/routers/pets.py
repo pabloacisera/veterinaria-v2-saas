@@ -10,6 +10,7 @@ from src.interfaces.dependencies import get_company_id
 from src.interfaces.schemas.pet import (
     CreatePetRequest, PetResponse, UpdatePetRequest,
 )
+from src.interfaces.schemas.common import PaginatedResponse
 
 router = APIRouter(prefix="/api/v1/pets", tags=["pets"])
 
@@ -27,7 +28,7 @@ async def create_pet(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[PetResponse])
+@router.get("", response_model=PaginatedResponse[PetResponse])
 async def list_pets(
     search: str = Query(None),
     owner_id: UUID = Query(None),
@@ -37,10 +38,11 @@ async def list_pets(
     company_id: UUID = Depends(get_company_id),
 ):
     use_case = container.resolve(ListPetsUseCase)
-    return await use_case.execute(
+    items, total = await use_case.execute(
         company_id=company_id, search=search,
         owner_id=owner_id, limit=limit, offset=offset,
     )
+    return PaginatedResponse(items=items, total_count=total)
 
 
 @router.get("/{pet_id}", response_model=PetResponse)

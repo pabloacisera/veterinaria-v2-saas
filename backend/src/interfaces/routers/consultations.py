@@ -12,6 +12,7 @@ from src.application.use_cases.document import (
 from src.interfaces.schemas.consultation import (
     AddProcedureItem, AddSupplyItem, ConsultationResponse,
 )
+from src.interfaces.schemas.common import PaginatedResponse
 from src.interfaces.dependencies import get_company_id, get_user_id
 from src.infrastructure.di import get_container
 
@@ -31,7 +32,7 @@ async def create_consultation(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[ConsultationResponse])
+@router.get("", response_model=PaginatedResponse[ConsultationResponse])
 async def list_consultations(
     pet_id: UUID = Query(None),
     limit: int = Query(50, le=100),
@@ -40,10 +41,11 @@ async def list_consultations(
     company_id: UUID = Depends(get_company_id),
 ):
     use_case = container.resolve(ListConsultationsUseCase)
-    return await use_case.execute(
+    items, total = await use_case.execute(
         company_id=company_id, pet_id=pet_id,
         limit=limit, offset=offset,
     )
+    return PaginatedResponse(items=items, total_count=total)
 
 
 @router.get("/{consultation_id}")

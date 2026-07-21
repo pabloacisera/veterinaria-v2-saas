@@ -56,6 +56,14 @@ class ClientRepository(ClientRepositoryInterface):
         async with self.pool.acquire() as conn:
             if search:
                 pattern = f"%{search}%"
+                count = await conn.fetchval(
+                    """
+                    SELECT COUNT(*) FROM clients
+                    WHERE company_id = $1 AND deleted_at IS NULL
+                      AND (name ILIKE $2 OR surname ILIKE $2 OR doc_number ILIKE $2 OR email ILIKE $2)
+                    """,
+                    company_id, pattern,
+                )
                 rows = await conn.fetch(
                     """
                     SELECT * FROM clients
@@ -67,6 +75,10 @@ class ClientRepository(ClientRepositoryInterface):
                     company_id, pattern, limit, offset,
                 )
             else:
+                count = await conn.fetchval(
+                    "SELECT COUNT(*) FROM clients WHERE company_id = $1 AND deleted_at IS NULL",
+                    company_id,
+                )
                 rows = await conn.fetch(
                     """
                     SELECT * FROM clients
@@ -76,7 +88,7 @@ class ClientRepository(ClientRepositoryInterface):
                     """,
                     company_id, limit, offset,
                 )
-            return [self._row_to_client(r) for r in rows]
+            return [self._row_to_client(r) for r in rows], count
 
     async def update(self, client_id: UUID, company_id: UUID, data: dict) -> Client:
         fields = []
