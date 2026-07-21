@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
+import { Pagination } from "@/shared/ui/Pagination";
 import { ConsultationWizard } from "@/features/consultations/ConsultationWizard";
 import { useConsultations } from "@/shared/hooks/useConsultations";
 import {
   downloadFactura, downloadPrescripcion,
   type ConsultationData,
 } from "@/features/consultations/api";
+
+const PAGE_SIZE = 20;
 
 const statusLabels: Record<string, string> = {
   draft: "Borrador",
@@ -17,7 +20,10 @@ const statusLabels: Record<string, string> = {
 
 export function DashboardConsultas() {
   const [showWizard, setShowWizard] = useState(false);
-  const { data: consultations = [], isLoading } = useConsultations({ limit: 50 });
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * PAGE_SIZE;
+  const { data: consultations = [], total, isLoading } = useConsultations({ limit: PAGE_SIZE, offset });
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / PAGE_SIZE)), [total]);
 
   if (showWizard) {
     return (
@@ -100,13 +106,16 @@ export function DashboardConsultas() {
         <h1 className="text-2xl font-bold text-gray-900">Consultas</h1>
         <Button onClick={() => setShowWizard(true)}>Nueva consulta</Button>
       </div>
-      <Table
-        columns={columns}
-        data={consultations}
-        keyExtractor={(c) => c.id}
-        loading={isLoading}
-        emptyMessage="No hay consultas registradas"
-      />
+      <div className="rounded-lg border border-gray-100">
+        <Table
+          columns={columns}
+          data={consultations}
+          keyExtractor={(c) => c.id}
+          loading={isLoading}
+          emptyMessage="No hay consultas registradas"
+        />
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      </div>
     </div>
   );
 }

@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
+import { Pagination } from "@/shared/ui/Pagination";
 import { SaleWizard } from "@/features/store/SaleWizard";
 import { useSales } from "@/shared/hooks/useStore";
 import { downloadSaleFactura } from "@/features/store/api";
 import type { SaleData } from "@/entities/store/types";
 
+const PAGE_SIZE = 20;
+
 export function DashboardTienda() {
   const [showWizard, setShowWizard] = useState(false);
-  const { data: sales = [], isLoading } = useSales({ limit: 50 });
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * PAGE_SIZE;
+  const { data: sales = [], total, isLoading } = useSales({ limit: PAGE_SIZE, offset });
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / PAGE_SIZE)), [total]);
 
   if (showWizard) {
     return (
@@ -84,13 +90,16 @@ export function DashboardTienda() {
         <h1 className="text-2xl font-bold text-gray-900">Tienda</h1>
         <Button onClick={() => setShowWizard(true)}>Nueva venta</Button>
       </div>
-      <Table
-        columns={columns}
-        data={sales}
-        keyExtractor={(s) => s.id}
-        loading={isLoading}
-        emptyMessage="No hay ventas registradas"
-      />
+      <div className="rounded-lg border border-gray-100">
+        <Table
+          columns={columns}
+          data={sales}
+          keyExtractor={(s) => s.id}
+          loading={isLoading}
+          emptyMessage="No hay ventas registradas"
+        />
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      </div>
     </div>
   );
 }
