@@ -38,11 +38,6 @@ export interface SupplyListParams {
   offset?: number;
 }
 
-export interface PaginatedResponse<T> {
-  items: T[];
-  total_count: number;
-}
-
 export interface ProcedureData {
   id: string;
   company_id: string;

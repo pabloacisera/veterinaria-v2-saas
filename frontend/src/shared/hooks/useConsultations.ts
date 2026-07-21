@@ -3,7 +3,7 @@ import * as api from "@/features/consultations/api";
 
 const KEY = "consultations";
 
-export function useConsultations(params?: import("@/entities/consultation/types").ConsultationListParams) {
+export function useConsultations(params?: { limit?: number; offset?: number }) {
   return useQuery({
     queryKey: [KEY, params],
     queryFn: () => api.fetchConsultations(params),

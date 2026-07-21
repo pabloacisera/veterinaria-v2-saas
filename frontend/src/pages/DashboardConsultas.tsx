@@ -1,17 +1,13 @@
 import { useState } from "react";
-import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
-import { Pagination } from "@/shared/ui/Pagination";
 import { ConsultationWizard } from "@/features/consultations/ConsultationWizard";
 import { useConsultations } from "@/shared/hooks/useConsultations";
 import {
   downloadFactura, downloadPrescripcion,
   type ConsultationData,
 } from "@/features/consultations/api";
-
-const PAGE_SIZE = 20;
 
 const statusLabels: Record<string, string> = {
   draft: "Borrador",
@@ -21,12 +17,7 @@ const statusLabels: Record<string, string> = {
 
 export function DashboardConsultas() {
   const [showWizard, setShowWizard] = useState(false);
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const { data, isLoading } = useConsultations({ search: search || undefined, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
-  const consultations = data?.items ?? [];
-  const totalCount = data?.total_count ?? 0;
-  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const { data: consultations = [], isLoading } = useConsultations({ limit: 50 });
 
   if (showWizard) {
     return (
@@ -109,13 +100,6 @@ export function DashboardConsultas() {
         <h1 className="text-2xl font-bold text-gray-900">Consultas</h1>
         <Button onClick={() => setShowWizard(true)}>Nueva consulta</Button>
       </div>
-      <div className="mb-4 max-w-sm">
-        <Input
-          placeholder="Buscar consulta..."
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-        />
-      </div>
       <Table
         columns={columns}
         data={consultations}
@@ -123,7 +107,6 @@ export function DashboardConsultas() {
         loading={isLoading}
         emptyMessage="No hay consultas registradas"
       />
-      <Pagination page={page} totalPages={totalPages} totalItems={totalCount} onPageChange={setPage} />
     </div>
   );
 }

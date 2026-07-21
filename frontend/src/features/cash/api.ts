@@ -11,11 +11,10 @@ export function fetchMovements(params?: import("@/entities/cash/types").Movement
   if (params?.movement_type) searchParams.set("movement_type", params.movement_type);
   if (params?.date_from) searchParams.set("date_from", params.date_from);
   if (params?.date_to) searchParams.set("date_to", params.date_to);
-  if (params?.search) searchParams.set("search", params.search);
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/cash/types").PaginatedResponse<import("@/entities/cash/types").CashMovementData>>(`/cash/movements${qs ? `?${qs}` : ""}`);
+  return apiGet<import("@/entities/cash/types").CashMovementData[]>(`/cash/movements${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchMovement(id: string) {

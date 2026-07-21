@@ -22,7 +22,7 @@ describe("supplies api", () => {
   afterEach(() => vi.clearAllMocks());
 
   it("fetchSupplies llama a GET /supplies con search", async () => {
-    vi.mocked(apiGet).mockResolvedValue({ items: [], total_count: 0 });
+    vi.mocked(apiGet).mockResolvedValue([]);
     await fetchSupplies({ search: "amox" });
     expect(apiGet).toHaveBeenCalledWith("/supplies?search=amox");
   });
@@ -57,10 +57,10 @@ describe("supplies api", () => {
   });
 
   it("fetchProcedures llama a GET /procedures", async () => {
-    vi.mocked(apiGet).mockResolvedValue({ items: [{ id: "p1", name: "Vacunación" }], total_count: 1 });
+    vi.mocked(apiGet).mockResolvedValue([{ id: "p1", name: "Vacunación" }]);
     const result = await fetchProcedures(50, 0);
     expect(apiGet).toHaveBeenCalledWith("/procedures?limit=50&offset=0");
-    expect(result).toEqual({ items: [{ id: "p1", name: "Vacunación" }], total_count: 1 });
+    expect(result).toEqual([{ id: "p1", name: "Vacunación" }]);
   });
 
   it("uploadSuppliesCsv llama a POST /supplies/upload con FormData", async () => {

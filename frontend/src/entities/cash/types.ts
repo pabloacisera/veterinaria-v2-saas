@@ -27,12 +27,6 @@ export interface MovementListParams {
   movement_type?: string;
   date_from?: string;
   date_to?: string;
-  search?: string;
   limit?: number;
   offset?: number;
-}
-
-export interface PaginatedResponse<T> {
-  items: T[];
-  total_count: number;
 }

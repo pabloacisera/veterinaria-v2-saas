@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as api from "@/features/supplies/api";
-import type { PaginatedResponse, SupplyData, ProcedureData } from "@/entities/supply/types";
 
 const KEY = "supplies";
 
