@@ -45,7 +45,7 @@ describe("SaleWizard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     queryClient.clear();
-    vi.mocked(fetchSupplies).mockResolvedValue(mockSupplies);
+    vi.mocked(fetchSupplies).mockResolvedValue({ items: mockSupplies, total: 2, offset: 0, limit: 100 });
     vi.mocked(saveDraft).mockResolvedValue(undefined as never);
     vi.mocked(clearDraft).mockResolvedValue(undefined as never);
     vi.mocked(createSale).mockResolvedValue({ id: "sale1" } as never);

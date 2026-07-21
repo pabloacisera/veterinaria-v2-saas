@@ -4,10 +4,15 @@ import * as api from "@/features/pets/api";
 const KEY = "pets";
 
 export function usePets(params?: import("@/entities/pet/types").PetListParams) {
-  return useQuery({
+  const query = useQuery({
     queryKey: [KEY, params],
     queryFn: () => api.fetchPets(params),
   });
+  return {
+    ...query,
+    data: query.data?.items ?? [],
+    total: query.data?.total ?? 0,
+  };
 }
 
 export function usePet(id: string) {
