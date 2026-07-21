@@ -60,16 +60,21 @@ class CashRepository(CashRepositoryInterface):
             params.append(date_to)
             idx += 1
 
-        params.extend([limit, offset])
-        sql = f"""
-            SELECT * FROM cash_movements
-            WHERE {' AND '.join(conditions)}
-            ORDER BY created_at DESC
-            LIMIT ${idx} OFFSET ${idx + 1}
-        """
+        where = " AND ".join(conditions)
         async with self.pool.acquire() as conn:
+            count = await conn.fetchval(
+                f"SELECT COUNT(*) FROM cash_movements WHERE {where}",
+                *params,
+            )
+            params.extend([limit, offset])
+            sql = f"""
+                SELECT * FROM cash_movements
+                WHERE {where}
+                ORDER BY created_at DESC
+                LIMIT ${idx} OFFSET ${idx + 1}
+            """
             rows = await conn.fetch(sql, *params)
-            return [self._row_to_movement(r) for r in rows]
+            return [self._row_to_movement(r) for r in rows], count
 
     async def list_pending_by_source_ids(self, company_id: UUID, source_ids: list[UUID]) -> list[CashMovement]:
         if not source_ids:
