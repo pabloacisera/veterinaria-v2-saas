@@ -89,4 +89,6 @@ class ListStoreSalesUseCase:
         self.store_repo = store_repo
 
     async def execute(self, company_id: UUID, limit: int = 50, offset: int = 0):
-        return await self.store_repo.list_by_company(company_id, limit, offset)
+        items = await self.store_repo.list_by_company(company_id, limit, offset)
+        total = await self.store_repo.count_by_company(company_id)
+        return {"items": items, "total": total, "offset": offset, "limit": limit}

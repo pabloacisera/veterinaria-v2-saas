@@ -31,7 +31,7 @@ async def create_consultation(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[ConsultationResponse])
+@router.get("")
 async def list_consultations(
     pet_id: UUID = Query(None),
     limit: int = Query(50, le=100),

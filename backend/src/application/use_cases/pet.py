@@ -76,10 +76,14 @@ class ListPetsUseCase:
         self.pet_repo = pet_repo
 
     async def execute(self, company_id: UUID, search: str = None, owner_id: UUID = None, limit: int = 50, offset: int = 0):
-        return await self.pet_repo.list_by_company(
+        items = await self.pet_repo.list_by_company(
             company_id=company_id, search=search,
             owner_id=owner_id, limit=limit, offset=offset,
         )
+        total = await self.pet_repo.count_by_company(
+            company_id=company_id, search=search, owner_id=owner_id,
+        )
+        return {"items": items, "total": total, "offset": offset, "limit": limit}
 
 
 class UpdatePetUseCase:

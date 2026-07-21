@@ -71,6 +71,34 @@ class CashRepository(CashRepositoryInterface):
             rows = await conn.fetch(sql, *params)
             return [self._row_to_movement(r) for r in rows]
 
+    async def count_by_company(self, company_id: UUID, status: str = None,
+                               movement_type: str = None,
+                               date_from: datetime = None, date_to: datetime = None) -> int:
+        conditions = ["company_id = $1", "deleted_at IS NULL"]
+        params = [company_id]
+        idx = 2
+        if status:
+            conditions.append(f"status = ${idx}")
+            params.append(status)
+            idx += 1
+        if movement_type:
+            conditions.append(f"movement_type = ${idx}")
+            params.append(movement_type)
+            idx += 1
+        if date_from:
+            conditions.append(f"created_at >= ${idx}")
+            params.append(date_from)
+            idx += 1
+        if date_to:
+            conditions.append(f"created_at <= ${idx}")
+            params.append(date_to)
+            idx += 1
+
+        sql = f"SELECT COUNT(*) FROM cash_movements WHERE {' AND '.join(conditions)}"
+        async with self.pool.acquire() as conn:
+            row = await conn.fetchval(sql, *params)
+            return row or 0
+
     async def list_pending_by_source_ids(self, company_id: UUID, source_ids: list[UUID]) -> list[CashMovement]:
         if not source_ids:
             return []

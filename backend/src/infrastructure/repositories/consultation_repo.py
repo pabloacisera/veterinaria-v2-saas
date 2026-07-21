@@ -59,6 +59,20 @@ class ConsultationRepository(ConsultationRepositoryInterface):
                 )
             return [self._row_to_consultation(r) for r in rows]
 
+    async def count_by_company(self, company_id: UUID, pet_id: UUID = None) -> int:
+        async with self.pool.acquire() as conn:
+            if pet_id:
+                row = await conn.fetchval(
+                    "SELECT COUNT(*) FROM consultations WHERE company_id = $1 AND pet_id = $2 AND deleted_at IS NULL",
+                    company_id, pet_id,
+                )
+            else:
+                row = await conn.fetchval(
+                    "SELECT COUNT(*) FROM consultations WHERE company_id = $1 AND deleted_at IS NULL",
+                    company_id,
+                )
+            return row or 0
+
     async def add_procedure(self, cp: ConsultationProcedure):
         async with self.pool.acquire() as conn:
             await conn.execute(

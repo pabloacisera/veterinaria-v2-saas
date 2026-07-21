@@ -22,7 +22,7 @@ async def create_procedure(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[ProcedureResponse])
+@router.get("")
 async def list_procedures(
     limit: int = Query(50, le=100),
     offset: int = Query(0, ge=0),
