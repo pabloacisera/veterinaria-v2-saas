@@ -17,6 +17,7 @@ from src.interfaces.schemas.client import (
     CreateClientRequest,
     UpdateClientRequest,
 )
+from src.interfaces.schemas.common import PaginatedResponse
 
 router = APIRouter(prefix="/api/v1/clients", tags=["clients"])
 
@@ -45,7 +46,7 @@ async def create_client(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[ClientResponse])
+@router.get("", response_model=PaginatedResponse[ClientResponse])
 async def list_clients(
     search: str = Query(None),
     limit: int = Query(50, le=100),
@@ -54,12 +55,13 @@ async def list_clients(
     company_id: UUID = Depends(get_company_id),
 ):
     use_case = container.resolve(ListClientsUseCase)
-    return await use_case.execute(
+    items, total = await use_case.execute(
         company_id=company_id,
         search=search,
         limit=limit,
         offset=offset,
     )
+    return PaginatedResponse(items=items, total_count=total)
 
 
 @router.get("/{client_id}", response_model=ClientResponse)
