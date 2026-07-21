@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/Button";
 import { loginUser } from "./api";
 
 interface LoginFormProps {
-  onSuccess: (token: string, expiresIn?: number) => void;
+  onSuccess: (token: string) => void;
 }
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
@@ -29,7 +29,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     setLoading(true);
     try {
       const result = await loginUser({ email, password });
-      onSuccess(result.access_token, result.expires_in);
+      onSuccess(result.access_token);
     } catch (err: unknown) {
       const msg =
         err instanceof Error ? err.message : "Error al iniciar sesión";
@@ -77,7 +77,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       <button
         type="button"
         onClick={() => {
-          window.location.href = "https://dev-api.artisandevs.site/api/v1/auth/google";
+          window.location.href = "/api/v1/auth/google";
         }}
         className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
       >

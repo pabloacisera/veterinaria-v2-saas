@@ -3,15 +3,9 @@ import os
 import asyncpg
 import redis.asyncio as redis
 
-from pgvector.asyncpg import register_vector
-
 _pool: asyncpg.Pool = None
 _community_pool: asyncpg.Pool = None
 _redis_connections: dict[int, redis.Redis] = {}
-
-
-async def _init_core_conn(conn):
-    await register_vector(conn)
 
 
 async def get_pool() -> asyncpg.Pool:
@@ -21,7 +15,6 @@ async def get_pool() -> asyncpg.Pool:
             dsn=os.getenv("DATABASE_URL"),
             min_size=2,
             max_size=10,
-            init=_init_core_conn,
         )
     return _pool
 

@@ -30,5 +30,3 @@ export function ClienteInicio() {
     </ClienteLayout>
   );
 }
-
-export default ClienteInicio;

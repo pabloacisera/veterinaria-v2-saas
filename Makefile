@@ -1,4 +1,4 @@
-.PHONY: up down migrate seed reset clear test test-unit test-integration test-e2e lint format logs shell-backend tunnel
+.PHONY: up down migrate seed reset test test-unit test-integration test-e2e lint format logs shell-backend tunnel
 
 up:
 	@bash scripts/dev-up.sh
@@ -14,9 +14,6 @@ seed:
 
 reset:
 	@bash scripts/dev-reset-db.sh
-
-clear:
-	@bash scripts/dev-clear-data.sh
 
 test: test-unit test-integration
 

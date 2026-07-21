@@ -28,5 +28,3 @@ export function DashboardConfiguracion() {
     </div>
   );
 }
-
-export default DashboardConfiguracion;

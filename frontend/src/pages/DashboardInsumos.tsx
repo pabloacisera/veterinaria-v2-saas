@@ -32,5 +32,3 @@ export function DashboardInsumos() {
     </div>
   );
 }
-
-export default DashboardInsumos;

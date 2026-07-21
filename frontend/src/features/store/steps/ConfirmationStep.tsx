@@ -8,7 +8,6 @@ interface LineItem {
 
 interface ConfirmationStepProps {
   clientName: string;
-  selectedClient: import("@/entities/client/types").ClientData | null;
   paymentMethod: string;
   items: LineItem[];
   subtotal: number;
@@ -22,7 +21,6 @@ interface ConfirmationStepProps {
 
 export function ConfirmationStep({
   clientName,
-  selectedClient,
   paymentMethod,
   items,
   subtotal,
@@ -40,7 +38,7 @@ export function ConfirmationStep({
       <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
         <div className="flex justify-between">
           <span className="text-gray-500">Cliente</span>
-          <span>{selectedClient ? `${selectedClient.name} ${selectedClient.surname}` : clientName || "Venta al público"}</span>
+          <span>{clientName || "Venta al público"}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-gray-500">Método de pago</span>
