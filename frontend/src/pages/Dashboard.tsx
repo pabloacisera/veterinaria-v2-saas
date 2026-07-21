@@ -24,8 +24,8 @@ export function Dashboard() {
     }
 
     fetchClients({ limit: 1 })
-      .then((clients) => {
-        if (!Array.isArray(clients) || clients.length === 0) {
+      .then((result) => {
+        if (!result.items || result.items.length === 0) {
           setShowOnboarding(true);
         }
         setChecking(false);
@@ -59,3 +59,5 @@ export function Dashboard() {
     </DashboardLayout>
   );
 }
+
+export default Dashboard;

@@ -148,3 +148,5 @@ export function DashboardChat() {
     </div>
   );
 }
+
+export default DashboardChat;
