@@ -11,7 +11,6 @@ from src.infrastructure.di import get_container
 from src.interfaces.schemas.cash import (
     CashMovementResponse, CreateCashMovementRequest, UpdateMovementStatusRequest,
 )
-from src.interfaces.schemas.common import PaginatedResponse
 
 router = APIRouter(prefix="/api/v1/cash", tags=["cash"])
 
@@ -29,7 +28,7 @@ async def create_movement(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/movements", response_model=PaginatedResponse[CashMovementResponse])
+@router.get("/movements", response_model=list[CashMovementResponse])
 async def list_movements(
     status: str = Query(None),
     movement_type: str = Query(None),
@@ -41,13 +40,12 @@ async def list_movements(
     company_id: UUID = Depends(get_company_id),
 ):
     use_case = container.resolve(ListCashMovementsUseCase)
-    items, total = await use_case.execute(
+    return await use_case.execute(
         company_id=company_id, status=status,
         movement_type=movement_type,
         date_from=date_from, date_to=date_to,
         limit=limit, offset=offset,
     )
-    return PaginatedResponse(items=items, total_count=total)
 
 
 @router.get("/movements/{movement_id}", response_model=CashMovementResponse)
