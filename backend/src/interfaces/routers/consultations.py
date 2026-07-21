@@ -10,7 +10,7 @@ from src.application.use_cases.document import (
     GenerateFacturaUseCase, GeneratePrescripcionUseCase,
 )
 from src.interfaces.schemas.consultation import (
-    AddProcedureItem, AddSupplyItem, ConsultationResponse,
+    AddProcedureItem, AddSupplyItem,
 )
 from src.interfaces.dependencies import get_company_id, get_user_id
 from src.infrastructure.di import get_container
