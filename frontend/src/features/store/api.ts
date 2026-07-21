@@ -1,4 +1,5 @@
 import { apiGet, apiPost, apiDelete } from "@/shared/lib/api";
+import type { PaginatedResponse } from "@/shared/types/pagination";
 export type {
   SaleData,
   SaleWithItems,
@@ -18,7 +19,7 @@ export function fetchSales(params?: import("@/entities/store/types").SaleListPar
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/store/types").SaleData[]>(`/stores/sales${qs ? `?${qs}` : ""}`);
+  return apiGet<PaginatedResponse<import("@/entities/store/types").SaleData>>(`/stores/sales${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchSale(id: string) {

@@ -4,10 +4,15 @@ import * as api from "@/features/supplies/api";
 const KEY = "supplies";
 
 export function useSupplies(params?: import("@/entities/supply/types").SupplyListParams) {
-  return useQuery({
+  const query = useQuery({
     queryKey: [KEY, params],
     queryFn: () => api.fetchSupplies(params),
   });
+  return {
+    ...query,
+    data: query.data?.items ?? [],
+    total: query.data?.total ?? 0,
+  };
 }
 
 export function useSupply(id: string) {
@@ -44,8 +49,13 @@ export function useDeleteSupply() {
 }
 
 export function useProcedures(limit = 100, offset = 0) {
-  return useQuery({
+  const query = useQuery({
     queryKey: ["procedures", limit, offset],
     queryFn: () => api.fetchProcedures(limit, offset),
   });
+  return {
+    ...query,
+    data: query.data?.items ?? [],
+    total: query.data?.total ?? 0,
+  };
 }

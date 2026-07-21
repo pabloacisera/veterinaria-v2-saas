@@ -4,10 +4,15 @@ import * as api from "@/features/clients/api";
 const KEY = "clients";
 
 export function useClients(params?: import("@/entities/client/types").ClientListParams) {
-  return useQuery({
+  const query = useQuery({
     queryKey: [KEY, params],
     queryFn: () => api.fetchClients(params),
   });
+  return {
+    ...query,
+    data: query.data?.items ?? [],
+    total: query.data?.total ?? 0,
+  };
 }
 
 export function useClient(id: string) {

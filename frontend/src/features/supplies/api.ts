@@ -1,4 +1,5 @@
 import { apiGet, apiPost, apiPut, apiDelete } from "@/shared/lib/api";
+import type { PaginatedResponse } from "@/shared/types/pagination";
 export type {
   SupplyData,
   CreateSupplyInput,
@@ -13,7 +14,7 @@ export function fetchSupplies(params?: import("@/entities/supply/types").SupplyL
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/supply/types").SupplyData[]>(`/supplies${qs ? `?${qs}` : ""}`);
+  return apiGet<PaginatedResponse<import("@/entities/supply/types").SupplyData>>(`/supplies${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchSupply(id: string) {
@@ -33,5 +34,5 @@ export function deleteSupply(id: string) {
 }
 
 export function fetchProcedures(limit = 100, offset = 0) {
-  return apiGet<import("@/entities/supply/types").ProcedureData[]>(`/procedures?limit=${limit}&offset=${offset}`);
+  return apiGet<PaginatedResponse<import("@/entities/supply/types").ProcedureData>>(`/procedures?limit=${limit}&offset=${offset}`);
 }
