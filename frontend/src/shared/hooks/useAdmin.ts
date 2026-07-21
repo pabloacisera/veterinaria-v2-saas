@@ -3,10 +3,10 @@ import * as api from "@/features/admin/api";
 
 const KEY = "admin";
 
-export function useCompanias(page = 1, pageSize = 20) {
+export function useCompanias(filters?: { page?: number; page_size?: number; search?: string; estado?: string; plan?: string }) {
   return useQuery({
-    queryKey: [KEY, "companias", page, pageSize],
-    queryFn: () => api.fetchCompanias(page, pageSize),
+    queryKey: [KEY, "companias", filters],
+    queryFn: () => api.fetchCompanias(filters),
   });
 }
 

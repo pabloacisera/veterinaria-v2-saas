@@ -15,10 +15,11 @@ export function createSale(data: import("@/entities/store/types").CreateSaleInpu
 
 export function fetchSales(params?: import("@/entities/store/types").SaleListParams) {
   const searchParams = new URLSearchParams();
+  if (params?.search) searchParams.set("search", params.search);
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/store/types").SaleData[]>(`/stores/sales${qs ? `?${qs}` : ""}`);
+  return apiGet<import("@/entities/store/types").PaginatedResponse<import("@/entities/store/types").SaleData>>(`/stores/sales${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchSale(id: string) {
