@@ -23,15 +23,6 @@ inclusion: always
 8. **Un documento (factura, prescripción) se genera una sola vez.** Verificar si ya existe una
    versión vigente (`es_version_actual = true`) en `documentos_generados` y si
    `requiere_regeneracion` es `false` antes de regenerar.
-9. **Toda lista/tabla que muestre datos del backend debe tener por defecto:**
-   - **Buscador** — filtro de texto que al menos nombre y marca/descripción.
-   - **Filtros** — controles para filtrar por campos relevantes del módulo (si el backend los
-     soporta, están expuestos; si no, se agregan).
-   - **Paginación** — navegación entre páginas con límite configurable (default 20, máx 100).
-     El componente Table no provee esto; cada lista lo implementa con el componente Pagination
-     compartido.
-   - **Excepción:** listas con ≤10 items hardcodeados (ej. comentarios de un post, items de una
-     factura) no necesitan paginación.
 
 ## Checklist antes de marcar una tarea como completada
 
@@ -42,7 +33,6 @@ inclusion: always
 - [ ] ¿Tomó alguna decisión técnica no trivial? ¿Quedó como ADR?
 - [ ] ¿El código sigue la capa/carpeta correcta (Clean Architecture / FSD)?
 - [ ] ¿Actualizó los steering/docs si el cambio modifica algo que describen?
-- [ ] ¿Si es una lista de datos del backend, tiene buscador, filtros y paginación?
 
 ## Orden de lectura antes de tocar código
 
