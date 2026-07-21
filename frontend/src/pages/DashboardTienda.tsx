@@ -2,14 +2,21 @@ import { useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
+import { Pagination } from "@/shared/ui/Pagination";
 import { SaleWizard } from "@/features/store/SaleWizard";
 import { useSales } from "@/shared/hooks/useStore";
 import { downloadSaleFactura } from "@/features/store/api";
 import type { SaleData } from "@/entities/store/types";
 
+const PAGE_SIZE = 20;
+
 export function DashboardTienda() {
   const [showWizard, setShowWizard] = useState(false);
-  const { data: sales = [], isLoading } = useSales({ limit: 50 });
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useSales({ limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
+  const sales = data?.items ?? [];
+  const totalCount = data?.total_count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
   if (showWizard) {
     return (
@@ -91,6 +98,7 @@ export function DashboardTienda() {
         loading={isLoading}
         emptyMessage="No hay ventas registradas"
       />
+      <Pagination page={page} totalPages={totalPages} totalItems={totalCount} onPageChange={setPage} />
     </div>
   );
 }

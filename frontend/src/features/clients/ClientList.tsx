@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
+import { Pagination } from "@/shared/ui/Pagination";
 import { useClients, useDeleteClient } from "@/shared/hooks/useClients";
 import type { ClientData } from "./api";
+
+const PAGE_SIZE = 20;
 
 interface ClientListProps {
   onEdit: (client: ClientData) => void;
@@ -12,8 +15,11 @@ interface ClientListProps {
 
 export function ClientList({ onEdit, onCreate }: ClientListProps) {
   const [search, setSearch] = useState("");
-  const { data, isLoading } = useClients({ search: search || undefined, limit: 100 });
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useClients({ search: search || undefined, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
   const clients = data?.items ?? [];
+  const totalCount = data?.total_count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const deleteMutation = useDeleteClient();
 
   async function handleDelete(id: string) {
@@ -73,7 +79,7 @@ export function ClientList({ onEdit, onCreate }: ClientListProps) {
           <Input
             placeholder="Buscar cliente..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           />
         </div>
         <Button onClick={onCreate}>Nuevo cliente</Button>
@@ -85,6 +91,7 @@ export function ClientList({ onEdit, onCreate }: ClientListProps) {
         loading={isLoading}
         emptyMessage="No hay clientes registrados"
       />
+      <Pagination page={page} totalPages={totalPages} totalItems={totalCount} onPageChange={setPage} />
     </div>
   );
 }
