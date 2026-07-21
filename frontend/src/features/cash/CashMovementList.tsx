@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
+import { Pagination } from "@/shared/ui/Pagination";
 import { useMovements, useUpdateMovementStatus } from "@/shared/hooks/useCash";
 import type { CashMovementData } from "./api";
+
+const PAGE_SIZE = 20;
 
 interface CashMovementListProps {
   onCreate: () => void;
@@ -17,12 +20,21 @@ const typeLabels: Record<string, string> = {
 export function CashMovementList({ onCreate }: CashMovementListProps) {
   const [filterType, setFilterType] = useState<string>("");
   const [filterStatus, setFilterStatus] = useState<string>("");
-  const { data: movements = [], isLoading } = useMovements({
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * PAGE_SIZE;
+  const { data: movements = [], total, isLoading } = useMovements({
     movement_type: filterType || undefined,
     status: filterStatus || undefined,
-    limit: 100,
+    limit: PAGE_SIZE,
+    offset,
   });
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / PAGE_SIZE)), [total]);
   const updateStatusMutation = useUpdateMovementStatus();
+
+  function handleFilterChange(value: string, setter: (v: string) => void) {
+    setter(value);
+    setPage(1);
+  }
 
   async function handleToggleStatus(m: CashMovementData) {
     const newStatus = m.status === "pagado" ? "pendiente" : "pagado";
@@ -129,7 +141,7 @@ export function CashMovementList({ onCreate }: CashMovementListProps) {
       <div className="flex items-center gap-3">
         <select
           value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
+          onChange={(e) => handleFilterChange(e.target.value, setFilterType)}
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <option value="">Todos los tipos</option>
@@ -138,7 +150,7 @@ export function CashMovementList({ onCreate }: CashMovementListProps) {
         </select>
         <select
           value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
+          onChange={(e) => handleFilterChange(e.target.value, setFilterStatus)}
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <option value="">Todos los estados</option>
@@ -149,13 +161,16 @@ export function CashMovementList({ onCreate }: CashMovementListProps) {
         <Button onClick={onCreate}>Nuevo movimiento</Button>
       </div>
 
-      <Table
-        columns={columns}
-        data={movements}
-        keyExtractor={(m) => m.id}
-        loading={isLoading}
-        emptyMessage="No hay movimientos registrados"
-      />
+      <div className="rounded-lg border border-gray-100">
+        <Table
+          columns={columns}
+          data={movements}
+          keyExtractor={(m) => m.id}
+          loading={isLoading}
+          emptyMessage="No hay movimientos registrados"
+        />
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      </div>
     </div>
   );
 }

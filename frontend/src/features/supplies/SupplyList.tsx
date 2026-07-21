@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
+import { Pagination } from "@/shared/ui/Pagination";
 import { useSupplies, useDeleteSupply } from "@/shared/hooks/useSupplies";
 import type { SupplyData } from "./api";
+
+const PAGE_SIZE = 20;
 
 interface SupplyListProps {
   onEdit: (supply: SupplyData) => void;
@@ -13,8 +16,20 @@ interface SupplyListProps {
 
 export function SupplyList({ onEdit, onCreate }: SupplyListProps) {
   const [search, setSearch] = useState("");
-  const { data: supplies = [], isLoading } = useSupplies({ search: search || undefined, limit: 100 });
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * PAGE_SIZE;
+  const { data: supplies = [], total, isLoading } = useSupplies({
+    search: search || undefined,
+    limit: PAGE_SIZE,
+    offset,
+  });
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / PAGE_SIZE)), [total]);
   const deleteMutation = useDeleteSupply();
+
+  function handleSearch(value: string) {
+    setSearch(value);
+    setPage(1);
+  }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este insumo?")) return;
@@ -87,18 +102,21 @@ export function SupplyList({ onEdit, onCreate }: SupplyListProps) {
           <Input
             placeholder="Buscar insumo..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
         <Button onClick={onCreate}>Nuevo insumo</Button>
       </div>
-      <Table
-        columns={columns}
-        data={supplies}
-        keyExtractor={(s) => s.id}
-        loading={isLoading}
-        emptyMessage="No hay insumos registrados"
-      />
+      <div className="rounded-lg border border-gray-100">
+        <Table
+          columns={columns}
+          data={supplies}
+          keyExtractor={(s) => s.id}
+          loading={isLoading}
+          emptyMessage="No hay insumos registrados"
+        />
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      </div>
     </div>
   );
 }
