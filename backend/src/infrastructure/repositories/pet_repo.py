@@ -81,6 +81,30 @@ class PetRepository(PetRepositoryInterface):
                 )
             return [self._row_to_pet(r) for r in rows]
 
+    async def count_by_company(self, company_id: UUID, search: str = None, owner_id: UUID = None) -> int:
+        async with self.pool.acquire() as conn:
+            if search:
+                pattern = f"%{search}%"
+                row = await conn.fetchval(
+                    """
+                    SELECT COUNT(*) FROM pets
+                    WHERE company_id = $1 AND deleted_at IS NULL
+                      AND (name ILIKE $2 OR breed ILIKE $2 OR species ILIKE $2)
+                    """,
+                    company_id, pattern,
+                )
+            elif owner_id:
+                row = await conn.fetchval(
+                    "SELECT COUNT(*) FROM pets WHERE company_id = $1 AND owner_id = $2 AND deleted_at IS NULL",
+                    company_id, owner_id,
+                )
+            else:
+                row = await conn.fetchval(
+                    "SELECT COUNT(*) FROM pets WHERE company_id = $1 AND deleted_at IS NULL",
+                    company_id,
+                )
+            return row or 0
+
     async def update(self, pet_id: UUID, company_id: UUID, data: dict) -> Pet:
         fields = []
         values = []

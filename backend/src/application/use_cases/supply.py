@@ -44,7 +44,9 @@ class ListSuppliesUseCase:
         self.supply_repo = supply_repo
 
     async def execute(self, company_id: UUID, search: str = None, limit: int = 50, offset: int = 0):
-        return await self.supply_repo.list_by_company(company_id, search, limit, offset)
+        items = await self.supply_repo.list_by_company(company_id, search, limit, offset)
+        total = await self.supply_repo.count_by_company(company_id, search)
+        return {"items": items, "total": total, "offset": offset, "limit": limit}
 
 
 class GetSupplyUseCase:
@@ -117,4 +119,6 @@ class ListProceduresUseCase:
         self.procedure_repo = procedure_repo
 
     async def execute(self, company_id: UUID, limit: int = 50, offset: int = 0):
-        return await self.procedure_repo.list_by_company(company_id, limit, offset)
+        items = await self.procedure_repo.list_by_company(company_id, limit, offset)
+        total = await self.procedure_repo.count_by_company(company_id)
+        return {"items": items, "total": total, "offset": offset, "limit": limit}

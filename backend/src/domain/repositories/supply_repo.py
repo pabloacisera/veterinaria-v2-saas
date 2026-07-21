@@ -15,6 +15,9 @@ class SupplyRepository(ABC):
     async def list_by_company(self, company_id: UUID, search: str = None, limit: int = 50, offset: int = 0): ...
 
     @abstractmethod
+    async def count_by_company(self, company_id: UUID, search: str = None) -> int: ...
+
+    @abstractmethod
     async def update(self, supply_id: UUID, company_id: UUID, data: dict) -> Supply: ...
 
     @abstractmethod
@@ -30,6 +33,9 @@ class ProcedureRepository(ABC):
 
     @abstractmethod
     async def list_by_company(self, company_id: UUID, limit: int = 50, offset: int = 0): ...
+
+    @abstractmethod
+    async def count_by_company(self, company_id: UUID) -> int: ...
 
     @abstractmethod
     async def update(self, procedure_id: UUID, company_id: UUID, data: dict) -> Procedure: ...

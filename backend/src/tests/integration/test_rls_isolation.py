@@ -149,7 +149,8 @@ class TestRLSIsolation:
             headers=await self._auth_header(self.token_b),
         )
         assert resp_list.status_code == 200
-        ids = [c["id"] for c in resp_list.json()]
+        data = resp_list.json()
+        ids = [c["id"] for c in data["items"]]
         assert resp.json()["id"] not in ids
 
     async def test_tenant_b_cannot_access_tenant_a_pet_by_id(self, client):

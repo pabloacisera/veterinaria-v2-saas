@@ -62,6 +62,14 @@ class StoreRepository(StoreRepositoryInterface):
             )
             return [self._row_to_sale(r) for r in rows]
 
+    async def count_by_company(self, company_id: UUID) -> int:
+        async with self.pool.acquire() as conn:
+            row = await conn.fetchval(
+                "SELECT COUNT(*) FROM store_sales WHERE company_id = $1 AND deleted_at IS NULL",
+                company_id,
+            )
+            return row or 0
+
     async def list_items(self, sale_id: UUID) -> list[StoreSaleItem]:
         async with self.pool.acquire() as conn:
             rows = await conn.fetch(

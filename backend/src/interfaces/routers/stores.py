@@ -26,7 +26,7 @@ async def create_sale(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/sales", response_model=list[StoreSaleResponse])
+@router.get("/sales")
 async def list_sales(
     limit: int = Query(50, le=100),
     offset: int = Query(0, ge=0),
