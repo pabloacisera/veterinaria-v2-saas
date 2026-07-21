@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
+import { Pagination } from "@/shared/ui/Pagination";
 import { usePets, useDeletePet } from "@/shared/hooks/usePets";
 import type { PetData } from "./api";
+
+const PAGE_SIZE = 20;
 
 interface PetListProps {
   onEdit: (pet: PetData) => void;
@@ -12,8 +15,20 @@ interface PetListProps {
 
 export function PetList({ onEdit, onCreate }: PetListProps) {
   const [search, setSearch] = useState("");
-  const { data: pets = [], isLoading } = usePets({ search: search || undefined, limit: 100 });
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * PAGE_SIZE;
+  const { data: pets = [], total, isLoading } = usePets({
+    search: search || undefined,
+    limit: PAGE_SIZE,
+    offset,
+  });
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / PAGE_SIZE)), [total]);
   const deleteMutation = useDeletePet();
+
+  function handleSearch(value: string) {
+    setSearch(value);
+    setPage(1);
+  }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar esta mascota?")) return;
@@ -71,18 +86,21 @@ export function PetList({ onEdit, onCreate }: PetListProps) {
           <Input
             placeholder="Buscar mascota..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
         <Button onClick={onCreate}>Nueva mascota</Button>
       </div>
-      <Table
-        columns={columns}
-        data={pets}
-        keyExtractor={(p) => p.id}
-        loading={isLoading}
-        emptyMessage="No hay mascotas registradas"
-      />
+      <div className="rounded-lg border border-gray-100">
+        <Table
+          columns={columns}
+          data={pets}
+          keyExtractor={(p) => p.id}
+          loading={isLoading}
+          emptyMessage="No hay mascotas registradas"
+        />
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      </div>
     </div>
   );
 }
