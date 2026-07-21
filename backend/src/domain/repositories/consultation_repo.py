@@ -18,6 +18,9 @@ class ConsultationRepository(ABC):
     async def list_by_company(self, company_id: UUID, pet_id: UUID = None, limit: int = 50, offset: int = 0): ...
 
     @abstractmethod
+    async def count_by_company(self, company_id: UUID, pet_id: UUID = None) -> int: ...
+
+    @abstractmethod
     async def add_procedure(self, cp: ConsultationProcedure): ...
 
     @abstractmethod

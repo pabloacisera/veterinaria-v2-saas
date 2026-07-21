@@ -40,12 +40,18 @@ class ListCashMovementsUseCase:
         limit: int = 50,
         offset: int = 0,
     ):
-        return await self.cash_repo.list_by_company(
+        items = await self.cash_repo.list_by_company(
             company_id=company_id, status=status,
             movement_type=movement_type,
             date_from=date_from, date_to=date_to,
             limit=limit, offset=offset,
         )
+        total = await self.cash_repo.count_by_company(
+            company_id=company_id, status=status,
+            movement_type=movement_type,
+            date_from=date_from, date_to=date_to,
+        )
+        return {"items": items, "total": total, "offset": offset, "limit": limit}
 
 
 class GetCashMovementUseCase:

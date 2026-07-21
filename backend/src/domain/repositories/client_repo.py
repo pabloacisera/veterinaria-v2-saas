@@ -18,6 +18,9 @@ class ClientRepository(ABC):
     async def list_by_company(self, company_id: UUID, search: str = None, limit: int = 50, offset: int = 0): ...
 
     @abstractmethod
+    async def count_by_company(self, company_id: UUID, search: str = None) -> int: ...
+
+    @abstractmethod
     async def update(self, client_id: UUID, company_id: UUID, data: dict) -> Client: ...
 
     @abstractmethod

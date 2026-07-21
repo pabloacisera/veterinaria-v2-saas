@@ -161,10 +161,14 @@ class ListConsultationsUseCase:
         self.consultation_repo = consultation_repo
 
     async def execute(self, company_id: UUID, pet_id: UUID = None, limit: int = 50, offset: int = 0):
-        return await self.consultation_repo.list_by_company(
+        items = await self.consultation_repo.list_by_company(
             company_id=company_id, pet_id=pet_id,
             limit=limit, offset=offset,
         )
+        total = await self.consultation_repo.count_by_company(
+            company_id=company_id, pet_id=pet_id,
+        )
+        return {"items": items, "total": total, "offset": offset, "limit": limit}
 
 
 class SaveDraftUseCase:

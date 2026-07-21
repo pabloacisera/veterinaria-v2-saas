@@ -27,7 +27,7 @@ async def create_pet(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[PetResponse])
+@router.get("")
 async def list_pets(
     search: str = Query(None),
     owner_id: UUID = Query(None),

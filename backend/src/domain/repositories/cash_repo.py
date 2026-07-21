@@ -21,6 +21,13 @@ class CashRepository(ABC):
     ): ...
 
     @abstractmethod
+    async def count_by_company(
+        self, company_id: UUID,
+        status: str = None, movement_type: str = None,
+        date_from: datetime = None, date_to: datetime = None,
+    ) -> int: ...
+
+    @abstractmethod
     async def list_pending_by_source_ids(self, company_id: UUID, source_ids: list[UUID]) -> list[CashMovement]: ...
 
     @abstractmethod

@@ -18,6 +18,9 @@ class PetRepository(ABC):
     async def list_by_company(self, company_id: UUID, search: str = None, owner_id: UUID = None, limit: int = 50, offset: int = 0): ...
 
     @abstractmethod
+    async def count_by_company(self, company_id: UUID, search: str = None, owner_id: UUID = None) -> int: ...
+
+    @abstractmethod
     async def update(self, pet_id: UUID, company_id: UUID, data: dict) -> Pet: ...
 
     @abstractmethod

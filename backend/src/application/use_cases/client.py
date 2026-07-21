@@ -96,12 +96,11 @@ class ListClientsUseCase:
         self.client_repo = client_repo
 
     async def execute(self, company_id: UUID, search: str = None, limit: int = 50, offset: int = 0):
-        return await self.client_repo.list_by_company(
-            company_id=company_id,
-            search=search,
-            limit=limit,
-            offset=offset,
+        items = await self.client_repo.list_by_company(
+            company_id=company_id, search=search, limit=limit, offset=offset,
         )
+        total = await self.client_repo.count_by_company(company_id=company_id, search=search)
+        return {"items": items, "total": total, "offset": offset, "limit": limit}
 
 
 class UpdateClientUseCase:

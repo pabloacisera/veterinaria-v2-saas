@@ -27,7 +27,7 @@ async def create_supply(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[SupplyResponse])
+@router.get("")
 async def list_supplies(
     search: str = Query(None),
     limit: int = Query(50, le=100),

@@ -45,7 +45,7 @@ async def create_client(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[ClientResponse])
+@router.get("")
 async def list_clients(
     search: str = Query(None),
     limit: int = Query(50, le=100),
