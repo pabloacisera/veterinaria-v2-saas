@@ -49,6 +49,14 @@ class PetRepository(PetRepositoryInterface):
         async with self.pool.acquire() as conn:
             if search:
                 pattern = f"%{search}%"
+                count = await conn.fetchval(
+                    """
+                    SELECT COUNT(*) FROM pets
+                    WHERE company_id = $1 AND deleted_at IS NULL
+                      AND (name ILIKE $2 OR breed ILIKE $2 OR species ILIKE $2)
+                    """,
+                    company_id, pattern,
+                )
                 rows = await conn.fetch(
                     """
                     SELECT * FROM pets
@@ -60,6 +68,10 @@ class PetRepository(PetRepositoryInterface):
                     company_id, pattern, limit, offset,
                 )
             elif owner_id:
+                count = await conn.fetchval(
+                    "SELECT COUNT(*) FROM pets WHERE company_id = $1 AND owner_id = $2 AND deleted_at IS NULL",
+                    company_id, owner_id,
+                )
                 rows = await conn.fetch(
                     """
                     SELECT * FROM pets
@@ -70,6 +82,10 @@ class PetRepository(PetRepositoryInterface):
                     company_id, owner_id, limit, offset,
                 )
             else:
+                count = await conn.fetchval(
+                    "SELECT COUNT(*) FROM pets WHERE company_id = $1 AND deleted_at IS NULL",
+                    company_id,
+                )
                 rows = await conn.fetch(
                     """
                     SELECT * FROM pets
@@ -79,7 +95,7 @@ class PetRepository(PetRepositoryInterface):
                     """,
                     company_id, limit, offset,
                 )
-            return [self._row_to_pet(r) for r in rows]
+            return [self._row_to_pet(r) for r in rows], count
 
     async def update(self, pet_id: UUID, company_id: UUID, data: dict) -> Pet:
         fields = []
