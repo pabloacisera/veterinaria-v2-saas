@@ -13,6 +13,7 @@ npm-debug.log*
 # Build outputs
 dist/
 build/
+*.zip
 
 # Environment
 .env
