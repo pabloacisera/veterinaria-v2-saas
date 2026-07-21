@@ -3,11 +3,8 @@ import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
 import { Button } from "@/shared/ui/Button";
 import { Input } from "@/shared/ui/Input";
-import { Pagination } from "@/shared/ui/Pagination";
 import { useCompanias, useBlockCompania, useUnblockCompania } from "@/shared/hooks/useAdmin";
 import type { CompanyAdmin } from "./api";
-
-const PAGE_SIZE = 20;
 
 const statusBadge: Record<string, "success" | "warning" | "danger" | "default"> = {
   activa: "success",
@@ -26,19 +23,13 @@ export function AdminCompanyList({ onSelect }: AdminCompanyListProps) {
   const [estado, setEstado] = useState("");
   const [plan, setPlan] = useState("");
 
-  const { data, isLoading } = useCompanias({
-    page,
-    page_size: PAGE_SIZE,
-    search: search || undefined,
-    estado: estado || undefined,
-    plan: plan || undefined,
-  });
+  const { data, isLoading } = useCompanias(page, 20);
   const blockMutation = useBlockCompania();
   const unblockMutation = useUnblockCompania();
 
   const companies = data?.items ?? [];
   const total = data?.total ?? 0;
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const totalPages = Math.ceil(total / 20);
   const actionLoading = blockMutation.isPending || unblockMutation.isPending;
 
   async function handleBlock(company: CompanyAdmin) {
@@ -173,7 +164,31 @@ export function AdminCompanyList({ onSelect }: AdminCompanyListProps) {
         emptyMessage="No se encontraron compañías"
       />
 
-      <Pagination page={page} totalPages={totalPages} totalItems={total} onPageChange={setPage} />
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-500">
+            Página {page} de {totalPages} ({total} registros)
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+            >
+              Anterior
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Siguiente
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

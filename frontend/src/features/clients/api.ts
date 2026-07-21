@@ -12,7 +12,7 @@ export function fetchClients(params?: import("@/entities/client/types").ClientLi
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/client/types").PaginatedResponse<import("@/entities/client/types").ClientData>>(`/clients${qs ? `?${qs}` : ""}`);
+  return apiGet<import("@/entities/client/types").ClientData[]>(`/clients${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchClient(id: string) {

@@ -17,11 +17,10 @@ export function createConsultation(data: import("@/entities/consultation/types")
 export function fetchConsultations(params?: import("@/entities/consultation/types").ConsultationListParams) {
   const searchParams = new URLSearchParams();
   if (params?.pet_id) searchParams.set("pet_id", params.pet_id);
-  if (params?.search) searchParams.set("search", params.search);
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/consultation/types").PaginatedResponse<import("@/entities/consultation/types").ConsultationData>>(`/consultations${qs ? `?${qs}` : ""}`);
+  return apiGet<import("@/entities/consultation/types").ConsultationData[]>(`/consultations${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchConsultation(id: string) {

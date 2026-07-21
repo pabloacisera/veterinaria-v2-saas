@@ -43,12 +43,6 @@ export interface ConsultationDetail {
 
 export interface ConsultationListParams {
   pet_id?: string;
-  search?: string;
   limit?: number;
   offset?: number;
-}
-
-export interface PaginatedResponse<T> {
-  items: T[];
-  total_count: number;
 }

@@ -87,10 +87,10 @@ describe("ConsultationWizard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     queryClient.clear();
-    vi.mocked(fetchClients).mockResolvedValue({ items: mockClients, total_count: mockClients.length });
-    vi.mocked(fetchPets).mockResolvedValue({ items: mockPets, total_count: mockPets.length });
-    vi.mocked(fetchSupplies).mockResolvedValue({ items: mockSupplies, total_count: mockSupplies.length });
-    vi.mocked(fetchProcedures).mockResolvedValue({ items: mockProcedures, total_count: mockProcedures.length });
+    vi.mocked(fetchClients).mockResolvedValue(mockClients);
+    vi.mocked(fetchPets).mockResolvedValue(mockPets);
+    vi.mocked(fetchSupplies).mockResolvedValue(mockSupplies);
+    vi.mocked(fetchProcedures).mockResolvedValue(mockProcedures);
     vi.mocked(createConsultation).mockResolvedValue({ id: "con1" } as never);
     vi.mocked(addProcedures).mockResolvedValue(undefined as never);
     vi.mocked(addSupplies).mockResolvedValue(undefined as never);
