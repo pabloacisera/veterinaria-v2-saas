@@ -1,4 +1,5 @@
 import { apiGet, apiPost, apiPatch } from "@/shared/lib/api";
+import type { PaginatedResponse } from "@/shared/types/pagination";
 export type {
   CashMovementData,
   CreateMovementInput,
@@ -14,7 +15,7 @@ export function fetchMovements(params?: import("@/entities/cash/types").Movement
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/cash/types").CashMovementData[]>(`/cash/movements${qs ? `?${qs}` : ""}`);
+  return apiGet<PaginatedResponse<import("@/entities/cash/types").CashMovementData>>(`/cash/movements${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchMovement(id: string) {

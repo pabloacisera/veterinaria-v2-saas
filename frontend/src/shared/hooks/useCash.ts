@@ -4,10 +4,15 @@ import * as api from "@/features/cash/api";
 const KEY = "cash";
 
 export function useMovements(params?: import("@/entities/cash/types").MovementListParams) {
-  return useQuery({
+  const query = useQuery({
     queryKey: [KEY, "movements", params],
     queryFn: () => api.fetchMovements(params),
   });
+  return {
+    ...query,
+    data: query.data?.items ?? [],
+    total: query.data?.total ?? 0,
+  };
 }
 
 export function useMovement(id: string) {
