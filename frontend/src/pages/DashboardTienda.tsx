@@ -94,5 +94,3 @@ export function DashboardTienda() {
     </div>
   );
 }
-
-export default DashboardTienda;

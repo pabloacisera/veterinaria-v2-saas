@@ -76,7 +76,7 @@ class SubscriptionRepository(SubscriptionRepositoryInterface):
             rows = await conn.fetch(
                 """
                 SELECT * FROM subscriptions
-                WHERE status IN ('activa', 'trial') AND deleted_at IS NULL
+                WHERE status = 'activa' AND deleted_at IS NULL
                   AND end_date IS NOT NULL
                   AND end_date <= NOW() + INTERVAL '1 day' * $1
                   AND end_date > NOW()
@@ -90,7 +90,7 @@ class SubscriptionRepository(SubscriptionRepositoryInterface):
             rows = await conn.fetch(
                 """
                 SELECT * FROM subscriptions
-                WHERE status IN ('activa', 'trial', 'vencida') AND deleted_at IS NULL
+                WHERE status IN ('activa', 'vencida') AND deleted_at IS NULL
                   AND end_date IS NOT NULL AND end_date <= NOW()
                 """,
             )

@@ -35,35 +35,3 @@ export function deleteSupply(id: string) {
 export function fetchProcedures(limit = 100, offset = 0) {
   return apiGet<import("@/entities/supply/types").ProcedureData[]>(`/procedures?limit=${limit}&offset=${offset}`);
 }
-
-export interface UploadResult {
-  created: number;
-  errors: { fila: number; error: string }[];
-}
-
-export async function uploadSuppliesCsv(file: File): Promise<UploadResult> {
-  const formData = new FormData();
-  formData.append("file", file);
-  const res = await fetch(`${import.meta.env.VITE_API_URL || ""}/api/v1/supplies/upload`, {
-    method: "POST",
-    body: formData,
-    credentials: "include",
-  });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.detail || "Error al subir archivo");
-  }
-  return res.json();
-}
-
-export function downloadTemplate() {
-  const header = "Nombre,Marca,Descripcion,Precio Unitario,Unidad Base,Stock Inicial,Stock Minimo\n";
-  const example = "Vacuna Antirrábica,Zoetis,Vacuna antirrábica canina,2500,dosis,50,10\n";
-  const blob = new Blob([header + example], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "plantilla_insumos.csv";
-  a.click();
-  URL.revokeObjectURL(url);
-}
