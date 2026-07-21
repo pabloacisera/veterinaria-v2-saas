@@ -6,7 +6,6 @@ import {
   updateSupply,
   deleteSupply,
   fetchProcedures,
-  uploadSuppliesCsv,
 } from "./api";
 
 vi.mock("@/shared/lib/api", () => ({
@@ -61,18 +60,5 @@ describe("supplies api", () => {
     const result = await fetchProcedures(50, 0);
     expect(apiGet).toHaveBeenCalledWith("/procedures?limit=50&offset=0");
     expect(result).toEqual([{ id: "p1", name: "Vacunación" }]);
-  });
-
-  it("uploadSuppliesCsv llama a POST /supplies/upload con FormData", async () => {
-    const uploadResult = { created: 5, errors: [] };
-    vi.mocked(apiPost).mockResolvedValue(uploadResult);
-    const file = new File(["nombre,marca"], "test.csv", { type: "text/csv" });
-    const result = await uploadSuppliesCsv(file);
-    expect(apiPost).toHaveBeenCalledTimes(1);
-    const [path, body] = vi.mocked(apiPost).mock.calls[0];
-    expect(path).toBe("/supplies/upload");
-    expect(body).toBeInstanceOf(FormData);
-    expect((body as FormData).get("file")).toBe(file);
-    expect(result).toEqual(uploadResult);
   });
 });

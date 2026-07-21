@@ -44,7 +44,16 @@ export interface UploadResult {
 export async function uploadSuppliesCsv(file: File): Promise<UploadResult> {
   const formData = new FormData();
   formData.append("file", file);
-  return apiPost<UploadResult>("/supplies/upload", formData);
+  const res = await fetch(`${import.meta.env.VITE_API_URL || ""}/api/v1/supplies/upload`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || "Error al subir archivo");
+  }
+  return res.json();
 }
 
 export function downloadTemplate() {
