@@ -19,3 +19,6 @@ class UserRepository(ABC):
 
     @abstractmethod
     async def update_password(self, user_id: UUID, password_hash: str): ...
+
+    @abstractmethod
+    async def link_google(self, user_id: UUID, google_id: str): ...

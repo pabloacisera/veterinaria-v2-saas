@@ -44,7 +44,7 @@ describe("LoginForm", () => {
 
     await waitFor(() => {
       expect(mockLogin).toHaveBeenCalledWith({ email: "test@test.com", password: "123456" });
-      expect(onSuccess).toHaveBeenCalledWith("abc");
+      expect(onSuccess).toHaveBeenCalledWith("abc", 3600);
     });
   });
 

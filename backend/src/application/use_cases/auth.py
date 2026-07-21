@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
@@ -44,7 +45,8 @@ class RegisterUserUseCase:
         created = await self.user_repo.create(user)
 
         now = datetime.now(timezone.utc)
-        trial_end = now + timedelta(days=15)
+        trial_days = int(os.getenv("TRIAL_PERIOD_DAYS", "3"))
+        trial_end = now + timedelta(days=trial_days)
         sub = Subscription(
             company_id=company.id,
             plan=PlanType.MENSUAL,
@@ -57,11 +59,13 @@ class RegisterUserUseCase:
 
         code = self.activation_service.generate_code()
         await self.activation_service.store_code(created.email, code)
-        self.email_service.send_activation_code(
+        email_sent = self.email_service.send_activation_code(
             to_email=created.email,
             to_name=created.name,
             code=code,
         )
+        if not email_sent:
+            raise ValueError("No se pudo enviar el email de activación. Intentá nuevamente más tarde.")
 
         return created
 
@@ -133,7 +137,7 @@ class GoogleAuthUseCase:
 
         if user:
             if user.auth_method != AuthMethod.GOOGLE:
-                raise ValueError("Este email ya está registrado con otro método de inicio de sesión")
+                await self.user_repo.link_google(user.id, google_id)
             return await self.session_service.create_session(user.id, user.company_id)
 
         company = await self.company_repo.create(name=f"{name}'s Veterinary", cuit=None)

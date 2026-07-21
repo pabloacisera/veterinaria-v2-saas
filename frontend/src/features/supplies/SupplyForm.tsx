@@ -55,9 +55,6 @@ export function SupplyForm({ open, onClose, supply }: SupplyFormProps) {
         ...form,
         brand: form.brand || undefined,
         description: form.description || undefined,
-        unit_price: form.unit_price || undefined,
-        stock_quantity: form.stock_quantity || undefined,
-        min_stock: form.min_stock || undefined,
       };
       if (supply) {
         await updateMutation.mutateAsync({ id: supply.id, data: payload });

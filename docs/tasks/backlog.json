@@ -81,8 +81,8 @@
     },
     {
       "nombre": "Sprint 7 — Agente de IA (RAG + Chat)",
-      "objetivo": "El diferenciador central del producto: agente que conoce la veterinaria. sentence-transformers + pgvector + LangChain + streaming SSE + cuota por plan.",
-      "nota_cierre": "Sprint 7 completado: RAG funcional con sentence-transformers (all-MiniLM-L6-v2, 384 dims) + pgvector + índice HNSW + RLS. Backfill de datos existentes. Chat endpoint con SSE streaming y LangChain (OpenAI/Gemini/Groq). Cuota por plan contada en Redis por CUIT (200/500/ilimitado). UI de chat completa con efecto maquina de escribir, markdown renderizado, historial e indicador de cuota. Tests de embeddings, chat, cuota, backfill y contrato SSE.",
+      "objetivo": "El diferenciador central del producto: agente que conoce la veterinaria. fastembed (ONNX) + pgvector + LangChain + streaming SSE + cuota por plan.",
+      "nota_cierre": "Sprint 7 completado: RAG funcional con fastembed (all-MiniLM-L6-v2, 384 dims) + pgvector + índice HNSW + RLS. Backfill de datos existentes. Chat endpoint con SSE streaming y LangChain (OpenAI/Gemini/Groq). Cuota por plan contada en Redis por CUIT (200/500/ilimitado). UI de chat completa con efecto maquina de escribir, markdown renderizado, historial e indicador de cuota. Tests de embeddings, chat, cuota, backfill y contrato SSE.",
       "tareas": [
         "TASK-042",
         "TASK-043",
@@ -197,7 +197,14 @@
         "TASK-124",
         "TASK-125",
         "TASK-126",
-        "TASK-127"
+        "TASK-127",
+        "TASK-128",
+        "TASK-129",
+        "TASK-130",
+        "TASK-131",
+        "TASK-132",
+        "TASK-133",
+        "TASK-134"
       ],
       "nota_cierre": ""
     }
@@ -2362,8 +2369,78 @@
     {
       "id": "TASK-128",
       "titulo": "Reemplazar sentence-transformers por fastembed en embeddings",
-      "estado": "pendiente",
+      "estado": "completada",
       "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [
+        "ADR-014"
+      ],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_embeddings.py"
+      ]
+    },
+    {
+      "id": "TASK-129",
+      "titulo": "Fix trial hardcoded a 15 dias en RegisterUserUseCase",
+      "descripcion": "RegisterUserUseCase hardcodeaba timedelta(days=15) en vez de leer TRIAL_PERIOD_DAYS. Corregido para leer la env var con default 3.",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": ["ADR-015"],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-130",
+      "titulo": "Fix cron de expiracion no cubre estado trial",
+      "descripcion": "list_expiring_soon y list_expired solo consultaban status 'activa' y 'vencida'. Agregado 'trial' a ambas queries para que el cron detecte trials expirados.",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": ["ADR-015"],
+      "tests_relacionados": ["backend/src/tests/unit/test_subscription_expiry.py"]
+    },
+    {
+      "id": "TASK-131",
+      "titulo": "Fix middleware solo bloqueaba en estado bloqueada",
+      "descripcion": "El middleware de suscripcion solo verificaba status == 'bloqueada'. Agregado 'vencida' al check para bloquear suscripciones vencidas.",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": ["ADR-015"],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-132",
+      "titulo": "Fix min_stock ausente en plantilla CSV y backend COLUMN_MAP",
+      "descripcion": "La plantilla de carga masiva no incluia columna 'Stock Minimo' y el backend no la mapeaba. Todo insumo cargado por CSV quedaba con min_stock=0.",
+      "estado": "completada",
+      "prioridad": "alta",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": ["backend/src/tests/unit/test_supplies_upload.py"]
+    },
+    {
+      "id": "TASK-133",
+      "titulo": "Fix SaleWizard sin selector de clientes existentes",
+      "descripcion": "El wizard de venta solo tenia input de texto libre. Implementado selector con useClients hook replicando patron de ConsultationWizard.",
+      "estado": "completada",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": ["frontend/src/features/store/SaleWizard.test.tsx"]
+    },
+    {
+      "id": "TASK-134",
+      "titulo": "Limpiar MP_PLATFORM_ENV muerta de .env.example",
+      "descripcion": "MP_PLATFORM_ENV era una variable que nunca se leia en el codigo. Eliminada de .env.example y validate-env.sh, documentado que el modo sandbox depende del token.",
+      "estado": "completada",
+      "prioridad": "baja",
       "asignado": "",
       "dependencias": [],
       "decisiones_relacionadas": [],
