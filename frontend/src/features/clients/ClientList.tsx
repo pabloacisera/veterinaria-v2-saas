@@ -12,7 +12,8 @@ interface ClientListProps {
 
 export function ClientList({ onEdit, onCreate }: ClientListProps) {
   const [search, setSearch] = useState("");
-  const { data: clients = [], isLoading } = useClients({ search: search || undefined, limit: 100 });
+  const { data, isLoading } = useClients({ search: search || undefined, limit: 100 });
+  const clients = data?.items ?? [];
   const deleteMutation = useDeleteClient();
 
   async function handleDelete(id: string) {

@@ -7,12 +7,12 @@ import { User, PawPrint, ClipboardList, Store, AlertTriangle } from "lucide-reac
 
 export function DashboardHome() {
   const navigate = useNavigate();
-  const { data: clients = [] } = useClients({ limit: 1 });
-  const { data: pets = [] } = usePets({ limit: 1 });
+  const { data: clientsData } = useClients({ limit: 1 });
+  const { data: petsData } = usePets({ limit: 1 });
   const { data: sub } = useSubscriptionStatus();
 
-  const clientCount = Array.isArray(clients) ? clients.length : 0;
-  const petCount = Array.isArray(pets) ? pets.length : 0;
+  const clientCount = clientsData?.total_count ?? 0;
+  const petCount = petsData?.total_count ?? 0;
 
   const subscriptionWarning =
     sub && (sub.status === "vencida" || sub.status === "bloqueada")

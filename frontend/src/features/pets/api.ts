@@ -13,7 +13,7 @@ export function fetchPets(params?: import("@/entities/pet/types").PetListParams)
   if (params?.limit) searchParams.set("limit", String(params.limit));
   if (params?.offset) searchParams.set("offset", String(params.offset));
   const qs = searchParams.toString();
-  return apiGet<import("@/entities/pet/types").PetData[]>(`/pets${qs ? `?${qs}` : ""}`);
+  return apiGet<import("@/entities/pet/types").PaginatedResponse<import("@/entities/pet/types").PetData>>(`/pets${qs ? `?${qs}` : ""}`);
 }
 
 export function fetchPet(id: string) {

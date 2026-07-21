@@ -3,9 +3,12 @@ import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
+import { Pagination } from "@/shared/ui/Pagination";
 import { useSupplies, useDeleteSupply } from "@/shared/hooks/useSupplies";
 import { uploadSuppliesCsv, downloadTemplate } from "./api";
 import type { SupplyData } from "./api";
+
+const PAGE_SIZE = 20;
 
 interface SupplyListProps {
   onEdit: (supply: SupplyData) => void;
@@ -14,9 +17,13 @@ interface SupplyListProps {
 
 export function SupplyList({ onEdit, onCreate }: SupplyListProps) {
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { data: supplies = [], isLoading, refetch } = useSupplies({ search: search || undefined, limit: 100 });
+  const { data, isLoading, refetch } = useSupplies({ search: search || undefined, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
+  const supplies = data?.items ?? [];
+  const totalCount = data?.total_count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const deleteMutation = useDeleteSupply();
 
   async function handleDelete(id: string) {
@@ -112,7 +119,7 @@ export function SupplyList({ onEdit, onCreate }: SupplyListProps) {
           <Input
             placeholder="Buscar insumo..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           />
         </div>
         <div className="flex items-center gap-2">
@@ -146,6 +153,7 @@ export function SupplyList({ onEdit, onCreate }: SupplyListProps) {
         loading={isLoading}
         emptyMessage="No hay insumos registrados"
       />
+      <Pagination page={page} totalPages={totalPages} totalItems={totalCount} onPageChange={setPage} />
     </div>
   );
 }

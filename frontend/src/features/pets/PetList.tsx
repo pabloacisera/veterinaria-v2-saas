@@ -12,7 +12,8 @@ interface PetListProps {
 
 export function PetList({ onEdit, onCreate }: PetListProps) {
   const [search, setSearch] = useState("");
-  const { data: pets = [], isLoading } = usePets({ search: search || undefined, limit: 100 });
+  const { data, isLoading } = usePets({ search: search || undefined, limit: 100 });
+  const pets = data?.items ?? [];
   const deleteMutation = useDeletePet();
 
   async function handleDelete(id: string) {
