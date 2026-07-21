@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
+import { Pagination } from "@/shared/ui/Pagination";
 import { useClients, useDeleteClient } from "@/shared/hooks/useClients";
 import type { ClientData } from "./api";
+
+const PAGE_SIZE = 20;
 
 interface ClientListProps {
   onEdit: (client: ClientData) => void;
@@ -12,8 +15,20 @@ interface ClientListProps {
 
 export function ClientList({ onEdit, onCreate }: ClientListProps) {
   const [search, setSearch] = useState("");
-  const { data: clients = [], isLoading } = useClients({ search: search || undefined, limit: 100 });
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * PAGE_SIZE;
+  const { data: clients = [], total, isLoading } = useClients({
+    search: search || undefined,
+    limit: PAGE_SIZE,
+    offset,
+  });
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / PAGE_SIZE)), [total]);
   const deleteMutation = useDeleteClient();
+
+  function handleSearch(value: string) {
+    setSearch(value);
+    setPage(1);
+  }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Eliminar este cliente?")) return;
@@ -72,18 +87,21 @@ export function ClientList({ onEdit, onCreate }: ClientListProps) {
           <Input
             placeholder="Buscar cliente..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
           />
         </div>
         <Button onClick={onCreate}>Nuevo cliente</Button>
       </div>
-      <Table
-        columns={columns}
-        data={clients}
-        keyExtractor={(c) => c.id}
-        loading={isLoading}
-        emptyMessage="No hay clientes registrados"
-      />
+      <div className="rounded-lg border border-gray-100">
+        <Table
+          columns={columns}
+          data={clients}
+          keyExtractor={(c) => c.id}
+          loading={isLoading}
+          emptyMessage="No hay clientes registrados"
+        />
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      </div>
     </div>
   );
 }
