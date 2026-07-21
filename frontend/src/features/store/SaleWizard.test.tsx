@@ -21,7 +21,7 @@ vi.mock("@/features/supplies/api", () => ({
 }));
 
 vi.mock("@/shared/hooks/useClients", () => ({
-  useClients: vi.fn(() => ({ data: [], isLoading: false })),
+  useClients: vi.fn(() => ({ data: { items: [], total_count: 0 }, isLoading: false })),
 }));
 
 vi.mock("./api", () => ({
@@ -49,7 +49,7 @@ describe("SaleWizard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     queryClient.clear();
-    vi.mocked(fetchSupplies).mockResolvedValue(mockSupplies);
+    vi.mocked(fetchSupplies).mockResolvedValue({ items: mockSupplies, total_count: mockSupplies.length });
     vi.mocked(saveDraft).mockResolvedValue(undefined as never);
     vi.mocked(clearDraft).mockResolvedValue(undefined as never);
     vi.mocked(createSale).mockResolvedValue({ id: "sale1" } as never);
