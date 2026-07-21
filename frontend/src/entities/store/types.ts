@@ -44,6 +44,12 @@ export interface CreateSaleInput {
 }
 
 export interface SaleListParams {
+  search?: string;
   limit?: number;
   offset?: number;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  total_count: number;
 }

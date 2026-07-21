@@ -23,10 +23,14 @@ interface ConsultationWizardProps {
 
 export function ConsultationWizard({ onComplete, onCancel }: ConsultationWizardProps) {
   const [step, setStep] = useState(0);
-  const { data: allClients = [] } = useClients({ limit: 100 });
-  const { data: allPets = [] } = usePets({ limit: 100 });
-  const { data: allProcedures = [] } = useProcedures(100);
-  const { data: allSupplies = [] } = useSupplies({ limit: 100 });
+  const { data: clientsData } = useClients({ limit: 100 });
+  const allClients = clientsData?.items ?? [];
+  const { data: petsData } = usePets({ limit: 100 });
+  const allPets = petsData?.items ?? [];
+  const { data: proceduresData } = useProcedures(100);
+  const allProcedures = proceduresData?.items ?? [];
+  const { data: suppliesData } = useSupplies({ limit: 100 });
+  const allSupplies = suppliesData?.items ?? [];
   const createConsultationMutation = useCreateConsultation();
 
   const [clientSearch, setClientSearch] = useState("");

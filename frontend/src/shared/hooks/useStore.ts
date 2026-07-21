@@ -3,7 +3,7 @@ import * as api from "@/features/store/api";
 
 const KEY = "store";
 
-export function useSales(params?: { limit?: number; offset?: number }) {
+export function useSales(params?: import("@/entities/store/types").SaleListParams) {
   return useQuery({
     queryKey: [KEY, "sales", params],
     queryFn: () => api.fetchSales(params),

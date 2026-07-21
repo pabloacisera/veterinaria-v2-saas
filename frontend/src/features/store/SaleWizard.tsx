@@ -24,8 +24,10 @@ interface LineItem {
 
 export function SaleWizard({ onComplete, onCancel }: SaleWizardProps) {
   const [step, setStep] = useState(0);
-  const { data: supplies = [] } = useSupplies({ limit: 100 });
-  const { data: allClients = [] } = useClients({ limit: 100 });
+  const { data: suppliesData } = useSupplies({ limit: 100 });
+  const supplies = suppliesData?.items ?? [];
+  const { data: clientsData } = useClients({ limit: 100 });
+  const allClients = clientsData?.items ?? [];
   const createSaleMutation = useCreateSale();
   const saveDraftMutation = useSaveDraft();
   const clearDraftMutation = useClearDraft();

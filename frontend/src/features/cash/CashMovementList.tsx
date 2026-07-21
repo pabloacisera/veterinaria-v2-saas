@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { Table, type Column } from "@/shared/ui/Table";
 import { Badge } from "@/shared/ui/Badge";
+import { Pagination } from "@/shared/ui/Pagination";
 import { useMovements, useUpdateMovementStatus } from "@/shared/hooks/useCash";
 import type { CashMovementData } from "./api";
+
+const PAGE_SIZE = 20;
 
 interface CashMovementListProps {
   onCreate: () => void;
@@ -15,13 +19,24 @@ const typeLabels: Record<string, string> = {
 };
 
 export function CashMovementList({ onCreate }: CashMovementListProps) {
+  const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<string>("");
   const [filterStatus, setFilterStatus] = useState<string>("");
-  const { data: movements = [], isLoading } = useMovements({
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useMovements({
+    search: search || undefined,
     movement_type: filterType || undefined,
     status: filterStatus || undefined,
-    limit: 100,
+    date_from: dateFrom || undefined,
+    date_to: dateTo || undefined,
+    limit: PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
   });
+  const movements = data?.items ?? [];
+  const totalCount = data?.total_count ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const updateStatusMutation = useUpdateMovementStatus();
 
   async function handleToggleStatus(m: CashMovementData) {
@@ -126,25 +141,56 @@ export function CashMovementList({ onCreate }: CashMovementListProps) {
       </div>
 
       {/* Filtros */}
-      <div className="flex items-center gap-3">
-        <select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-        >
-          <option value="">Todos los tipos</option>
-          <option value="income">Ingresos</option>
-          <option value="expense">Egresos</option>
-        </select>
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-        >
-          <option value="">Todos los estados</option>
-          <option value="pagado">Pagados</option>
-          <option value="pendiente">Pendientes</option>
-        </select>
+      <div className="flex flex-wrap items-end gap-3">
+        <div className="flex-1 min-w-[200px]">
+          <Input
+            placeholder="Buscar..."
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+          <select
+            value={filterType}
+            onChange={(e) => { setFilterType(e.target.value); setPage(1); }}
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="">Todos los tipos</option>
+            <option value="income">Ingresos</option>
+            <option value="expense">Egresos</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+          <select
+            value={filterStatus}
+            onChange={(e) => { setFilterStatus(e.target.value); setPage(1); }}
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="">Todos los estados</option>
+            <option value="pagado">Pagados</option>
+            <option value="pendiente">Pendientes</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Desde</label>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Hasta</label>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
         <div className="flex-1" />
         <Button onClick={onCreate}>Nuevo movimiento</Button>
       </div>
@@ -156,6 +202,7 @@ export function CashMovementList({ onCreate }: CashMovementListProps) {
         loading={isLoading}
         emptyMessage="No hay movimientos registrados"
       />
+      <Pagination page={page} totalPages={totalPages} totalItems={totalCount} onPageChange={setPage} />
     </div>
   );
 }
