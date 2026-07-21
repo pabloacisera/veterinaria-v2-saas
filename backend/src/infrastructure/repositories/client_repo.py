@@ -78,6 +78,25 @@ class ClientRepository(ClientRepositoryInterface):
                 )
             return [self._row_to_client(r) for r in rows]
 
+    async def count_by_company(self, company_id: UUID, search: str = None) -> int:
+        async with self.pool.acquire() as conn:
+            if search:
+                pattern = f"%{search}%"
+                row = await conn.fetchval(
+                    """
+                    SELECT COUNT(*) FROM clients
+                    WHERE company_id = $1 AND deleted_at IS NULL
+                      AND (name ILIKE $2 OR surname ILIKE $2 OR doc_number ILIKE $2 OR email ILIKE $2)
+                    """,
+                    company_id, pattern,
+                )
+            else:
+                row = await conn.fetchval(
+                    "SELECT COUNT(*) FROM clients WHERE company_id = $1 AND deleted_at IS NULL",
+                    company_id,
+                )
+            return row or 0
+
     async def update(self, client_id: UUID, company_id: UUID, data: dict) -> Client:
         fields = []
         values = []

@@ -28,7 +28,7 @@ async def create_movement(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/movements", response_model=list[CashMovementResponse])
+@router.get("/movements")
 async def list_movements(
     status: str = Query(None),
     movement_type: str = Query(None),
