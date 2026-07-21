@@ -39,14 +39,6 @@ class SupplyRepository(SupplyRepositoryInterface):
         async with self.pool.acquire() as conn:
             if search:
                 pattern = f"%{search}%"
-                count = await conn.fetchval(
-                    """
-                    SELECT COUNT(*) FROM supplies
-                    WHERE company_id = $1 AND deleted_at IS NULL
-                      AND (name ILIKE $2 OR brand ILIKE $2 OR description ILIKE $2)
-                    """,
-                    company_id, pattern,
-                )
                 rows = await conn.fetch(
                     """
                     SELECT * FROM supplies
@@ -58,15 +50,11 @@ class SupplyRepository(SupplyRepositoryInterface):
                     company_id, pattern, limit, offset,
                 )
             else:
-                count = await conn.fetchval(
-                    "SELECT COUNT(*) FROM supplies WHERE company_id = $1 AND deleted_at IS NULL",
-                    company_id,
-                )
                 rows = await conn.fetch(
                     "SELECT * FROM supplies WHERE company_id = $1 AND deleted_at IS NULL ORDER BY name LIMIT $2 OFFSET $3",
                     company_id, limit, offset,
                 )
-            return [self._row_to_supply(r) for r in rows], count
+            return [self._row_to_supply(r) for r in rows]
 
     async def update(self, supply_id: UUID, company_id: UUID, data: dict) -> Supply:
         fields, values, idx = [], [], 1
@@ -130,15 +118,11 @@ class ProcedureRepository(ProcedureRepositoryInterface):
 
     async def list_by_company(self, company_id: UUID, limit: int = 50, offset: int = 0):
         async with self.pool.acquire() as conn:
-            count = await conn.fetchval(
-                "SELECT COUNT(*) FROM procedures WHERE company_id = $1 AND deleted_at IS NULL",
-                company_id,
-            )
             rows = await conn.fetch(
                 "SELECT * FROM procedures WHERE company_id = $1 AND deleted_at IS NULL ORDER BY name LIMIT $2 OFFSET $3",
                 company_id, limit, offset,
             )
-            return [self._row_to_procedure(r) for r in rows], count
+            return [self._row_to_procedure(r) for r in rows]
 
     async def find_by_id(self, procedure_id: UUID, company_id: UUID) -> Procedure | None:
         async with self.pool.acquire() as conn:

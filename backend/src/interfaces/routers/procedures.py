@@ -5,7 +5,6 @@ from src.application.use_cases.supply import CreateProcedureUseCase, ListProcedu
 from src.interfaces.dependencies import get_company_id
 from src.infrastructure.di import get_container
 from src.interfaces.schemas.supply import CreateProcedureRequest, ProcedureResponse
-from src.interfaces.schemas.common import PaginatedResponse
 
 router = APIRouter(prefix="/api/v1/procedures", tags=["procedures"])
 
@@ -23,7 +22,7 @@ async def create_procedure(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=PaginatedResponse[ProcedureResponse])
+@router.get("", response_model=list[ProcedureResponse])
 async def list_procedures(
     limit: int = Query(50, le=100),
     offset: int = Query(0, ge=0),
@@ -31,5 +30,4 @@ async def list_procedures(
     company_id: UUID = Depends(get_company_id),
 ):
     use_case = container.resolve(ListProceduresUseCase)
-    items, total = await use_case.execute(company_id=company_id, limit=limit, offset=offset)
-    return PaginatedResponse(items=items, total_count=total)
+    return await use_case.execute(company_id=company_id, limit=limit, offset=offset)

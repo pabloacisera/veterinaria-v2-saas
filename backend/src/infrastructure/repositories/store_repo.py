@@ -56,15 +56,11 @@ class StoreRepository(StoreRepositoryInterface):
 
     async def list_by_company(self, company_id: UUID, limit: int = 50, offset: int = 0):
         async with self.pool.acquire() as conn:
-            count = await conn.fetchval(
-                "SELECT COUNT(*) FROM store_sales WHERE company_id = $1 AND deleted_at IS NULL",
-                company_id,
-            )
             rows = await conn.fetch(
                 "SELECT * FROM store_sales WHERE company_id = $1 AND deleted_at IS NULL ORDER BY created_at DESC LIMIT $2 OFFSET $3",
                 company_id, limit, offset,
             )
-            return [self._row_to_sale(r) for r in rows], count
+            return [self._row_to_sale(r) for r in rows]
 
     async def list_items(self, sale_id: UUID) -> list[StoreSaleItem]:
         async with self.pool.acquire() as conn:

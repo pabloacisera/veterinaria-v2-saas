@@ -48,24 +48,16 @@ class ConsultationRepository(ConsultationRepositoryInterface):
     async def list_by_company(self, company_id: UUID, pet_id: UUID = None, limit: int = 50, offset: int = 0):
         async with self.pool.acquire() as conn:
             if pet_id:
-                count = await conn.fetchval(
-                    "SELECT COUNT(*) FROM consultations WHERE company_id = $1 AND pet_id = $2 AND deleted_at IS NULL",
-                    company_id, pet_id,
-                )
                 rows = await conn.fetch(
                     "SELECT * FROM consultations WHERE company_id = $1 AND pet_id = $2 AND deleted_at IS NULL ORDER BY created_at DESC LIMIT $3 OFFSET $4",
                     company_id, pet_id, limit, offset,
                 )
             else:
-                count = await conn.fetchval(
-                    "SELECT COUNT(*) FROM consultations WHERE company_id = $1 AND deleted_at IS NULL",
-                    company_id,
-                )
                 rows = await conn.fetch(
                     "SELECT * FROM consultations WHERE company_id = $1 AND deleted_at IS NULL ORDER BY created_at DESC LIMIT $2 OFFSET $3",
                     company_id, limit, offset,
                 )
-            return [self._row_to_consultation(r) for r in rows], count
+            return [self._row_to_consultation(r) for r in rows]
 
     async def add_procedure(self, cp: ConsultationProcedure):
         async with self.pool.acquire() as conn:

@@ -13,7 +13,6 @@ from src.infrastructure.di import get_container
 from src.interfaces.schemas.supply import (
     CreateSupplyRequest, SupplyResponse, UpdateSupplyRequest,
 )
-from src.interfaces.schemas.common import PaginatedResponse
 
 router = APIRouter(prefix="/api/v1/supplies", tags=["supplies"])
 
@@ -88,7 +87,7 @@ async def create_supply(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=PaginatedResponse[SupplyResponse])
+@router.get("", response_model=list[SupplyResponse])
 async def list_supplies(
     search: str = Query(None),
     limit: int = Query(50, le=100),
@@ -97,8 +96,7 @@ async def list_supplies(
     company_id: UUID = Depends(get_company_id),
 ):
     use_case = container.resolve(ListSuppliesUseCase)
-    items, total = await use_case.execute(company_id=company_id, search=search, limit=limit, offset=offset)
-    return PaginatedResponse(items=items, total_count=total)
+    return await use_case.execute(company_id=company_id, search=search, limit=limit, offset=offset)
 
 
 @router.get("/{supply_id}", response_model=SupplyResponse)

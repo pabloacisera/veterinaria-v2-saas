@@ -9,7 +9,6 @@ from src.application.use_cases.store import (
 from src.interfaces.dependencies import get_company_id, get_user_id
 from src.infrastructure.di import get_container
 from src.interfaces.schemas.store import CreateStoreSaleRequest, StoreSaleResponse
-from src.interfaces.schemas.common import PaginatedResponse
 
 router = APIRouter(prefix="/api/v1/stores", tags=["stores"])
 
@@ -27,7 +26,7 @@ async def create_sale(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/sales", response_model=PaginatedResponse[StoreSaleResponse])
+@router.get("/sales", response_model=list[StoreSaleResponse])
 async def list_sales(
     limit: int = Query(50, le=100),
     offset: int = Query(0, ge=0),
@@ -35,8 +34,7 @@ async def list_sales(
     company_id: UUID = Depends(get_company_id),
 ):
     use_case = container.resolve(ListStoreSalesUseCase)
-    items, total = await use_case.execute(company_id=company_id, limit=limit, offset=offset)
-    return PaginatedResponse(items=items, total_count=total)
+    return await use_case.execute(company_id=company_id, limit=limit, offset=offset)
 
 
 @router.get("/sales/{sale_id}")
