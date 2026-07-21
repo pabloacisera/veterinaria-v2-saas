@@ -17,11 +17,23 @@ function getToken(): string | null {
   return localStorage.getItem("access_token");
 }
 
-let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+let refreshTimer: ReturnType<typeof setTimeout> | null = null;
 
-async function tryRefresh(): Promise<boolean> {
-  if (isRefreshing) return false;
-  isRefreshing = true;
+function scheduleRefresh(expiresIn: number) {
+  if (refreshTimer) clearTimeout(refreshTimer);
+  const ms = Math.max((expiresIn - 60) * 1000, 10_000);
+  refreshTimer = setTimeout(() => tryRefresh(), ms);
+}
+
+function cancelScheduledRefresh() {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
+  }
+}
+
+async function doRefresh(): Promise<boolean> {
   try {
     const res = await fetch(`${BASE_URL}/auth/refresh`, {
       method: "POST",
@@ -33,12 +45,48 @@ async function tryRefresh(): Promise<boolean> {
     if (data.access_token) {
       localStorage.setItem("access_token", data.access_token);
     }
+    if (data.expires_in) {
+      scheduleRefresh(data.expires_in);
+    }
     return true;
   } catch {
     return false;
-  } finally {
-    isRefreshing = false;
   }
+}
+
+async function tryRefresh(): Promise<boolean> {
+  if (refreshPromise) return refreshPromise;
+  refreshPromise = doRefresh();
+  try {
+    return await refreshPromise;
+  } finally {
+    refreshPromise = null;
+  }
+}
+
+export function startSessionTimer(expiresIn: number) {
+  scheduleRefresh(expiresIn);
+}
+
+export function stopSessionTimer() {
+  cancelScheduledRefresh();
+}
+
+function buildFetchOptions(
+  method: string,
+  headers: Record<string, string>,
+  body?: unknown
+): RequestInit {
+  return {
+    method,
+    headers,
+    credentials: "include",
+    body: body
+      ? body instanceof FormData
+        ? body
+        : JSON.stringify(body)
+      : undefined,
+  };
 }
 
 async function request<T>(
@@ -54,34 +102,15 @@ async function request<T>(
     headers["Content-Type"] = "application/json";
   }
 
-  let res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers,
-    credentials: "include",
-    body: body
-      ? body instanceof FormData
-        ? body
-        : JSON.stringify(body)
-      : undefined,
-  });
+  let res = await fetch(`${BASE_URL}${path}`, buildFetchOptions(method, headers, body));
 
   if (res.status === 401 && path !== "/auth/refresh") {
     const refreshed = await tryRefresh();
     if (refreshed) {
       const newToken = getToken();
       if (newToken) headers["Authorization"] = `Bearer ${newToken}`;
-      res = await fetch(`${BASE_URL}${path}`, {
-        method,
-        headers,
-        credentials: "include",
-        body: body
-          ? body instanceof FormData
-            ? body
-            : JSON.stringify(body)
-          : undefined,
-      });
+      res = await fetch(`${BASE_URL}${path}`, buildFetchOptions(method, headers, body));
     } else {
-      window.location.href = "/login";
       throw new ApiClientError("Sesión expirada", 401);
     }
   }
@@ -116,7 +145,6 @@ export async function apiGetBlob(path: string): Promise<Blob> {
       if (newToken) headers["Authorization"] = `Bearer ${newToken}`;
       res = await fetch(`${BASE_URL}${path}`, { method: "GET", headers, credentials: "include" });
     } else {
-      window.location.href = "/login";
       throw new ApiClientError("Sesión expirada", 401);
     }
   }

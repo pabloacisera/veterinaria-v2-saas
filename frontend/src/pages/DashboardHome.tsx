@@ -3,6 +3,7 @@ import { Card } from "@/shared/ui/Card";
 import { useClients } from "@/shared/hooks/useClients";
 import { usePets } from "@/shared/hooks/usePets";
 import { useSubscriptionStatus } from "@/shared/hooks/useSubscriptions";
+import { User, PawPrint, ClipboardList, Store, AlertTriangle } from "lucide-react";
 
 export function DashboardHome() {
   const navigate = useNavigate();
@@ -56,25 +57,25 @@ export function DashboardHome() {
       label: "Nuevo cliente",
       desc: "Registrar un nuevo cliente",
       path: "/dashboard/clientes",
-      icon: "👤",
+      icon: User,
     },
     {
       label: "Nueva mascota",
       desc: "Agregar una mascota",
       path: "/dashboard/mascotas",
-      icon: "🐾",
+      icon: PawPrint,
     },
     {
       label: "Nueva consulta",
       desc: "Iniciar una consulta",
       path: "/dashboard/consultas",
-      icon: "📋",
+      icon: ClipboardList,
     },
     {
       label: "Nueva venta",
       desc: "Vender insumos",
       path: "/dashboard/tienda",
-      icon: "🏪",
+      icon: Store,
     },
   ];
 
@@ -83,7 +84,7 @@ export function DashboardHome() {
       {subscriptionWarning && (
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">⚠️</span>
+            <span className="text-2xl"><AlertTriangle size={24} /></span>
             <p className="text-sm text-red-800 font-medium">{subscriptionWarning}</p>
           </div>
           <button
@@ -127,7 +128,7 @@ export function DashboardHome() {
               onClick={() => navigate(action.path)}
               className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow text-left"
             >
-              <span className="text-2xl">{action.icon}</span>
+              <action.icon size={24} />
               <p className="mt-2 font-semibold text-gray-900 text-sm">
                 {action.label}
               </p>
@@ -149,3 +150,5 @@ export function DashboardHome() {
     </div>
   );
 }
+
+export default DashboardHome;

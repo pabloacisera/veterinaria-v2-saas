@@ -1,13 +1,12 @@
 import os
+from urllib.parse import quote
 
 from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import JSONResponse
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
 from src.application.use_cases.auth import GoogleAuthUseCase
-from src.infrastructure.auth.cookie_service import set_auth_cookies
 from src.infrastructure.di import get_container
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
@@ -37,12 +36,18 @@ async def google_callback(request: Request, container=Depends(get_container)):
             name=user_info["name"],
             google_id=user_info["sub"],
         )
-        if os.getenv("NODE_ENV") == "production":
-            frontend_url = os.getenv("FRONTEND_URL")
-            response = RedirectResponse(url=f"{frontend_url}/login?google=success")
-        else:
-            response = JSONResponse(content=result)
-        set_auth_cookies(response, result["access_token"], result["refresh_token"], result["expires_in"])
+        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+        encoded_email = quote(user_info["email"])
+        encoded_name = quote(user_info["name"])
+        redirect_url = (
+            f"{frontend_url}/login"
+            f"#google=success"
+            f"&access_token={result['access_token']}"
+            f"&refresh_token={result['refresh_token']}"
+            f"&email={encoded_email}"
+            f"&name={encoded_name}"
+        )
+        response = RedirectResponse(url=redirect_url)
         return response
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

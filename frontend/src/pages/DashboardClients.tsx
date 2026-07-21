@@ -29,3 +29,5 @@ export function DashboardClients() {
     </div>
   );
 }
+
+export default DashboardClients;

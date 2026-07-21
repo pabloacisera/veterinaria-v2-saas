@@ -56,6 +56,13 @@ class UserRepository(UserRepositoryInterface):
                 password_hash, user_id,
             )
 
+    async def link_google(self, user_id: UUID, google_id: str) -> None:
+        async with self.pool.acquire() as conn:
+            await conn.execute(
+                "UPDATE users SET google_id = $1, auth_method = 'google', updated_at = NOW() WHERE id = $2",
+                google_id, user_id,
+            )
+
     def _row_to_user(self, row: asyncpg.Record) -> User:
         return User(
             id=row["id"],

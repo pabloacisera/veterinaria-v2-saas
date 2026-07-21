@@ -110,3 +110,5 @@ export function DashboardConsultas() {
     </div>
   );
 }
+
+export default DashboardConsultas;
