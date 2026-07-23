@@ -9,12 +9,11 @@ Plataforma SaaS multitenant de gestión y administración veterinaria, fullstack
 docs/               → decisions/ (ADRs), tasks/ (backlog.json), errors/ (errors.log.json)
 backend/            → FastAPI, Clean Architecture
 frontend/           → React + Feature-Sliced Design
-infra/              → Caddyfile, docker-compose de soporte
-logs/
+infra/              → Caddyfile, postgres init SQL, githooks
 tests/              → E2E full-stack (Playwright)
 scripts/            → Scripts de soporte (.sh)
 .env                → Real, nunca se commitea, nunca se modifica por agentes
-env.example         → Nombres de variables sin valores
+.env.example        → Nombres de variables sin valores
 .env.test.local     → Variables exclusivas de testing
 docker-compose.yml  → Orquestación principal
 .github/workflows/  → CI/CD
@@ -24,9 +23,9 @@ docker-compose.yml  → Orquestación principal
 
 - Docker y Docker Compose
 - cloudflared (para túnel de desarrollo)
-- Python 3.11+
+- Python 3.12+
 - Node.js 20+
-- pnpm (recomendado) o npm
+- npm
 
 ## Puesta en Marcha Rápida
 
@@ -139,7 +138,7 @@ frontend/src/
 - `community_db` (Postgres) — Datos inter-tenant (comunidad)
 
 ### Colas (RabbitMQ)
-- `q.backups`, `q.emails`, `q.pdf-generation`, `q.mp-webhooks`, `q.rag-sync`, `q.social-notifications`, `q.notificaciones`
+- `q.backups`, `q.emails`, `q.pdf-generation`, `q.mp-webhooks`, `q.rag-sync`, `q.notificaciones`
 
 ### Cache (Redis - bases lógicas)
 - DB 0: Sesiones / JWT blacklist
@@ -160,7 +159,7 @@ frontend/src/
 
 Pirámide: Unitarios → Integración → Contrato → E2E full-stack (Playwright)
 
-CI: Unit + Integration en cada push | E2E antes de merge a `main`
+CI: Unit + Lint en cada push | E2E antes de merge a `main` (manual vía `scripts/test-e2e.sh`)
 
 ## Licencia
 

@@ -3,20 +3,26 @@ set -e
 
 echo "=== Veterinaria V2 - Reset Databases ==="
 
-echo "Stopping database containers..."
-docker compose stop core_db community_db
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-echo "Removing volumes..."
-docker compose rm -f core_db community_db
-docker volume rm veter_v2_core_db_data veter_v2_community_db_data 2>/dev/null || true
+# Load DB connection info from docker-compose defaults
+CORE_DB_CONTAINER="vet-core-db"
+COMMUNITY_DB_CONTAINER="vet-community-db"
+DB_USER="veterinaria_v2"
+CORE_DB="core_db"
+COMMUNITY_DB="community_db"
 
-echo "Starting fresh databases..."
-docker compose up -d core_db community_db
+echo "Clearing core_db..."
+docker exec "$CORE_DB_CONTAINER" psql -U "$DB_USER" -d "$CORE_DB" -c \
+  "DROP SCHEMA public CASCADE; CREATE SCHEMA public; CREATE EXTENSION IF NOT EXISTS vector; CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
 
-echo "Waiting for databases to be healthy..."
-sleep 3
+echo "Clearing community_db..."
+docker exec "$COMMUNITY_DB_CONTAINER" psql -U "$DB_USER" -d "$COMMUNITY_DB" -c \
+  "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
 
 echo "Running migrations..."
+cd "$PROJECT_ROOT"
 bash scripts/migrate.sh
 
-echo "=== Databases reset complete ==="
+echo "=== Databases reset complete (schema cleared + migrations applied) ==="

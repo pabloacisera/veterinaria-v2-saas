@@ -17,7 +17,7 @@
 4. Cloudinary
 5. Mailjet
 6. Backblaze B2 + rclone (backups)
-7. RAG: sentence-transformers + pgvector
+7. RAG: fastembed + pgvector
 8. Google OAuth2
 9. AfipSDK (facturación electrónica)
 10. RabbitMQ (colas)
@@ -612,7 +612,7 @@ automáticamente. Esto evita que el bucket crezca indefinidamente.
 
 ---
 
-## 7. RAG: sentence-transformers + pgvector
+## 7. RAG: fastembed + pgvector
 
 ### Qué hace
 
@@ -860,7 +860,6 @@ pip install aio-pika
 | `q.pdf-generation` | flujo de consulta + tienda | worker de generación de PDF |
 | `q.mp-webhooks` | endpoints de webhook de MP | worker de procesamiento de pago |
 | `q.rag-sync` | cualquier create/update de entidad | worker de embeddings |
-| `q.social-notifications` | módulo de comunidad | worker de notificaciones sociales |
 | `q.notificaciones` | módulo de stock, crons de suscripción | worker de alertas internas |
 
 ### Patrón de publicación
