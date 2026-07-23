@@ -6,6 +6,9 @@ import aio_pika
 
 logger = logging.getLogger(__name__)
 
+MAX_RETRIES = 5
+RETRY_BASE_DELAY = 2
+
 
 class WorkerManager:
     def __init__(self):
@@ -18,13 +21,8 @@ class WorkerManager:
             logger.warning("Workers already running")
             return
         self._running = True
-        try:
-            connection = await asyncio.wait_for(
-                aio_pika.connect_robust(self._url),
-                timeout=10,
-            )
-        except asyncio.TimeoutError:
-            logger.error("Timeout connecting to RabbitMQ — workers not started")
+        connection = await self._connect_with_retry()
+        if connection is None:
             self._running = False
             return
         channel = await connection.channel()
@@ -35,6 +33,27 @@ class WorkerManager:
             task = asyncio.create_task(self._consume(queue, handler))
             self._workers.append(task)
             logger.info(f"Worker started for queue: {queue_name}")
+
+    async def _connect_with_retry(self):
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                connection = await asyncio.wait_for(
+                    aio_pika.connect_robust(self._url),
+                    timeout=10,
+                )
+                logger.info("Connected to RabbitMQ")
+                return connection
+            except (asyncio.TimeoutError, aio_pika.exceptions.AMQPConnectionError,
+                    ConnectionError, OSError) as e:
+                delay = RETRY_BASE_DELAY ** attempt
+                logger.warning(
+                    f"RabbitMQ connection failed (attempt {attempt}/{MAX_RETRIES}): {e}. "
+                    f"Retrying in {delay}s..."
+                )
+                if attempt < MAX_RETRIES:
+                    await asyncio.sleep(delay)
+        logger.error("Could not connect to RabbitMQ after %d attempts — workers not started", MAX_RETRIES)
+        return None
 
     async def _consume(self, queue: aio_pika.Queue, handler: callable):
         async with queue.iterator() as queue_iter:

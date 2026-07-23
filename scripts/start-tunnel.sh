@@ -26,4 +26,4 @@ cloudflared tunnel ingress validate
 
 echo ""
 echo "Starting tunnel..."
-cloudflared tunnel run --config "$CONFIG_PATH" "$TUNNEL_ID"
+cloudflared tunnel --config "$CONFIG_PATH" run "$TUNNEL_ID"

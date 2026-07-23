@@ -57,3 +57,5 @@ export function DashboardComunidad() {
     </div>
   );
 }
+
+export default DashboardComunidad;

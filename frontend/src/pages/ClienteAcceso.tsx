@@ -25,3 +25,5 @@ export function ClienteAcceso() {
     </div>
   );
 }
+
+export default ClienteAcceso;
