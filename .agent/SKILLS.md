@@ -142,3 +142,66 @@ con estos scripts.
   código a medias sin documentar.
 - La próxima sesión arranca con: leer `backlog.json` → identificar tarea en curso → leer
   solo los archivos de esa tarea → continuar.
+
+---
+
+## 9. Snapshots del sistema
+
+### Qué es un snapshot
+
+Un snapshot es un documento que captura el **estado exacto y funcional** de un subsistema.
+Sirve como referencia para restaurar si algo se rompe en el futuro. No es un test — es una
+"foto" del estado correcto del código, configuración, flujos e invariantes.
+
+### Cuándo crear uno
+
+Cuando el desarrollador pida explícitamente:
+- "Sacá una foto del estado de [subsisema]"
+- "Hacé un snapshot de [subsisema]"
+- "Documentá el estado actual de [subsisema]"
+
+### Dónde guardarlo
+
+```
+docs/snapshots/<nombre-del-subsistema>.md
+```
+
+Ejemplo: `docs/snapshots/auth-system.md`, `docs/snapshots/rabbitmq-queue.md`
+
+### Formato obligatorio
+
+Cada snapshot debe tener estas 6 secciones (ver `docs/snapshots/auth-system.md` como
+ejemplo canónico):
+
+```markdown
+# Snapshot: [Nombre del subsistema]
+
+> **Fecha:** YYYY-MM-DD
+> **Commit:** <hash>
+> **Estado:** funcional / parcial / degradado
+
+## 1. Archivos del sistema
+Tabla con: Capa | Archivo | Responsabilidad
+
+## 2. Configuración
+Variables de entorno, middleware, Redis, DB — todo lo que necesita estar configurado.
+
+## 3. Flujos
+Paso a paso de cada flujo principal (con requests/curl de ejemplo).
+
+## 4. Invariantes críticos
+Reglas que SIEMPRE deben cumplirse. Si se rompen, el subsistema deja de funcionar.
+
+## 5. Comandos de verificación
+Curl commands para verificar que todo funciona.
+
+## 6. Checklist de restauración
+Orden en que revisar las cosas si el subsistema se rompe.
+```
+
+### Reglas
+
+- Los snapshots son **inmutables** una vez creados. Si el subsistema cambia, se crea un
+  **nuevo** snapshot y se renombra el viejo (ej: `auth-system-v1.md`).
+- No editar un snapshot existente para "corregirlo" — eso destruye la referencia.
+- Si el desarrollador pide "actualizar" un snapshot, crear uno nuevo con la fecha actual.

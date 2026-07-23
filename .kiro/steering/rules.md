@@ -23,6 +23,10 @@ inclusion: always
 8. **Un documento (factura, prescripción) se genera una sola vez.** Verificar si ya existe una
    versión vigente (`es_version_actual = true`) en `documentos_generados` y si
    `requiere_regeneracion` es `false` antes de regenerar.
+9. **No romper flujos existentes.** Si arreglar algo implica cambiar código que ya funciona,
+   se debe pedir autorización expresa del usuario antes de hacer el cambio. Primero se informa
+   qué flujos existentes se verán afectados y cómo, y solo se procede tras aprobación explícita.
+   Nunca asumir que un cambio es "seguro" sin comunicarlo.
 
 ## Checklist antes de marcar una tarea como completada
 
@@ -33,6 +37,7 @@ inclusion: always
 - [ ] ¿Tomó alguna decisión técnica no trivial? ¿Quedó como ADR?
 - [ ] ¿El código sigue la capa/carpeta correcta (Clean Architecture / FSD)?
 - [ ] ¿Actualizó los steering/docs si el cambio modifica algo que describen?
+- [ ] ¿El cambio toca código que ya funciona? Si sí, ¿informó los flujos afectados y obtuvo autorización?
 
 ## Orden de lectura antes de tocar código
 
@@ -51,3 +56,21 @@ inclusion: always
   decisiones quedaron pendientes (en la spec/task correspondiente).
 - A las ~4 horas de sesión activa, cerrar limpio en vez de forzar un cierre apresurado sin
   documentar.
+
+## Snapshots del sistema
+
+Cuando el desarrollador pida un snapshot de un subsistema ("sacá una foto", "hacé un
+snapshot", "documentá el estado de [X]"), crear `docs/snapshots/<nombre>.md` con estas 6
+secciones:
+
+1. **Archivos del sistema** — Tabla: Capa | Archivo | Responsabilidad
+2. **Configuración** — Env vars, middleware, Redis, DB
+3. **Flujos** — Paso a paso con requests/curl de ejemplo
+4. **Invariantes críticos** — Reglas que nunca deben romperse
+5. **Comandos de verificación** — Curl commands para testear
+6. **Checklist de restauración** — Orden de revisión si se rompe
+
+Usar `docs/snapshots/auth-system.md` como referencia del formato.
+
+**Regla:** Los snapshots son inmutables. Si el subsistema cambia, crear un NUEVO snapshot
+(no editar el existente). Renombrar el viejo con sufijo `-v1`, `-v2`, etc.
