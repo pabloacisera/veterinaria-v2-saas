@@ -114,7 +114,7 @@ async def auth_me(request: Request):
         data = await session_service.validate_access_token(token)
         from src.infrastructure.di import get_container
         from src.infrastructure.repositories.user_repo import UserRepository
-        container = get_container()
+        container = await get_container()
         user_repo = container.resolve(UserRepository)
         user = await user_repo.find_by_id(data["user_id"])
         if not user:
