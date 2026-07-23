@@ -8,6 +8,7 @@ load_dotenv(env_path)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
 from src.infrastructure.crons import (
     cron_backup_weekly,
@@ -65,6 +66,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("JWT_SECRET"), max_age=600)
 
 app.include_router(admin_router)
 app.include_router(admin_backup_router)
@@ -104,7 +106,11 @@ async def startup():
         "q.rag-sync": handle_rag_sync_message,
         "q.backups": handle_backup_message,
     }
-    await worker_manager.start_workers(handlers)
+    try:
+        await worker_manager.start_workers(handlers)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Workers startup failed (app will serve HTTP without queue consumers): {e}")
 
     import asyncio
     loop = asyncio.get_event_loop()
