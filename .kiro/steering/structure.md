@@ -11,7 +11,7 @@ docs/                → decisions/ (ADRs), tasks/ (backlog.json), errors/ (erro
                        milestones/
 backend/             → FastAPI, Clean Architecture
 frontend/            → React + Feature-Sliced Design
-infra/                → Dockerfiles, Caddyfile, docker-compose de soporte, init SQL de DBs
+infra/                → Caddyfile, postgres init SQL, githooks
 tests/                → solo e2e full-stack (Playwright)
 scripts/              → .sh de soporte (dev, ops, utils)
 .env                  → real, nunca se commitea, nunca se modifica por agentes

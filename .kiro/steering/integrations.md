@@ -56,7 +56,7 @@ confirmaciones de seguridad.
 Backups cifrados incrementales. Bucket privado, application key con permisos acotados (nunca
 master key). Automatizado vía `cron-backup-weekly` → `q.backups`, o botón manual del admin.
 
-## 7. RAG — sentence-transformers + pgvector
+## 7. RAG — fastembed + pgvector
 
 Embeddings generados y guardados en `core_db` (tabla `rag_embeddings`, columna vectorial).
 Se encola en `q.rag-sync` en cada create/update de: cliente, mascota, consulta, insumo,
@@ -81,7 +81,7 @@ actualizada de AfipSDK (puede haber cambiado).
 ## 10. RabbitMQ
 
 Un solo broker, colas nombradas por dominio — no crear otras sin ADR: `q.backups`,
-`q.emails`, `q.pdf-generation`, `q.mp-webhooks`, `q.rag-sync`, `q.social-notifications`,
+`q.emails`, `q.pdf-generation`, `q.mp-webhooks`, `q.rag-sync`,
 `q.notificaciones`. Publicación vía `aio-pika`, mensajes `PERSISTENT`.
 
 ## 11. Redis
