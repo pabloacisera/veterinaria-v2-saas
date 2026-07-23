@@ -18,7 +18,7 @@ queda justificada como ADR — no por preferencia, no por defecto.
 - **Validación:** Pydantic v2 (con extra `email`)
 - **Colas:** aio-pika (RabbitMQ)
 - **Cache/sesiones:** redis (asyncio)
-- **RAG:** sentence-transformers, torch, pgvector, LangChain (+ langchain-openai,
+- **RAG:** fastembed (ONNX, embeddings locales), pgvector, LangChain (+ langchain-openai,
   langchain-google-genai, langchain-groq — multi-proveedor de LLM)
 - **Documentos:** reportlab (PDF), cloudinary (storage de imágenes/docs)
 - **Pagos:** mercadopago SDK
@@ -32,7 +32,7 @@ queda justificada como ADR — no por preferencia, no por defecto.
 - **Estado servidor:** @tanstack/react-query
 - **Routing:** react-router-dom
 - **Estilos:** Tailwind CSS + PostCSS
-- **Validación:** Zod (cliente) — nunca se confía solo en esto, Pydantic valida siempre en
+- **Validación:** Validación manual con tipos TypeScript — Pydantic valida siempre en
   backend también
 - **Testing:** vitest + @testing-library/react + jsdom
 - **Lint:** eslint + typescript-eslint
@@ -66,8 +66,9 @@ probar algo.
 
 ## CI/CD (`.github/workflows/`)
 
-1. Unit + integration tests en cada push.
-2. E2E (Playwright) antes de mergear a `main`.
+1. Unit tests + lint en cada push (backend y frontend).
+2. E2E (Playwright) antes de mergear a `main` (ejecutado manualmente vía `scripts/test-e2e.sh`
+   — workflow pendiente de implementación).
 3. Code Review Agent en cada PR: `static-review.sh` (8 validaciones estáticas: Clean
    Architecture, secrets, UUIDv7, soft-delete, migraciones seguras, tests, docker-compose
    válido) + AI Review (Groq `llama-3.1-70b-versatile`) contra `SPECS.md`/`SKILLS.md`.

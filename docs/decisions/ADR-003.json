@@ -3,8 +3,8 @@
   "fecha": "2026-06-21",
   "titulo": "Colas: RabbitMQ, un solo broker con multiples colas",
   "estado": "aceptada",
-  "contexto": "Se necesitan colas para backups, emails, generacion de PDFs, webhooks de Mercado Pago, sincronizacion del RAG y notificaciones de la mini red social.",
-  "decision": "Se usa RabbitMQ (decision explicita del desarrollador) como unico broker, con multiples colas/exchanges nombradas por dominio (q.backups, q.emails, q.pdf-generation, q.mp-webhooks, q.rag-sync, q.social-notifications, q.notificaciones). No se levantan instancias de broker separadas por dominio.",
+  "contexto": "Se necesitan colas para backups, emails, generacion de PDFs, webhooks de Mercado Pago, sincronizacion del RAG y notificaciones internas.",
+  "decision": "Se usa RabbitMQ (decision explicita del desarrollador) como unico broker, con multiples colas/exchanges nombradas por dominio (q.backups, q.emails, q.pdf-generation, q.mp-webhooks, q.rag-sync, q.notificaciones). No se levantan instancias de broker separadas por dominio.",
   "consecuencias": [
     "Positivas: una sola pieza de infraestructura de mensajeria para operar y backupear",
     "Negativas: ninguna identificada para el volumen esperado; revisar si en el futuro algun dominio necesita aislamiento real de broker"
