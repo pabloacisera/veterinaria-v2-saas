@@ -516,11 +516,11 @@ cloudflared tunnel list
 scripts/start-tunnel.sh
 ```
 
-### Sentence-transformers tarda la primera vez
+### Fastembed tarda la primera vez
 
 **Síntoma:** El backend se demora en arrancar la primera vez que se usa el RAG.
 
-**Explicación:** Descarga el modelo `all-MiniLM-L6-v2` (~80MB). Las siguientes veces se carga desde caché local.
+**Explicación:** Fastembed descarga el modelo ONNX `all-MiniLM-L6-v2` (~90MB). Las siguientes veces se carga desde caché local.
 
 ### RabbitMQ Management UI
 

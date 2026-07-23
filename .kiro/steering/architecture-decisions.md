@@ -26,6 +26,7 @@ description: Índice de decisiones arquitectónicas ya tomadas (ADR). Usar antes
 | ADR-011 | aceptada | Toggle de IVA: columna `iva_enabled` en `companies`, no tabla separada (hasta que haya >5-6 settings generales). |
 | ADR-012 | aceptada | Activación de cuenta: código numérico de 6 dígitos vía email + Redis (TTL 15 min), no link con token JWT — por restricción de no poder configurar templates de Mailjet vía `.env`. |
 | ADR-013 | aceptada | Refresh token migrado a httpOnly cookie + `SameSite=Lax` (+ `Secure` en prod), ya no en `localStorage` (mitigación de XSS). Access token sigue en memoria. |
+| ADR-014 | aceptada | Embeddings: fastembed (ONNX) en lugar de sentence-transformers + torch (~2GB → ~90MB). Mismo modelo `all-MiniLM-L6-v2`, mismas 384 dimensiones, cero migración de DB. |
 
 ## Reglas derivadas que aplican transversalmente
 

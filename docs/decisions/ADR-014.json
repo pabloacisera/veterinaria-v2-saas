@@ -2,7 +2,7 @@
   "id": "ADR-014",
   "fecha": "2026-07-18",
   "titulo": "Embeddings: fastembed en lugar de sentence-transformers",
-  "estado": "propuesta",
+  "estado": "aceptada",
   "contexto": "sentence-transformers==3.0.1 y torch==2.4.0 (~2GB) son demasiado pesados para los servidores de produccion. El backend falla al iniciar si no estan instalados. Necesitamos una alternativa ligera que produzca los mismos embeddings (384d, all-MiniLM-L6-v2) sin cambiar pgvector ni re-embedir datos existentes.",
   "decision": "Reemplazar sentence-transformers + torch por fastembed (ONNX Runtime, ~90MB). fastembed soporta sentence-transformers/all-MiniLM-L6-v2 oficialmente, produce vectores de 384 dimensiones, y es compatible con los embeddings existentes en pgvector. La API cambia de model.encode() a model.embed().",
   "consecuencias": [

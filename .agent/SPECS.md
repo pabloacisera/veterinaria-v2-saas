@@ -135,7 +135,6 @@ No se crean más bases que estas dos sin un ADR que lo justifique.
 - `q.pdf-generation` — generación de facturas/prescripciones
 - `q.mp-webhooks` — procesamiento async de notificaciones de Mercado Pago
 - `q.rag-sync` — generación/actualización de embeddings
-- `q.social-notifications` — eventos de la mini red social (likes, comentarios)
 - `q.notificaciones` — alertas internas (stock bajo, deuda, suscripción por vencer) que antes
   se pensaron vía n8n; ahora viven acá directamente (ver ADR-007, n8n fue descartado)
 
