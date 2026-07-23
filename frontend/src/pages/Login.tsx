@@ -15,11 +15,22 @@ export function Login() {
   const googleSuccess = searchParams.get("google") === "success";
 
   useEffect(() => {
-    if (googleSuccess && !isAuthenticated) {
+    let extractedToken: string | null = null;
+    const hash = window.location.hash;
+    if (hash && hash.includes("access_token=")) {
+      const params = new URLSearchParams(hash.substring(1));
+      extractedToken = params.get("access_token");
+      if (extractedToken) {
+        localStorage.setItem("access_token", extractedToken);
+        window.history.replaceState({}, "", window.location.pathname + window.location.search);
+      }
+    }
+
+    if (googleSuccess && extractedToken) {
       setLoading(true);
       fetchCurrentUser()
         .then((userData) => {
-          login("", { email: userData.email, name: userData.name });
+          login(extractedToken, { email: userData.email, name: userData.name });
           navigate("/dashboard", { replace: true });
         })
         .catch(() => setLoading(false));
@@ -66,3 +77,5 @@ export function Login() {
     </div>
   );
 }
+
+export default Login;

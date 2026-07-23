@@ -77,7 +77,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       <button
         type="button"
         onClick={() => {
-          window.location.href = "/api/v1/auth/google";
+          window.location.href = `${import.meta.env.VITE_API_BASE_URL || ""}/api/v1/auth/google`;
         }}
         className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors"
       >

@@ -32,3 +32,5 @@ export function DashboardPets() {
     </div>
   );
 }
+
+export default DashboardPets;

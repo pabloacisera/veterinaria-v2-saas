@@ -97,3 +97,5 @@ export function DashboardPlanes() {
     </div>
   );
 }
+
+export default DashboardPlanes;
