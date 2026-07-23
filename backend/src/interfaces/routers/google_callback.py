@@ -39,7 +39,9 @@ async def google_callback(request: Request, container=Depends(get_container)):
         )
         if os.getenv("NODE_ENV") == "production":
             frontend_url = os.getenv("FRONTEND_URL")
-            response = RedirectResponse(url=f"{frontend_url}/login?google=success")
+            response = RedirectResponse(
+                url=f"{frontend_url}/login?google=success#access_token={result['access_token']}"
+            )
         else:
             response = JSONResponse(content=result)
         set_auth_cookies(response, result["access_token"], result["refresh_token"], result["expires_in"])
