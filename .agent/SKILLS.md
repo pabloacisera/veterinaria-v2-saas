@@ -205,3 +205,24 @@ Orden en que revisar las cosas si el subsistema se rompe.
   **nuevo** snapshot y se renombra el viejo (ej: `auth-system-v1.md`).
 - No editar un snapshot existente para "corregirlo" — eso destruye la referencia.
 - Si el desarrollador pide "actualizar" un snapshot, crear uno nuevo con la fecha actual.
+
+---
+
+## 10. Limpieza de ramas después de un merge
+
+Después de que un PR se mergea a `main`, **borrar la rama** tanto local como en remote:
+
+```bash
+# Borrar rama local
+git branch -d <nombre-rama>
+
+# Borrar rama remota
+git push origin --delete <nombre-rama>
+```
+
+**No esperar a que el desarrollador pida borrarlas.** Las ramas merged son basura — su
+código ya está en main. Dejarlas acumuladas genera confusión sobre cuáles están activas y
+cuáles no.
+
+Excepción: si el desarrollador pide explícitamente conservar una rama (ej: para
+cherry-pick posterior), no borrarla.

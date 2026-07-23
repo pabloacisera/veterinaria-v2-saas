@@ -74,3 +74,17 @@ Usar `docs/snapshots/auth-system.md` como referencia del formato.
 
 **Regla:** Los snapshots son inmutables. Si el subsistema cambia, crear un NUEVO snapshot
 (no editar el existente). Renombrar el viejo con sufijo `-v1`, `-v2`, etc.
+
+## Limpieza de ramas después de un merge
+
+Después de que un PR se mergea a `main`, borrar la rama tanto local como en remote:
+
+```bash
+git branch -d <nombre-rama>
+git push origin --delete <nombre-rama>
+```
+
+No esperar a que el usuario pida borrarlas — las ramas merged son basura. Su código ya
+está en main. Dejarlas genera confusión.
+
+Excepción: si el usuario pide conservar una rama explícitamente, no borrarla.

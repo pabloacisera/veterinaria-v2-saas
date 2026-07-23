@@ -82,3 +82,17 @@ Ver `docs/snapshots/auth-system.md` — snapshot real del sistema de autenticaci
 - Renombrar el viejo con sufijo `-v1`, `-v2`, etc.
 - Incluir el hash del commit actual en el header.
 - Incluir SOLO lo necesario para restaurar — no documentar todo el código, solo lo crítico.
+
+## Limpieza de ramas después de un merge
+
+Después de que un PR se mergea a `main`, borrar la rama tanto local como en remote:
+
+```bash
+git branch -d <nombre-rama>
+git push origin --delete <nombre-rama>
+```
+
+No esperar a que el usuario pida borrarlas — las ramas merged son basura. Su código ya
+está en main. Dejarlas genera confusión.
+
+Excepción: si el usuario pide conservar una rama explícitamente, no borrarla.
