@@ -11,24 +11,30 @@ services:
   rabbitmq:
     ports: []
 
-  caddy:
-    volumes:
-      - ./infra/Caddyfile.prod:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - frontend_dist:/www
-    depends_on:
-      backend:
-        condition: service_started
-      frontend:
-        condition: service_completed_successfully
-
   backend:
-    ports: []
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4001:8000"
     volumes: []
     env_file:
       - .env
+    depends_on:
+      core_db:
+        condition: service_healthy
+      community_db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   frontend:
-    ports: []
+    build:
+      context: ./frontend
+      dockerfile: ../Dockerfile.frontend.prod
+    # No ports - Nginx sirve los archivos estaticos
+    # Copia los archivos a /opt/veter.v2/frontend/dist/ en el host
     volumes:
-      - frontend_dist:/app/dist
+      - /opt/veter.v2/frontend/dist:/app/dist
