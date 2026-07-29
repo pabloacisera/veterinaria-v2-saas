@@ -269,8 +269,8 @@ ingress:
 
 | Aspecto | Desarrollo | Producción |
 |---|---|---|
-| Túnel apunta a | `localhost:8000` (FastAPI) | Caddy (reverse proxy) |
-| Caddy | No existe | Sirve estáticos + reverse proxy |
+| Túnel apunta a | `localhost:8000` (FastAPI) | Nginx:81 (reverse proxy) |
+| Reverse proxy | Caddy (en docker-compose) | Nginx global (en el host) |
 | TLS | Terminado en Cloudflare | Terminado en Cloudflare |
 | cloudflared corre en | Terminal del dev | Servicio systemd en VPS |
 

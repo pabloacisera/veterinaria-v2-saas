@@ -207,9 +207,9 @@ una sola vez y queda corriendo permanentemente:
 CÓMO FUNCIONA INTERNAMENTE:
 1. cloudflared (corriendo en el VPS) abre una conexión SALIENTE a los servidores
    de Cloudflare (no necesita puertos de entrada abiertos en el VPS)
-2. Cloudflare recibe las peticiones HTTPS de los usuarios en dev-api.artisandevs.site
-3. Las enruta a través del túnel hacia Caddy:80 (en el VPS)
-4. Caddy las distribuye al backend o frontend
+2. Cloudflare recibe las peticiones HTTPS de los usuarios en veterinaria.artisandevs.site
+3. Las enruta a través del túnel hacia Nginx:81 (en el VPS)
+4. Nginx las distribuye al backend o frontend
 
 CONFIGURACIÓN DEL TÚNEL (una sola vez):
 
@@ -373,7 +373,7 @@ DEPLOY ACTUAL:
 
     # En el VPS por SSH:
     cd /opt/veter.v2
-    scripts/ops/deploy.sh    # git pull + docker build + migrate + healthcheck
+    scripts/ops/deploy-prod.sh    # git pull + docker build + migrate + healthcheck + Nginx reload
 
   Falta implementar (registrado como TASK-117 en Sprint 12):
   - Pipeline CI/CD que publique imágenes Docker a GHCR
@@ -390,7 +390,7 @@ RESUMEN VISUAL DEL FLUJO COMPLETO:
   GitHub Actions: E2E tests contra stack Docker (ci-e2e.yml)
     │
     ▼  (tests pasan, merge a main)
-  Deploy manual en Contabo: scripts/ops/deploy.sh
+  Deploy manual en EC2: scripts/ops/deploy-prod.sh
     │
     ▼
   Producción actualizada
