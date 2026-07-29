@@ -11,7 +11,6 @@ services:
       - "5444:5432"
     volumes:
       - core_db_data:/var/lib/postgresql/data
-      - ./infra/postgres/core_db/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U veterinaria_v2 -d core_db"]
       interval: 10s
@@ -35,7 +34,6 @@ services:
       - "5435:5432"
     volumes:
       - community_db_data:/var/lib/postgresql/data
-      - ./infra/postgres/community_db/init:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U veterinaria_v2 -d community_db"]
       interval: 10s
@@ -79,10 +77,11 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 15s
-      timeout: 10s
-      retries: 5
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 60s
     deploy:
       resources:
         limits:
@@ -101,7 +100,10 @@ services:
       - caddy_data:/data
       - frontend_dist:/www
     depends_on:
-      - backend
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_completed_successfully
     profiles:
       - production
     deploy:

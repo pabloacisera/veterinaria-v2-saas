@@ -15,6 +15,12 @@ services:
     volumes:
       - ./infra/Caddyfile.prod:/etc/caddy/Caddyfile
       - caddy_data:/data
+      - frontend_dist:/www
+    depends_on:
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_completed_successfully
 
   backend:
     ports: []
@@ -24,4 +30,5 @@ services:
 
   frontend:
     ports: []
-    volumes: []
+    volumes:
+      - frontend_dist:/app/dist
