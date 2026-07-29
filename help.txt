@@ -1,11 +1,11 @@
 - En desarrollo las migraciones se ejecutan manualmente: scripts/migrate.sh
+- El esquema de BD es manejado exclusivamente por Alembic (single source of truth). No hay SQL init scripts. Ver ADR-016.
 - En prduccion, primero se migra con el comando anterior y luego:
 
-	# Build frontend (necesitas el dist para Caddy)
-	cd frontend && npm run build && cd ..
-
 	# Todo con perfil production (backend + frontend build + caddy)
-	docker compose --profile production up -d
+	docker compose --profile production up -d --build
+
+	El frontend usa un init container que copia los archivos estaticos al named volume automaticamente. No es necesario ejecutar npm run build manualmente.
 
 	Pero ojo: en el compose, el backend monta ./backend/src:/app/src (live reload), pero el entrypoint corre migraciones cada vez que arranca el contenedor. Eso puede ser problemático si ya corriste las migraciones antes.
 
@@ -138,6 +138,9 @@ DIAGRAMA DE FLUJO:
   Caddy (reverse proxy interno, SIN TLS propio)
     │
     ├──► Frontend (archivos estáticos React via file_server)
+    │    NOTA: El contenedor frontend actúa como init container.
+    │    Copia los archivos generados durante el build al named volume
+    │    frontend_dist antes de que Caddy inicie.
     │
     └──► Backend FastAPI :8000
            │

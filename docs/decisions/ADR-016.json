@@ -1,0 +1,34 @@
+{
+  "id": "ADR-016",
+  "fecha": "2026-07-29",
+  "titulo": "Eliminar SQL init scripts: Alembic como single source of truth",
+  "estado": "aceptada",
+  "contexto": "El esquema de base de datos estaba duplicado entre SQL init scripts (infra/postgres/) y migraciones Alembic (backend/alembic/). Los SQL scripts creaban tablas automaticamente al iniciar PostgreSQL, y luego Alembic intentaba crear las mismas tablas, causando errores DuplicateTable. Los SQL scripts no stamppeaban alembic_version, asi que Alembic no sabia que las migraciones ya habian sido aplicadas.",
+  "decision": "Se eliminan completamente los SQL init scripts (infra/postgres/) y se deja que Alembic sea el unico responsable del manejo de esquema. La migracion 001 de community_db se actualiza para incluir la extension uuid-ossp que antes solo estaba en los SQL scripts.",
+  "consecuencias": [
+    "Positivas: single source of truth para esquema de BD, sin duplicacion ni conflictos",
+    "Positivas: Alembic maneja correctamente el versionado de migraciones",
+    "Positivas: eliminacion de 6 archivos SQL y 2 directorios del repositorio",
+    "Negativas: requiere docker compose down -v para limpiar BDs existentes antes de usar el nuevo esquema",
+    "Negativas: las migraciones deben correrse manualmente despues de docker compose up (ya era el caso en desarrollo)"
+  ],
+  "alternativas": [
+    "Opcion B: Hacer migraciones idempotentes con IF NOT EXISTS (mantener duplicacion)",
+    "Opcion C: Stamppear alembic_version desde SQL scripts (solucion parche)"
+  ],
+  "actores": ["@desarrollador", "@opencode"],
+  "archivos_modificados": [
+    "docker-compose.yml (removidos volume mounts de init scripts)",
+    "scripts/migrate.sh (fix: usar rutas absolutas para evitar bug de cd)",
+    "backend/community_alembic/versions/001_community_tables.py (agregada extension uuid-ossp)"
+  ],
+  "archivos_eliminados": [
+    "infra/postgres/core_db/init/01-extensions.sql",
+    "infra/postgres/core_db/init/02-rls-setup.sql",
+    "infra/postgres/core_db/init/03-auth-tables.sql",
+    "infra/postgres/core_db/init/04-admin-tables.sql",
+    "infra/postgres/community_db/init/01-extensions.sql",
+    "infra/postgres/community_db/init/02-community-tables.sql",
+    "infra/postgres/ (directorio vacio)"
+  ]
+}
