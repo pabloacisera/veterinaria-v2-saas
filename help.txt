@@ -1,13 +1,12 @@
 - En desarrollo las migraciones se ejecutan manualmente: scripts/migrate.sh
 - El esquema de BD es manejado exclusivamente por Alembic (single source of truth). No hay SQL init scripts. Ver ADR-016.
-- En prduccion, primero se migra con el comando anterior y luego:
+- En producción, se usa el script adaptado: scripts/ops/deploy-prod.sh
 
-	# Todo con perfil production (backend + frontend build + caddy)
-	docker compose --profile production up -d --build
+	# Deploy en producción (Nginx + Cloudflare Tunnel)
+	scripts/ops/deploy-prod.sh
 
-	El frontend usa un init container que copia los archivos estaticos al named volume automaticamente. No es necesario ejecutar npm run build manualmente.
-
-	Pero ojo: en el compose, el backend monta ./backend/src:/app/src (live reload), pero el entrypoint corre migraciones cada vez que arranca el contenedor. Eso puede ser problemático si ya corriste las migraciones antes.
+	El frontend se sirve directamente por Nginx global (no usa Caddy ni init container).
+	Ver ADR-017 para más detalles.
 
 
 
@@ -124,7 +123,7 @@ El proyecto Veterinaria V2 está diseñado bajo un principio clave: CERO PUERTOS
 EXPUESTOS AL EXTERIOR. Todo el tráfico ingresa por una única puerta — Cloudflare
 Tunnel.
 
-DIAGRAMA DE FLUJO:
+DIAGRAMA DE FLUJO (Producción — Ver ADR-017):
 
   Tu navegador
     │
@@ -132,25 +131,24 @@ DIAGRAMA DE FLUJO:
   Cloudflare (DNS + TLS + WAF + Rate Limiting)
     │
     ▼  (conexión cifrada, túnel saliente desde el VPS)
-  cloudflared (daemon en el VPS Contabo)
+  cloudflared (daemon en el VPS EC2, servicio systemd)
     │
     ▼
-  Caddy (reverse proxy interno, SIN TLS propio)
+  Nginx global (reverse proxy, puerto 81, server_name routing)
     │
-    ├──► Frontend (archivos estáticos React via file_server)
-    │    NOTA: El contenedor frontend actúa como init container.
-    │    Copia los archivos generados durante el build al named volume
-    │    frontend_dist antes de que Caddy inicie.
+    ├──► Backend FastAPI :4001
+    │         │
+    │         ├──► core_db (PostgreSQL + pgvector, RLS por tenant)
+    │         ├──► community_db (PostgreSQL, sin RLS)
+    │         ├──► Redis (4 bases lógicas: sesiones, borradores, caché IA, caché social)
+    │         └──► RabbitMQ (7 colas async: emails, PDFs, backups, webhooks MP, RAG, etc.)
     │
-    └──► Backend FastAPI :8000
-           │
-           ├──► core_db (PostgreSQL + pgvector, RLS por tenant)
-           ├──► community_db (PostgreSQL, sin RLS)
-           ├──► Redis (4 bases lógicas: sesiones, borradores, caché IA, caché social)
-           └──► RabbitMQ (7 colas async: emails, PDFs, backups, webhooks MP, RAG, etc.)
+    └──► Frontend (archivos estáticos React servidos por Nginx)
+         NOTA: En producción, el frontend se sirve directamente por Nginx
+         desde /opt/veter.v2/frontend/dist/. No se usa Caddy.
 
 EN DESARROLLO la arquitectura es más simple — cloudflared apunta directo a
-localhost:8000 (FastAPI), sin Caddy. Caddy se introduce solo para Docker/producción.
+localhost:8000 (FastAPI), sin Caddy. make dev usa Caddy internamente.
 
 Las bases de datos y Redis/RabbitMQ NUNCA tienen puertos expuestos al host en
 producción (docker-compose.prod.yml los elimina con ports: []). Solo son accesibles
@@ -402,7 +400,7 @@ RESUMEN VISUAL DEL FLUJO COMPLETO:
 PUERTOS Y RECURSOS EN PRODUCCIÓN
 ================================================================================
 
-En docker-compose.prod.yml, TODOS los puertos se eliminan:
+En docker-compose.prod.yml, la mayoría de los puertos se eliminan:
 
   Servicio        Puertos expuestos    Nota
   ──────────────  ──────────────────   ──────────────────────────────────
@@ -410,12 +408,11 @@ En docker-compose.prod.yml, TODOS los puertos se eliminan:
   community_db    NINGUNO              Solo accesible internamente
   redis           NINGUNO              Solo accesible internamente
   rabbitmq        NINGUNO              Solo accesible internamente
-  backend         NINGUNO              Solo accesible vía Caddy
-  frontend        NINGUNO              Assets servidos por Caddy
-  caddy           80, 443              Solo si NO se usa Cloudflare Tunnel
+  backend         4001                 Accesible por Nginx (host.docker.internal)
+  frontend        NINGUNO              Assets servidos por Nginx
 
-Con Cloudflare Tunnel activo, NI SIQUIERA Caddy necesita puertos expuestos.
-El único puerto abierto en el VPS es el 22 (SSH).
+Nginx global (en el host, no en Docker) escucha en puerto 81.
+cloudflared (servicio systemd en el host) recibe tráfico de Cloudflare y lo envía a Nginx:81.
 
 RESOURCE LIMITS (ya configurados):
 
@@ -427,7 +424,6 @@ RESOURCE LIMITS (ya configurados):
   rabbitmq        0.5       256 MB
   backend         1.0       512 MB
   frontend        0.5       256 MB
-  caddy           0.25      64 MB
   ──────────────────────────────────
   TOTAL                    ~2 GB
 
