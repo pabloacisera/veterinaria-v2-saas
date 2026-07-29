@@ -71,4 +71,4 @@ probar algo.
    — workflow pendiente de implementación).
 3. Code Review Agent en cada PR: `static-review.sh` (8 validaciones estáticas: Clean
    Architecture, secrets, UUIDv7, soft-delete, migraciones seguras, tests, docker-compose
-   válido) + AI Review (Groq `llama-3.1-70b-versatile`) contra `SPECS.md`/`SKILLS.md`.
+   válido) + AI Review (Groq `llama-3.3-70b-versatile`) contra `SPECS.md`/`SKILLS.md`.
