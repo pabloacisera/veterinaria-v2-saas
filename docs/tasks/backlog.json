@@ -2368,6 +2368,39 @@
       "dependencias": [],
       "decisiones_relacionadas": [],
       "tests_relacionados": []
+    },
+    {
+      "id": "TASK-129",
+      "titulo": "Fix: Admin API client usa token incorrecto (admin_token vs access_token) + proxy Vite para /access_role",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "frontend/src/features/admin/adminApi.test.ts",
+        "frontend/src/features/admin/AdminCompanyList.test.tsx"
+      ]
+    },
+    {
+      "id": "TASK-130",
+      "titulo": "Fix: Client Portal API client usa token incorrecto (client_token vs access_token)",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
+    },
+    {
+      "id": "TASK-131",
+      "titulo": "Feature: Islas de acceso en Landing para portal de clientes y admin",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": []
     }
   ]
 }

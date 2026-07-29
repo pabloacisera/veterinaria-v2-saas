@@ -17,6 +17,16 @@ export default defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
+      "/access_role": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+        bypass(req) {
+          // Solo proxear requests con content-type JSON (API calls), no navegación del browser
+          if (!req.headers["content-type"]?.includes("application/json")) {
+            return req.url;
+          }
+        },
+      },
     },
   },
 });
