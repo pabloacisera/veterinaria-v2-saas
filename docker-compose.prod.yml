@@ -38,4 +38,3 @@ services:
     # Copia los archivos a /opt/veter.v2/frontend/dist/ en el host
     volumes:
       - /opt/veter.v2/frontend/dist:/app/dist
-    command: ["sh", "-c", "cp -r /app/dist/. /opt/veter.v2/frontend/dist/ && tail -f /dev/null"]

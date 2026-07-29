@@ -17,7 +17,7 @@ echo "Pulling latest images..."
 git pull origin main
 
 echo "Building and starting production stack (no Caddy, no cloudflared)..."
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build backend
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile production up -d --build backend
 
 echo "Waiting for backend health..."
 for i in $(seq 1 30); do
@@ -27,7 +27,7 @@ for i in $(seq 1 30); do
     fi
     if [ "$i" -eq 30 ]; then
         echo "ERROR: Backend failed to start within 30s"
-        docker compose -f docker-compose.yml -f docker-compose.prod.yml logs backend --tail 50
+        docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile production logs backend --tail 50
         exit 1
     fi
     sleep 2
@@ -35,16 +35,16 @@ done
 
 echo "Running migrations..."
 echo "--- core_db ---"
-docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T backend alembic upgrade head
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile production exec -T backend alembic upgrade head
 echo "--- community_db ---"
-docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T backend alembic -c community_alembic.ini upgrade head
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile production exec -T backend alembic -c community_alembic.ini upgrade head
 
 echo "Building frontend (static files)..."
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d frontend
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile production up -d --build frontend
 sleep 5
 
 echo "Copying frontend files to Nginx serving directory..."
-docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T frontend sh -c "cp -r /app/dist/. /opt/veter.v2/frontend/dist/"
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile production exec -T frontend sh -c "cp -r /app/dist/. /opt/veter.v2/frontend/dist/"
 
 echo "Reloading Nginx..."
 docker exec nginx-global nginx -t && docker exec nginx-global nginx -s reload
