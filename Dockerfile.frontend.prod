@@ -1,0 +1,13 @@
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+RUN npx vite build
+
+# Production: no init container, no named volume
+# Nginx global sirve los archivos desde /opt/veter.v2/frontend/dist/
+# Este Dockerfile solo genera los archivos estaticos

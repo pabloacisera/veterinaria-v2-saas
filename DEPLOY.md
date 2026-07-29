@@ -147,103 +147,96 @@ http://localhost:8000/redoc   # ReDoc
 
 ---
 
-## 4. Producción (Contabo VPS)
+## 4. Producción (EC2 + Nginx + Cloudflare Tunnel)
 
-### 4.1 Preparar el servidor
-
-```bash
-# En el VPS (Ubuntu/Debian):
-sudo apt update && sudo apt install -y docker.io docker-compose-plugin rclone
-
-# Instalar cloudflared
-curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o /usr/local/bin/cloudflared
-chmod +x /usr/local/bin/cloudflared
-```
-
-### 4.2 Clonar y configurar
-
-```bash
-cd /opt
-git clone <repo-url> veter.v2
-cd veter.v2
-
-# Copiar .env de producción (NUNCA usar el de desarrollo)
-# Generar nuevos secrets con: openssl rand -base64 64
-cp env.example .env
-nano .env  # Completar con credenciales de PRODUCCIÓN
-```
-
-### 4.3 Configurar rclone para Backblaze B2
-
-```bash
-rclone config create b2backup b2 \
-  account "$B2_KEY_ID" \
-  key "$B2_APPLICATION_KEY"
-```
-
-### 4.4 Desplegar
-
-```bash
-# Usar el script de deploy (ejecuta migraciones + healthcheck)
-scripts/deploy.sh
-
-# O manualmente:
-docker compose --profile production up -d --build
-docker compose exec backend alembic upgrade head
-docker compose exec backend alembic -c community_alembic.ini upgrade head
-```
-
-**Nota sobre el frontend:** El contenedor `frontend` actúa como init container. Al iniciar, ejecuta `cp -r /dist/* /app/dist/` para copiar los archivos estáticos generados durante el build al named volume `frontend_dist`. Caddy depende de este contenedor con `condition: service_completed_successfully` para asegurar que los archivos estén disponibles antes de iniciar. Ver ADR-015 para más detalles.
-
-### 4.5 Configurar cloudflared como servicio systemd
-
-```bash
-# Crear servicio systemd para que cloudflared arranque automáticamente
-sudo tee /etc/systemd/system/cloudflared.service > /dev/null << EOF
-[Unit]
-Description=Cloudflare Tunnel
-After=network.target
-
-[Service]
-Type=simple
-ExecStart=/usr/local/bin/cloudflared tunnel --config /root/.cloudflared/config.yml run
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-sudo systemctl daemon-reload
-sudo systemctl enable cloudflared
-sudo systemctl start cloudflared
-```
-
-### 4.6 Verificar
-
-```bash
-# Health check
-curl http://localhost:8000/health
-
-# Verificar que el túnel funciona
-curl https://dev-api.artisandevs.site/health
-
-# Logs
-docker compose logs -f backend
-```
-
-### 4.7 Arquitectura en Producción
+### 4.1 Arquitectura (Ver ADR-017)
 
 ```
 Cliente (navegador)
   → Cloudflare (DNS + TLS + WAF + rate limiting)
   → cloudflared (túnel, conexión saliente, sin puertos públicos en VPS)
-  → Caddy (reverse proxy interno, sin TLS propio)
-  → Backend (FastAPI) / Frontend (assets estáticos via file_server)
+  → Nginx global (reverse proxy, puerto 81, server_name routing)
+  → Backend (FastAPI :4001) / Frontend (archivos estáticos via Nginx)
   → PostgreSQL / Redis / RabbitMQ (red interna Docker, sin puertos expuestos)
 ```
 
-**Puertos expuestos en producción: NINGUNO.** Todo el tráfico entra por Cloudflare Tunnel.
+**Puertos expuestos en producción:** Solo backend (4001) y Nginx (81). Todo el tráfico entra por Cloudflare Tunnel.
+
+### 4.2 Pre-requisitos (Capa 1 - ya configurado)
+
+El servidor EC2 ya tiene configurado:
+- Docker + Docker Compose
+- cloudflared (servicio systemd)
+- Nginx global en `/home/ec2-user/global/nginx/` (puerto 81)
+- Cloudflare Tunnel apuntando a `localhost:81`
+
+### 4.3 Desplegar (Capa 2 - por cada app)
+
+```bash
+# 1. Conectarse al servidor
+ssh -i ~/.ssh/modula-prod-key.pem ec2-user@3.19.181.164
+
+# 2. Clonar/actualizar repo
+cd /opt
+git clone <repo-url> veter.v2
+cd veter.v2
+
+# 3. Copiar .env de producción (NUNCA usar el de desarrollo)
+# Generar nuevos secrets con: openssl rand -base64 64
+cp env.example .env
+nano .env  # Completar con credenciales de PRODUCCIÓN
+
+# 4. Ejecutar deploy
+scripts/ops/deploy-prod.sh
+```
+
+### 4.4 Deploy manual (paso a paso)
+
+```bash
+# Build y levantar backend
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build backend
+
+# Healthcheck
+curl http://localhost:4001/health
+
+# Ejecutar migraciones
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T backend alembic upgrade head
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T backend alembic -c community_alembic.ini upgrade head
+
+# Copiar frontend a directorio de Nginx
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d frontend
+sleep 5
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T frontend sh -c "cp -r /app/dist/. /opt/veter.v2/frontend/dist/"
+
+# Configurar Nginx (una sola vez)
+sudo cp infra/nginx/veterinaria.conf /home/ec2-user/global/nginx/conf.d/
+docker exec nginx-global nginx -t && docker exec nginx-global nginx -s reload
+```
+
+### 4.5 Archivos de configuración
+
+| Archivo | Ubicación en servidor | Propósito |
+|---|---|---|
+| `Dockerfile.frontend.prod` | `/opt/veter.v2/` | Frontend simplificado (sin init container) |
+| `docker-compose.prod.yml` | `/opt/veter.v2/` | Overrides de producción (sin Caddy/cloudflared) |
+| `scripts/ops/deploy-prod.sh` | `/opt/veter.v2/` | Script de deploy adaptado |
+| `infra/nginx/veterinaria.conf` | `/home/ec2-user/global/nginx/conf.d/` | Config de Nginx para esta app |
+
+### 4.6 Verificar
+
+```bash
+# Health check backend
+curl http://localhost:4001/health
+
+# Verificar que el túnel funciona
+curl https://veterinaria.artisandevs.site/api/v1/health
+
+# Logs del backend
+docker compose -f docker-compose.yml -f docker-compose.prod.yml logs -f backend
+
+# Logs de Nginx
+docker exec nginx-global tail -f /var/log/nginx/access.log
+```
 
 ---
 
@@ -544,8 +537,9 @@ Las tareas de este checklist están registradas en el backlog como Sprint 12 (TA
 Resumen de lo crítico:
 
 - [ ] Secrets rotados (no reusar los de dev)
-- [ ] DNS configurado en Cloudflare apuntando al VPS
-- [ ] cloudflared corriendo como servicio systemd
+- [ ] DNS configurado en Cloudflare apuntando al VPS (veterinaria.artisandevs.site)
+- [ ] Nginx configurado en `/home/ec2-user/global/nginx/conf.d/veterinaria.conf`
+- [ ] cloudflared corriendo como servicio systemd en el VPS
 - [ ] CI/CD publicando imágenes y deployando automáticamente
 - [ ] E2E suite pasando contra staging
 - [ ] Load test ejecutado
