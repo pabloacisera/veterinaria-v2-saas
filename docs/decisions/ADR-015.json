@@ -1,0 +1,25 @@
+{
+  "id": "ADR-015",
+  "fecha": "2026-07-29",
+  "titulo": "Frontend: init container para copiar dist al named volume",
+  "estado": "aceptada",
+  "contexto": "El frontend usa un multi-stage Dockerfile que genera /app/dist durante el build. El docker-compose monta un named volume frontend_dist sobre /app/dist para que Caddy pueda servir los archivos estaticos. Sin embargo, el named volume se monta DESPUES del build, sobreescribiendo los archivos generados por vite build. Esto causaba que Caddy no tuviera los archivos del frontend para servir.",
+  "decision": "Se agrega un segundo stage en el Dockerfile del frontend que copia /app/dist a /dist. El CMD del contenedor ejecuta cp -r /dist/* /app/dist/ al iniciar, poblando el named volume con los archivos correctos. Caddy depende de frontend con condition: service_completed_successfully para asegurar que los archivos esten disponibles antes de iniciar.",
+  "consecuencias": [
+    "Positivas: los archivos del frontend siempre estan disponibles en el named volume sin importar si el volume ya existia",
+    "Positivas: no se necesita ejecutar npm run build manualmente antes de docker compose up",
+    "Positivas: cada build genera los archivos frescos en el volume",
+    "Negativas: el contenedor frontend debe correr y completar antes que Caddy (agrega ~2 segundos al startup)",
+    "Negativas: el contenedor frontend queda corriendo con tail -f /dev/null (consumo minimo de recursos)"
+  ],
+  "alternativas": [
+    "Opcion A: No montar volume y usar bind mount del host (requiere build manual previo)",
+    "Opcion C: Init container en script de deploy con docker create/cp (mas complejo de mantener)"
+  ],
+  "actores": ["@desarrollador", "@opencode"],
+  "archivos_modificados": [
+    "frontend/Dockerfile",
+    "docker-compose.yml",
+    "docker-compose.prod.yml"
+  ]
+}

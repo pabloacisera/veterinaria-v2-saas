@@ -64,6 +64,8 @@ Esto levanta:
 - `RabbitMQ` → `localhost:5672` (management UI en `localhost:15672`)
 - Ejecuta migraciones Alembic para ambas bases
 
+**Nota:** El esquema de base de datos es manejado exclusivamente por Alembic (single source of truth). No hay SQL init scripts. Ver ADR-016.
+
 ### Paso 3 (opcional): Cargar datos de prueba
 
 ```bash
@@ -190,6 +192,8 @@ docker compose --profile production up -d --build
 docker compose exec backend alembic upgrade head
 docker compose exec backend alembic -c community_alembic.ini upgrade head
 ```
+
+**Nota sobre el frontend:** El contenedor `frontend` actúa como init container. Al iniciar, ejecuta `cp -r /dist/* /app/dist/` para copiar los archivos estáticos generados durante el build al named volume `frontend_dist`. Caddy depende de este contenedor con `condition: service_completed_successfully` para asegurar que los archivos estén disponibles antes de iniciar. Ver ADR-015 para más detalles.
 
 ### 4.5 Configurar cloudflared como servicio systemd
 
