@@ -1,0 +1,32 @@
+{
+  "id": "ADR-017",
+  "fecha": "2026-07-29",
+  "titulo": "Produccion: Nginx global como reverse proxy en vez de Caddy",
+  "estado": "aceptada",
+  "contexto": "En produccion, el servidor EC2 tiene un Nginx global que escucha en puerto 81 y recibe trafico de Cloudflare Tunnel. Cada app vive en /opt/<app>/ con su propio puerto. Nginx enruta por dominio (server_name). Actualmente el proyecto usa Caddy como reverse proxy dentro de docker-compose, lo cual es redundante con el Nginx global del servidor. El frontend en produccion se sirve directamente por Nginx (archivos estaticos), no por un contenedor Caddy.",
+  "decision": "En produccion: (1) Caddy y cloudflared se eliminan del docker-compose (ya corren en el host), (2) backend se expone en puerto 4001 al host, (3) frontend se sirve por Nginx global desde /opt/veter.v2/frontend/dist/, (4) se crea Dockerfile.frontend.prod que solo genera archivos estaticos sin init container, (5) se crea deploy-prod.sh que adapta el flujo al nuevo architecture. En desarrollo, todo sigue igual (make dev, Caddy en compose).",
+  "consecuencias": [
+    "Positivas: un solo reverse proxy en el servidor (Nginx global), sin duplicacion",
+    "Positivas: cloudflared como servicio systemd es mas estable que como contenedor",
+    "Positivas: el servidor puede alojar multiples apps sin conflictos",
+    "Positivas: frontend como archivos estaticos servidos por Nginx (mas rapido, sin contenedor innecesario)",
+    "Negativas: docker-compose.prod.yml cambia significativamente (requiere testing)",
+    "Negativas: deploy script es diferente al actual (deploy.sh vs deploy-prod.sh)",
+    "Negativas: requiere crear archivos nuevos (Dockerfile.frontend.prod, nginx/veterinaria.conf)"
+  ],
+  "alternativas": [
+    "Opcion A: Mantener Caddy en produccion (duplica reverse proxy con Nginx global)",
+    "Opcion B: Usar Caddy en el host en vez de Nginx (requiere reinstalar Caddy en EC2)"
+  ],
+  "actores": ["@desarrollador", "@opencode"],
+  "archivos_nuevos": [
+    "Dockerfile.frontend.prod (frontend simplificado sin init container)",
+    "scripts/ops/deploy-prod.sh (deploy adaptado para Nginx global)",
+    "infra/nginx/veterinaria.conf (config de Nginx para esta app)"
+  ],
+  "archivos_modificados": [
+    "docker-compose.prod.yml (elimina Caddy, cloudflared; expone backend:4001)",
+    "DEPLOY.md (documenta nueva arquitectura de produccion)",
+    "help.txt (actualiza comandos de produccion)"
+  ]
+}
