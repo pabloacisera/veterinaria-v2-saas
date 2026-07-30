@@ -82,6 +82,33 @@ export function Landing() {
           </div>
         </section>
 
+        {/* Isla de acceso: Portal de Clientes */}
+        <section className="px-6 py-16 bg-emerald-50">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 mb-5">
+              <span className="text-2xl" role="img" aria-label="Mascota">🐾</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+              ¿Sos dueño de una mascota?
+            </h2>
+            <p className="mt-4 text-gray-600 max-w-lg mx-auto">
+              Accedé al portal de clientes para ver el historial clínico,
+              facturas y prescripciones de tu mascota. Solo necesitás el código
+              que te dio tu veterinaria.
+            </p>
+            <div className="mt-8">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => navigate("/cliente/acceso")}
+                className="border-emerald-300 text-emerald-700 hover:bg-emerald-100"
+              >
+                Ingresar al portal de mi mascota
+              </Button>
+            </div>
+          </div>
+        </section>
+
         <section className="px-6 py-16">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -100,8 +127,18 @@ export function Landing() {
       </main>
 
       <footer className="px-6 py-6 border-t border-gray-100">
-        <div className="max-w-6xl mx-auto text-center text-sm text-gray-400">
-          &copy; {new Date().getFullYear()} Veter. Todos los derechos reservados.
+        <div className="max-w-6xl mx-auto flex flex-col items-center gap-2">
+          <span className="text-sm text-gray-400">
+            &copy; {new Date().getFullYear()} Veter. Todos los derechos reservados.
+          </span>
+          {/* Link discreto al admin — no enlazado públicamente, solo visible en footer */}
+          <a
+            href="/access_role/admin/developer"
+            className="text-xs text-gray-300 hover:text-gray-400 transition-colors"
+            aria-label="Acceso administrador"
+          >
+            Admin
+          </a>
         </div>
       </footer>
     </div>
