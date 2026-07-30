@@ -12,6 +12,6 @@ def get_llm(provider: str, model: str) -> BaseChatModel:
     elif provider == "gemini":
         return ChatGoogleGenerativeAI(model=model or "gemini-1.5-flash", streaming=True)
     elif provider == "groq":
-        return ChatGroq(model=model or "llama-3.1-70b-versatile", streaming=True)
+        return ChatGroq(model=model or "llama-3.3-70b-versatile", streaming=True)
     else:
         raise ValueError(f"Unsupported LLM provider: {provider}")

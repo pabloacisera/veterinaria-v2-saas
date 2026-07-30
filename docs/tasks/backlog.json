@@ -2368,6 +2368,18 @@
       "dependencias": [],
       "decisiones_relacionadas": [],
       "tests_relacionados": []
+    },
+    {
+      "id": "TASK-129",
+      "titulo": "Fix: Groq model deprecado (llama-3.1-70b-versatile → llama-3.3-70b-versatile)",
+      "estado": "pendiente",
+      "prioridad": "media",
+      "asignado": "",
+      "dependencias": [],
+      "decisiones_relacionadas": [],
+      "tests_relacionados": [
+        "backend/src/tests/unit/test_chat_use_case.py"
+      ]
     }
   ]
 }
