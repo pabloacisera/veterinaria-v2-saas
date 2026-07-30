@@ -555,7 +555,7 @@ Un agente de IA revisa cada PR automáticamente. Flujo:
    - UUIDv7, soft-delete, migrations seguras
    - Tests presentes, docker-compose válido
 
-2. **AI Review** (Groq API — `llama-3.1-70b-versatile`): análisis semántico del diff contra
+2. **AI Review** (Groq API — `llama-3.3-70b-versatile`): análisis semántico del diff contra
    SPECS.md + SKILLS.md. Evalúa arquitectura, seguridad, lógica, convenciones.
 
 3. **Veredicto**: PASS o FAIL. Si hay errores críticos → el job falla → no se permite merge.
