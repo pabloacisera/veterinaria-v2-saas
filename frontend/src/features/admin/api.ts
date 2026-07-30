@@ -1,4 +1,4 @@
-import { apiGet, apiGetBlob, apiPost } from "@/shared/lib/api";
+import { adminGet, adminGetBlob, adminPost } from "./adminApi";
 import type { CompanyAdmin, CompanyListResponse, AdminActionResponse, BackupLogItem } from "@/entities/admin";
 
 const ADMIN_PREFIX = "/admin/developer";
@@ -17,28 +17,28 @@ export function fetchCompanias(filters?: {
   if (filters?.plan) params.set("plan", filters.plan);
   if (filters?.search) params.set("search", filters.search);
   const qs = params.toString();
-  return apiGet<CompanyListResponse>(
+  return adminGet<CompanyListResponse>(
     `${ADMIN_PREFIX}/companias${qs ? `?${qs}` : ""}`
   );
 }
 
 export function blockCompania(id: string) {
-  return apiPost<AdminActionResponse>(`${ADMIN_PREFIX}/companias/${id}/bloquear`, {});
+  return adminPost<AdminActionResponse>(`${ADMIN_PREFIX}/companias/${id}/bloquear`, {});
 }
 
 export function unblockCompania(id: string) {
-  return apiPost<AdminActionResponse>(`${ADMIN_PREFIX}/companias/${id}/desbloquear`, {});
+  return adminPost<AdminActionResponse>(`${ADMIN_PREFIX}/companias/${id}/desbloquear`, {});
 }
 
 export function grantFreeSubscription(id: string, dias: number) {
-  return apiPost<{ message: string; nueva_fin: string }>(
+  return adminPost<{ message: string; nueva_fin: string }>(
     `${ADMIN_PREFIX}/companias/${id}/suscripcion-gratuita`,
     { dias }
   );
 }
 
 export async function exportCompanias() {
-  const blob = await apiGetBlob(`${ADMIN_PREFIX}/exportar/companias`);
+  const blob = await adminGetBlob(`${ADMIN_PREFIX}/exportar/companias`);
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -48,9 +48,11 @@ export async function exportCompanias() {
 }
 
 export function fetchBackupHistorial() {
-  return apiGet<BackupLogItem[]>(`${ADMIN_PREFIX}/backup/historial`);
+  return adminGet<BackupLogItem[]>(`${ADMIN_PREFIX}/backup/historial`);
 }
 
 export function triggerBackup() {
-  return apiPost<{ status: string }>(`${ADMIN_PREFIX}/backup/manual`, {});
+  return adminPost<{ status: string }>(`${ADMIN_PREFIX}/backup/manual`, {});
 }
+
+export type { CompanyAdmin, CompanyListResponse, AdminActionResponse, BackupLogItem };

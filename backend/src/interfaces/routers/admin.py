@@ -73,7 +73,14 @@ async def admin_login(body: AdminLoginRequest, container=Depends(get_container))
     try:
         result = await use_case.execute(email=body.email, password=body.password)
         token_data = result["access_token"]
-        response = JSONResponse(content=result)
+        # Aplanar respuesta: el frontend espera data.access_token como string JWT
+        flat_response = {
+            "access_token": token_data["access_token"],
+            "token_type": token_data.get("token_type", "bearer"),
+            "expires_in": token_data["expires_in"],
+            "message": result.get("message", "Autenticación exitosa"),
+        }
+        response = JSONResponse(content=flat_response)
         set_admin_token_cookie(response, token_data["access_token"], token_data["expires_in"])
         return response
     except ValueError as e:

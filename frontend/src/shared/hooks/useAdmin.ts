@@ -6,7 +6,7 @@ const KEY = "admin";
 export function useCompanias(page = 1, pageSize = 20) {
   return useQuery({
     queryKey: [KEY, "companias", page, pageSize],
-    queryFn: () => api.fetchCompanias(page, pageSize),
+    queryFn: () => api.fetchCompanias({ page, page_size: pageSize }),
   });
 }
 
