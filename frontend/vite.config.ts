@@ -17,6 +17,17 @@ export default defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
+      "/access_role": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+        bypass(req) {
+          // No proxear navegación del browser (SPA routing) — solo API calls
+          const accept = req.headers["accept"] || "";
+          if (accept.includes("text/html")) {
+            return req.url;
+          }
+        },
+      },
     },
   },
 });
